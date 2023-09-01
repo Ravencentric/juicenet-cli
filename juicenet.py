@@ -115,7 +115,7 @@ def move_files(input_path: str) -> None:
 
 
 @logger.catch
-def nzb_output(input_path: str, relative_path: str, basename: str, STATUS: str) -> None:
+def nzb_output(input_path: str, relative_path: str, basename: str, privacy: str) -> None:
     """
     Utility function to move the nzb files into a somewhat organized manner
 
@@ -125,7 +125,7 @@ def nzb_output(input_path: str, relative_path: str, basename: str, STATUS: str) 
 
     `basename`:      String. Basename of the file.
 
-    `STATUS`:        String. Sort output nzbs into /Private or /Public.
+    `privacy`:        String. Sort output nzbs into /Private or /Public.
     """
 
     current_path = os.path.join(input_path, f"{basename}.nzb")
@@ -133,12 +133,12 @@ def nzb_output(input_path: str, relative_path: str, basename: str, STATUS: str) 
     if len(relative_path.split((os.path.sep))) > 1:
         # foo/bar/foobar.mkv. Make a folder for each top subdirectory in input_path
         output_dir = os.path.join(
-            NZB_OUTPUT_PATH, STATUS, os.path.basename(input_path), relative_path.split(os.path.sep)[0]
+            NZB_OUTPUT_PATH, privacy, os.path.basename(input_path), relative_path.split(os.path.sep)[0]
         )
         # output/PRIVATE/basename/foo/foobar.mkv
     else:
         # foobar.mkv. Don't make a folder for each mkv file if input_path has no subdirectories
-        output_dir = os.path.join(NZB_OUTPUT_PATH, STATUS, os.path.basename(input_path))
+        output_dir = os.path.join(NZB_OUTPUT_PATH, privacy, os.path.basename(input_path))
         # output/PRIVATE/basename/foobar.mkv
 
     os.makedirs(output_dir, exist_ok=True)
@@ -236,7 +236,7 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
     par2_files = get_par2_files(input_path)
 
     NYUU_CONFIG = NYUU_CONFIG_PUBLIC if public else NYUU_CONFIG_PRIVATE
-    STATUS = "PUBLIC" if public else "PRIVATE"
+    privacy = "PUBLIC" if public else "PRIVATE"
 
     args = f'-C "{NYUU_CONFIG}" --overwrite -o' if verbose else f'--log-level 1 -C "{NYUU_CONFIG}" --overwrite -o'
 
@@ -248,14 +248,14 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
 
         nyuu_cmd = f'"{NYUU}" {args} "{basename}.nzb" "{file}" {par2_files_str}'
 
-        logger.info(f"Uploading {file} along with {len(filtered_par2_files)} PAR2 files ({STATUS})")
+        logger.info(f"Uploading {file} along with {len(filtered_par2_files)} PAR2 files ({privacy})")
 
         logger.info(nyuu_cmd) if verbose else None
 
         subprocess.run(nyuu_cmd, cwd=input_path)
         logger.success(f"Successfully uploaded {basename}.nzb")
 
-        nzb_output(input_path, file, basename, STATUS)
+        nzb_output(input_path, file, basename, privacy)
 
 
 @logger.catch
