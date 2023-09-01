@@ -20,8 +20,10 @@ try:
     with open(script_config) as file:
         data = yaml.safe_load(file)
 except FileNotFoundError:
-        logger.error(f"Could not find {script_config}. Make sure it exists.", )
-        exit()
+    logger.error(
+        f"Could not find {script_config}. Make sure it exists.",
+    )
+    exit()
 
 
 PARPAR = data["PARPAR"]
@@ -35,7 +37,7 @@ NZB_OUTPUT_PATH = data["NZB_OUTPUT_PATH"]
 def get_mkv_files(input_path: str) -> list[str]:
     """
     Utility function to get the .mkv files
-    
+
     Argument:
 
     `input_path`:    String. Path where the mkv files are.
@@ -53,7 +55,7 @@ def get_mkv_files(input_path: str) -> list[str]:
 def get_par2_files(input_path: str) -> list[str]:
     """
     Utility function to get the .par2 files
-    
+
     Argument:
 
     `input_path`:    String. Path where the par2 files are.
@@ -90,7 +92,7 @@ def move_files(input_path: str) -> None:
 
     This will move foobar.mkv to foobar/foobar.mkv
 
-    Serves no practical function for this script but 
+    Serves no practical function for this script but
     you may use this if you plan to upload manually later.
 
     Argument:
@@ -113,6 +115,39 @@ def move_files(input_path: str) -> None:
 
 
 @logger.catch
+def nzb_output(input_path: str, relative_path: str, basename: str, STATUS: str) -> None:
+    """
+    Utility function to move the nzb files into a somewhat organized manner
+
+    `input_path`:    String. Path where the nzb files to be moved are.
+
+    `relative_path`: String. Path of the file relative to input_path.
+
+    `basename`:      String. Basename of the file.
+
+    `STATUS`:        String. Sort output nzbs into /Private or /Public.
+    """
+
+    current_path = os.path.join(input_path, f"{basename}.nzb")
+
+    if len(relative_path.split((os.path.sep))) > 1:
+        # foo/bar/foobar.mkv. Make a folder for each top subdirectory in input_path
+        output_dir = os.path.join(
+            NZB_OUTPUT_PATH, STATUS, os.path.basename(input_path), relative_path.split(os.path.sep)[0]
+        )
+        # output/PRIVATE/basename/foo/foobar.mkv
+    else:
+        # foobar.mkv. Don't make a folder for each mkv file if input_path has no subdirectories
+        output_dir = os.path.join(NZB_OUTPUT_PATH, STATUS, os.path.basename(input_path))
+        # output/PRIVATE/basename/foobar.mkv
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    output_path = os.path.join(output_dir, f"{basename}.nzb")
+    shutil.move(current_path, output_path)
+
+
+@logger.catch
 def repost_raw(public: bool = False, verbose: bool = False) -> None:
     """
     Function to repost the raw articles, uses the path from `dump-failed-posts`
@@ -129,13 +164,13 @@ def repost_raw(public: bool = False, verbose: bool = False) -> None:
     """
     NYUU_CONFIG = NYUU_CONFIG_PUBLIC if public else NYUU_CONFIG_PRIVATE
 
-    base_args = '--skip-errors all --delete-raw-posts --input-raw-posts'
-    args = base_args if verbose else f"--quiet {base_args}"
+    base_args = "--skip-errors all --delete-raw-posts --input-raw-posts"
+    args = base_args if verbose else f"--log-level 1 {base_args}"
 
     with open(NYUU_CONFIG) as file:
         data = json.load(file)
         try:
-           raw_articles_path = data["dump-failed-posts"]
+            raw_articles_path = data["dump-failed-posts"]
         except KeyError:
             logger.error(f"dump-failed-posts is not defined in your Nyuu config")
             exit()
@@ -193,7 +228,7 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
     Arguments:
 
     `input_path`:    String. Path to a directory that contains mkv files
-    
+
     `public`:        Boolean. Uses your public config if true otherwise will use your private config.
 
     `verbose`:       Boolean. Print extra info in terminal.
@@ -201,9 +236,9 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
     par2_files = get_par2_files(input_path)
 
     NYUU_CONFIG = NYUU_CONFIG_PUBLIC if public else NYUU_CONFIG_PRIVATE
-    STATUS = 'PUBLIC' if public else 'PRIVATE'
+    STATUS = "PUBLIC" if public else "PRIVATE"
 
-    args = f'-C "{NYUU_CONFIG}" --overwrite -o' if verbose else f'--quiet -C "{NYUU_CONFIG}" --overwrite -o'
+    args = f'-C "{NYUU_CONFIG}" --overwrite -o' if verbose else f'--log-level 1 -C "{NYUU_CONFIG}" --overwrite -o'
 
     for file in get_mkv_files(input_path):
         file_without_ext = os.path.splitext(file)[0]
@@ -211,7 +246,7 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
         filtered_par2_files = [par2_file for par2_file in par2_files if file_without_ext in par2_file]
         par2_files_str = " ".join([f'"{par2_file}"' for par2_file in filtered_par2_files])
 
-        nyuu_cmd = f'"{NYUU}" {args} "{basename}.nzb" "{file}" {par2_files_str}' 
+        nyuu_cmd = f'"{NYUU}" {args} "{basename}.nzb" "{file}" {par2_files_str}'
 
         logger.info(f"Uploading {file} along with {len(filtered_par2_files)} PAR2 files ({STATUS})")
 
@@ -220,29 +255,23 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
         subprocess.run(nyuu_cmd, cwd=input_path)
         logger.success(f"Successfully uploaded {basename}.nzb")
 
-        current_path = os.path.join(input_path, f"{basename}.nzb")
-        
-        output_dir = os.path.join(NZB_OUTPUT_PATH, STATUS, os.path.basename(input_path), file.split(os.path.sep)[0])
-        os.makedirs(output_dir, exist_ok=True)
-        
-        output_path = os.path.join(output_dir, f"{basename}.nzb")
-        shutil.move(current_path, output_path)
-    
-        logger.success(f"Moved it to {output_path}")
+        nzb_output(input_path, file, basename, STATUS)
+
 
 @logger.catch
 def main() -> None:
     """CLI"""
     parser = argparse.ArgumentParser(description="A script for conveniently uploading .mkv files to usenet")
     parser.add_argument("path", type=str, help="Path to directory containing .mkv files")
-    parser.add_argument("-P", "--public", action="store_true", help="Use your public config. By default it'll use your private config.")
+    parser.add_argument("-P", "--public", action="store_true", help="Use your public config. Default: private")
     parser.add_argument("-p", "--parpar", action="store_true", help="Only run Parpar")
     parser.add_argument("-n", "--nyuu", action="store_true", help="Only run Nyuu")
     parser.add_argument("-r", "--raw", action="store_true", help="Only repost raw articles")
     parser.add_argument("-v", "--verbose", action="store_true", help="Show everything in terminal")
-    parser.add_argument("-m", "--move", action="store_true", help="Move files into their own directories (not required)")
+    parser.add_argument(
+        "-m", "--move", action="store_true", help="Move files into their own directories (not required)"
+    )
     args = parser.parse_args()
-
 
     if args.move:
         move_files(args.path)
@@ -252,7 +281,7 @@ def main() -> None:
 
     elif args.nyuu:
         nyuu(args.path, args.public, args.verbose)
-    
+
     elif args.raw:
         repost_raw(args.public, args.verbose)
 

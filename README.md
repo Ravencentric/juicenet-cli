@@ -17,6 +17,7 @@ Crude script for conveniently uploading .mkv files to usenet.
 - [Python 3.11](https://www.python.org/downloads/)
 - [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer) (optional)
 - [animetosho/Nyuu@a4b1712](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) - You need this version or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1).
+  - Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/actions/runs/6051631932).
 - [animetosho/ParPar](https://github.com/animetosho/ParPar)
 
 ## Installation
