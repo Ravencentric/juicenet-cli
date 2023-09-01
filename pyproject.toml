@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "juicenet"
+version = "0.1.0"
+description = "A script for conveniently uploading .mkv files to usenet"
+authors = ["Ravencentric <78981416+Ravencentric@users.noreply.github.com>"]
+license = "Unlicense"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+PyYAML = "^6.0.1"
+loguru = "^0.7.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
