@@ -115,7 +115,7 @@ def move_files(input_path: str) -> None:
 
 
 @logger.catch
-def nzb_output(input_path: str, relative_path: str, basename: str, privacy: str) -> None:
+def nzb_output(input_path: str, relative_path: str, basename: str, public: bool = False) -> None:
     """
     Utility function to move the nzb files into a somewhat organized manner
 
@@ -127,6 +127,7 @@ def nzb_output(input_path: str, relative_path: str, basename: str, privacy: str)
 
     `privacy`:        String. Sort output nzbs into /Private or /Public.
     """
+    privacy = "PUBLIC" if public else "PRIVATE"
 
     current_path = os.path.join(input_path, f"{basename}.nzb")
 
@@ -255,7 +256,7 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
         subprocess.run(nyuu_cmd, cwd=input_path)
         logger.success(f"Successfully uploaded {basename}.nzb")
 
-        nzb_output(input_path, file, basename, privacy)
+        nzb_output(input_path, file, basename, public)
 
 
 @logger.catch

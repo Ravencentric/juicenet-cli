@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet"
-version = "0.2.1"
+version = "0.2.2"
 description = "A script for conveniently uploading .mkv files to usenet"
 authors = ["Ravencentric <78981416+Ravencentric@users.noreply.github.com>"]
 license = "Unlicense"
