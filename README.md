@@ -22,7 +22,7 @@ Crude script for conveniently uploading .mkv files to usenet.
 
 ## Installation
 
-1. Run `git clone https://github.com/Ravencentric/juicenet.git` or download this [ZIP](https://github.com/Ravencentric/juicenet.py/archive/refs/heads/main.zip)
+1. Run `git clone https://github.com/Ravencentric/juicenet.git` or download this [ZIP](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
 
 #### With Poetry
 
