@@ -125,7 +125,7 @@ def nzb_output(input_path: str, relative_path: str, basename: str, public: bool 
 
     `basename`:      String. Basename of the file.
 
-    `privacy`:        String. Sort output nzbs into /Private or /Public.
+    `public`:        Boolean. Sort output nzbs into /Private or /Public.
     """
     privacy = "PUBLIC" if public else "PRIVATE"
 
