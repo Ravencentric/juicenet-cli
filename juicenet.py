@@ -31,24 +31,28 @@ NYUU = data["NYUU"]
 NYUU_CONFIG_PRIVATE = data["NYUU_CONFIG_PRIVATE"]
 NYUU_CONFIG_PUBLIC = data["NYUU_CONFIG_PUBLIC"]
 NZB_OUTPUT_PATH = data["NZB_OUTPUT_PATH"]
+EXTENSIONS = data["EXTENSIONS"]
 
 
 @logger.catch
-def get_mkv_files(input_path: str) -> list[str]:
+def get_files(input_path: str) -> list[str]:
     """
-    Utility function to get the .mkv files
+    Utility function to get the relevant files
 
     Argument:
 
     `input_path`:    String. Path where the mkv files are.
     """
-    mkv_files = list(glob.glob(pathname="**/*.mkv", root_dir=input_path, recursive=True))
+    files = []
 
-    if len(mkv_files) == 0:
-        logger.error(f"No .mkv files found in {input_path}")
+    for extension in EXTENSIONS:
+        files.extend(list(glob.glob(pathname=f"**/*{extension}", root_dir=input_path, recursive=True)))
+
+    if len(files) == 0:
+        logger.error(f"No {EXTENSIONS} files found in {input_path}")
         exit()
 
-    return mkv_files
+    return files
 
 
 @logger.catch
@@ -100,7 +104,7 @@ def move_files(input_path: str) -> None:
     `input_path`:   String. Path where the files to be moved are.
 
     """
-    for file in get_mkv_files(input_path):
+    for file in get_files(input_path):
         file_without_ext = os.path.splitext(file)[0]
         basename = os.path.basename(file_without_ext)
         destination_path = os.path.join(input_path, basename)
@@ -209,10 +213,10 @@ def parpar(input_path: str, verbose: bool = False) -> None:
     """
     base_args = "--overwrite -s700k --slice-size-multiple=700K --max-input-slices=4000 -r1n*1.2 -R --filepath-format basename -o"
     args = base_args if verbose else f"--quiet {base_args}"
-    for file in get_mkv_files(input_path):
+    for file in get_files(input_path):
         file_without_ext = os.path.splitext(file)[0]
         parpar_cmd = f'"{PARPAR}" {args} "{file_without_ext}" "{file}"'
-        logger.info(f"Generating PAR2 files for {file}")
+        logger.info(f"Generating PAR2 files for {os.path.split(file)[1]}")
         subprocess.run(parpar_cmd, cwd=input_path)
     logger.success(f"Finished generating PAR2 files")
 
@@ -222,7 +226,7 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
     """
     Function to upload the mkv files along with par2 files.
 
-    This gets the .mkv file and it's corresponding par2 files
+    This gets the relevant file and it's corresponding par2 files
     and passes them individually to the `-o`. Doing it like this
     means you don't have to move the files into a parent folder.
 
@@ -241,7 +245,7 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
 
     args = f'-C "{NYUU_CONFIG}" --overwrite -o' if verbose else f'--log-level 1 -C "{NYUU_CONFIG}" --overwrite -o'
 
-    for file in get_mkv_files(input_path):
+    for file in get_files(input_path):
         file_without_ext = os.path.splitext(file)[0]
         basename = os.path.basename(file_without_ext)
         filtered_par2_files = [par2_file for par2_file in par2_files if file_without_ext in par2_file]
@@ -249,7 +253,7 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
 
         nyuu_cmd = f'"{NYUU}" {args} "{basename}.nzb" "{file}" {par2_files_str}'
 
-        logger.info(f"Uploading {file} along with {len(filtered_par2_files)} PAR2 files ({privacy})")
+        logger.info(f"Uploading {os.path.split(file)[1]} along with {len(filtered_par2_files)} PAR2 files ({privacy})")
 
         logger.info(nyuu_cmd) if verbose else None
 
@@ -262,28 +266,41 @@ def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
 @logger.catch
 def main() -> None:
     """CLI"""
-    parser = argparse.ArgumentParser(description="A script for conveniently uploading .mkv files to usenet")
-    parser.add_argument("path", type=str, help="Path to directory containing .mkv files")
+    parser = argparse.ArgumentParser(description="A script for conveniently uploading files to usenet")
+    parser.add_argument("path", type=str, help="Path to directory containing your files")
     parser.add_argument("-P", "--public", action="store_true", help="Use your public config. Default: private")
     parser.add_argument("-p", "--parpar", action="store_true", help="Only run Parpar")
     parser.add_argument("-n", "--nyuu", action="store_true", help="Only run Nyuu")
     parser.add_argument("-r", "--raw", action="store_true", help="Only repost raw articles")
     parser.add_argument("-v", "--verbose", action="store_true", help="Show everything in terminal")
     parser.add_argument(
+        "-e",
+        "--extensions",
+        metavar=".mkv .mp4",
+        nargs="*",
+        default=None,
+        help="Ignore config and look for these extensions only",
+    )
+    parser.add_argument(
         "-m", "--move", action="store_true", help="Move files into their own directories (not required)"
     )
     args = parser.parse_args()
 
-    if args.move:
+    global EXTENSIONS
+    # Use extensions passed in the CLI instead of config
+    # --extensions .mkv .epub .mp4
+    EXTENSIONS = args.extensions if args.extensions is not None else EXTENSIONS 
+
+    if args.move: # --move
         move_files(args.path)
 
-    elif args.parpar:
+    elif args.parpar: # --parpar
         parpar(args.path, args.verbose)
 
-    elif args.nyuu:
+    elif args.nyuu: # --nyuu
         nyuu(args.path, args.public, args.verbose)
 
-    elif args.raw:
+    elif args.raw: # --raw
         repost_raw(args.public, args.verbose)
 
     else:

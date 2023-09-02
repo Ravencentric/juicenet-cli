@@ -3,3 +3,5 @@ NYUU: nyuu
 NYUU_CONFIG_PRIVATE: C:\Users\user\nyuu\config-private.json
 NYUU_CONFIG_PUBLIC: C:\Users\user\nyuu\config-public.json
 NZB_OUTPUT_PATH: D:\output\nzbs
+EXTENSIONS: [.mkv, .epub, .cbr, .cbz, .cb7, .cbt]
+

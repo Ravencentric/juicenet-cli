@@ -1,14 +1,15 @@
 # juicenet
 
-Crude script for conveniently uploading .mkv files to usenet.
+Crude script for conveniently uploading files to usenet.
 
 ## Features
 
-- Looks into subdirectories for `.mkv` files
-- Generates `par2` files for each `.mkv`
-- Passes the `.mkv` file along with it's corresponding `.par2` files directly to Nyuu
+- Looks into subdirectories for specific files as defined in `juicenet.yaml`
+- Generates `par2` files
+- Passes the file along with it's corresponding `.par2` files directly to Nyuu
 - Can move the files into their own folders if you wish to manually upload
 - Checks for raw articles every run and tries to repost if found
+- Can't continue from where it stopped if it gets interrupted for any reason
 - Probably has alot of cases where it breaks. Worked on my machine in my limited testing
 - Someone please make a better script I can't code
 
@@ -22,18 +23,18 @@ Crude script for conveniently uploading .mkv files to usenet.
 
 ## Installation
 
-1. Run `git clone https://github.com/Ravencentric/juicenet.git` or download this [ZIP](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
+### With Poetry
 
-#### With Poetry
+1. `git clone https://github.com/Ravencentric/juicenet.git` or download this [ZIP](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
+2. `cd juicenet`
+3. `poetry install` to install the 3rd party dependencies.
+4. `poetry shell` to pop a shell into the virtual environment.
 
-1. Run `cd juicenet`
-2. Run `poetry install` to install the 3rd party dependencies.
-3. Run `poetry shell` to pop a shell into the virtual environment.
+### Without Poetry
 
-#### Without Poetry
-
-1. Run `cd juicenet`
-2. Run `pip install -r requirements.txt` to install 3rd party dependencies.
+1. `git clone https://github.com/Ravencentric/juicenet.git` or download this [ZIP](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
+2. `cd juicenet`
+3. `pip install -r requirements.txt` to install 3rd party dependencies.
 
 ## Usage
 
@@ -42,32 +43,34 @@ Rename `juicenet.yaml.example` to `juicenet.yaml` and replace the dummy values w
 ### Windows
 
 ```txt
-py juicenet.py "path\to\directory\with\mkv\files"
+py juicenet.py "path\to\directory\with\files"
 ```
 
 ### Linux
 
 ```txt
-python3 juicenet.py "path/to/directory/with/mkv/files"
+python3 juicenet.py "path/to/directory/with/files"
 ```
 
 ### help
 
 ```txt
-> juicenet.py --help
-usage: juicenet.py [-h] [-P] [-p] [-n] [-r] [-v] [-m] path
+> py juicenet.py --help
+usage: juicenet.py [-h] [-P] [-p] [-n] [-r] [-v] [-e [.mkv .mp4 ...]] [-m] path
 
-A script for conveniently uploading .mkv files to usenet
+A script for conveniently uploading files to usenet
 
 positional arguments:
-  path           Path to directory containing .mkv files
+  path                  Path to directory containing your files
 
 options:
-  -h, --help     show this help message and exit
-  -P, --public   Use your public config. By default it'll use your private config.
-  -p, --parpar   Only run Parpar
-  -n, --nyuu     Only run Nyuu
-  -r, --raw      Only repost raw articles
-  -v, --verbose  Show everything in terminal
-  -m, --move     Move files into their own directories (not required)
+  -h, --help            show this help message and exit
+  -P, --public          Use your public config. Default: private
+  -p, --parpar          Only run Parpar
+  -n, --nyuu            Only run Nyuu
+  -r, --raw             Only repost raw articles
+  -v, --verbose         Show everything in terminal
+  -e [.mkv .mp4 ...], --extensions [.mkv .mp4 ...]
+                        Ignore config and look for these extensions only
+  -m, --move            Move files into their own directories (not required)
 ```
