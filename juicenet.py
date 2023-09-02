@@ -289,18 +289,18 @@ def main() -> None:
     global EXTENSIONS
     # Use extensions passed in the CLI instead of config
     # --extensions .mkv .epub .mp4
-    EXTENSIONS = args.extensions if args.extensions is not None else EXTENSIONS 
+    EXTENSIONS = args.extensions if args.extensions is not None else EXTENSIONS
 
-    if args.move: # --move
+    if args.move:  # --move
         move_files(args.path)
 
-    elif args.parpar: # --parpar
+    elif args.parpar:  # --parpar
         parpar(args.path, args.verbose)
 
-    elif args.nyuu: # --nyuu
+    elif args.nyuu:  # --nyuu
         nyuu(args.path, args.public, args.verbose)
 
-    elif args.raw: # --raw
+    elif args.raw:  # --raw
         repost_raw(args.public, args.verbose)
 
     else:
