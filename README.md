@@ -25,14 +25,14 @@ Crude script for conveniently uploading files to usenet.
 
 ### With Poetry
 
-1. `git clone https://github.com/Ravencentric/juicenet.git` or download this [ZIP](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
+1. `git clone https://github.com/Ravencentric/juicenet.git` or download this [zip](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
 2. `cd juicenet`
 3. `poetry install` to install the 3rd party dependencies.
 4. `poetry shell` to pop a shell into the virtual environment.
 
 ### Without Poetry
 
-1. `git clone https://github.com/Ravencentric/juicenet.git` or download this [ZIP](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
+1. `git clone https://github.com/Ravencentric/juicenet.git` or download this [zip](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
 2. `cd juicenet`
 3. `pip install -r requirements.txt` to install 3rd party dependencies.
 
