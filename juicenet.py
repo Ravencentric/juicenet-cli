@@ -1,313 +1,428 @@
 import argparse
 import glob
-import subprocess
-import os
-import yaml
 import json
 import shutil
+import subprocess
 import sys
+from pathlib import Path
+
+import yaml
+from alive_progress import alive_it, config_handler
+from colorama import Fore
 from loguru import logger
+from rich.traceback import install
+from rich_argparse import RichHelpFormatter
 
+# Install rich traceback
+install(show_locals=True)
+
+# Set up logger
 logger = logger.opt(colors=True)
-fmt = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
-logger.remove()
-logger.add(sys.stderr, format=fmt)
+
+# Customize progress bar strings
+# Making them blend in with loguru
+title_parpar = f"{Fore.GREEN}Processing Files{Fore.RESET}    | PARPAR   |"
+current_parpar = f"{Fore.GREEN}Current File{Fore.RESET}        | PARPAR   |"
+title_nyuu = f"{Fore.GREEN}Uploading Files{Fore.RESET}     | NYUU     |"
+current_nyuu = f"{Fore.GREEN}Current File{Fore.RESET}        | NYUU     |"
+title_raw = f"{Fore.GREEN}Reposting Articles{Fore.RESET}  | NYUU     |"
+current_raw = f"{Fore.GREEN}Current Article{Fore.RESET}     | NYUU     |"
 
 
-script_config = f"{os.path.splitext(__file__)[0]}.yaml"
-
-try:
-    with open(script_config) as file:
-        data = yaml.safe_load(file)
-except FileNotFoundError:
-    logger.error(
-        f"Could not find {script_config}. Make sure it exists.",
-    )
-    exit()
-
-
-PARPAR = data["PARPAR"]
-NYUU = data["NYUU"]
-NYUU_CONFIG_PRIVATE = data["NYUU_CONFIG_PRIVATE"]
-NYUU_CONFIG_PUBLIC = data["NYUU_CONFIG_PUBLIC"]
-NZB_OUTPUT_PATH = data["NZB_OUTPUT_PATH"]
-EXTENSIONS = data["EXTENSIONS"]
-
-
-@logger.catch
-def get_files(input_path: str) -> list[str]:
+def get_config(path: Path) -> dict:
     """
-    Utility function to get the relevant files
+    Reads the yaml config file
+    """
+    config = path.with_suffix(".yaml")
+    config = yaml.safe_load(config.read_text())
+    return config
 
-    Argument:
 
-    `input_path`:    String. Path where the mkv files are.
+def get_dump_failed_posts(conf: Path) -> Path:
+    """
+    Get the value of `dump-failed-posts` from Nyuu config
+    """
+    data = json.loads(conf.read_text())
+    return Path(data.get("dump-failed-posts", ""))
+
+
+def get_files(path: Path, exts: list[str]) -> list[Path] | None:
+    """
+    Get all the files with the relevant extensions
     """
     files = []
 
-    for extension in EXTENSIONS:
-        files.extend(list(glob.glob(pathname=f"**/*{extension}", root_dir=input_path, recursive=True)))
-
-    if len(files) == 0:
-        logger.error(f"No {EXTENSIONS} files found in {input_path}")
-        exit()
+    for ext in exts:
+        ext = ext.strip(".")
+        matches = list(path.rglob(f"*.{ext}"))
+        files.extend(matches)
 
     return files
 
 
-@logger.catch
-def get_par2_files(input_path: str) -> list[str]:
+def get_glob_matches(path: Path, pattern: str) -> list[Path] | None:
     """
-    Utility function to get the .par2 files
-
-    Argument:
-
-    `input_path`:    String. Path where the par2 files are.
+    Get files/folders in path matching the glob pattern
     """
-    par2_files = list(glob.glob(pathname="**/*.par2", root_dir=input_path, recursive=True))
-
-    if len(par2_files) == 0:
-        logger.error(f"No .par2 files found in {input_path}")
-        exit()
-
-    return par2_files
+    return list(path.glob(pattern))
 
 
-@logger.catch
-def get_raw_articles(input_path: str) -> list[str]:
+def map_file_to_pars(files: list[Path]) -> dict[Path, list[Path]]:
     """
-    Utility function to get the raw articles.
-    These are articles that failed to post last Nyuu run.
-    They have no extension.
+    For each file, get it's corresponding .par2 files as such:
 
-    Argument:
-
-    `input_path`:   String. Path where the raw articles are.
-
+    `{'foo/01.ext': ['foo/01.ext.par2', 'foo/01.ext.vol12+10.par2', ...]}`
     """
-    raw_articles = list(glob.glob(pathname="*", root_dir=input_path, recursive=True))
-    return raw_articles
+    mapping = {}
+
+    for file in files:
+        parent = file.parent
+        par2_files = list(parent.glob(f"{glob.escape(file.name)}*.par2"))
+        mapping[file] = par2_files
+
+    return mapping
 
 
-@logger.catch
-def move_files(input_path: str) -> None:
+def move_nzb(path: Path, subdir: Path, nzb: str, out: Path, scope: str) -> None:
     """
-    Utility function to move files.
-
-    This will move foobar.mkv to foobar/foobar.mkv
-
-    Serves no practical function for this script but
-    you may use this if you plan to upload manually later.
-
-    Argument:
-
-    `input_path`:   String. Path where the files to be moved are.
-
+    Move NZB to a specified output path in a somewhat sorted manner
     """
-    for file in get_files(input_path):
-        file_without_ext = os.path.splitext(file)[0]
-        basename = os.path.basename(file_without_ext)
-        destination_path = os.path.join(input_path, basename)
-        os.makedirs(destination_path, exist_ok=True)
-        current_path = os.path.join(input_path, file)
+    src = path / nzb  # ./foo/01.nzb
+    dst = out / scope / subdir  # ./out/private/foo
+    dst.mkdir(parents=True, exist_ok=True)
+    dst = dst / nzb  # ./out/private/foo/01.nzb
+    shutil.move(src, dst)  # ./foo/01.nzb -> ./out/private/foo/01.nzb
 
-        try:
-            shutil.move(current_path, destination_path)
-        except PermissionError:
-            logger.error(f"Cannot move {current_path} because it is being used by another process")
-            exit()
+    logger.debug(f"NZB Move: {src} -> {dst}")
 
 
-@logger.catch
-def nzb_output(input_path: str, relative_path: str, basename: str, public: bool = False) -> None:
+def move_files(files: list[Path]) -> None:
     """
-    Utility function to move the nzb files into a somewhat organized manner
-
-    `input_path`:    String. Path where the nzb files to be moved are.
-
-    `relative_path`: String. Path of the file relative to input_path.
-
-    `basename`:      String. Basename of the file.
-
-    `public`:        Boolean. Sort output nzbs into /Private or /Public.
+    Moves files into their own directories
+    Example: foo/01.mkv -> foo/01/01.mkv
     """
-    privacy = "PUBLIC" if public else "PRIVATE"
+    for file in files:
+        src = file  # ./foo/01.mkv
+        dst = file.parent / file.stem  # ./foo/01/
+        dst.mkdir(parents=True, exist_ok=True)
+        dst = dst / file.name  # ./foo/01/01.mkv
+        src.rename(dst)  # ./foo/01.mkv -> ./foo/01/01.mkv
 
-    current_path = os.path.join(input_path, f"{basename}.nzb")
+        logger.debug(f"File Move: {src} -> {dst}")
 
-    if len(relative_path.split((os.path.sep))) > 1:
-        # foo/bar/foobar.mkv. Make a folder for each top subdirectory in input_path
-        output_dir = os.path.join(
-            NZB_OUTPUT_PATH, privacy, os.path.basename(input_path), relative_path.split(os.path.sep)[0]
+
+def cleanup(par2_files: list[Path]) -> None:
+    """
+    Clean up par2 files after they are uploaded
+    """
+    for par2 in par2_files:
+        par2.unlink(missing_ok=True)
+
+
+def gen_par2(path: Path, bin: Path, args: list[str], files: list[Path], debug: bool = False) -> None:
+    """
+    Generate .par2 files with ParPar
+    """
+    sink = None if debug else subprocess.DEVNULL
+
+    bar = alive_it(files, title=title_parpar)
+    # something here deletes a line (I have no idea how or why)
+    # so I'm printing an empty line for it to delete
+    print()
+
+    for file in bar:
+        format = "basename" if file.is_file() else "outrel"
+        parpar = [bin] + args + ["--filepath-format", format] + ["--out", file, file]
+
+        bar.text(f"{current_parpar} {file.name}")
+        logger.debug(parpar)
+
+        subprocess.run(parpar, cwd=path, stdout=sink, stderr=sink)
+
+
+def upload(
+    path: Path,
+    bin: Path,
+    conf: Path,
+    files: dict[Path, list[Path]],
+    out: Path,
+    scope: str,
+    debug: bool = False,
+) -> None:
+    """
+    Upload files to usenet with Nyuu
+    """
+    sink = None if debug else subprocess.DEVNULL
+
+    keys = files.keys()
+    bar = alive_it(keys, title=title_nyuu)
+
+    for key in bar:
+        nzb = f"{key.name}.nzb"
+        nyuu = [bin] + ["--config", conf] + ["--out", nzb] + [key] + files[key]
+
+        bar.text(f"{current_nyuu} {key.name} ({scope})")
+        logger.debug(nyuu)
+
+        subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)
+
+        # Move each completed upload as they are done
+        move_nzb(path, key.relative_to(path).parent, nzb, out, scope)
+
+        # Cleanup par2 files for the uploaded file
+        cleanup(files[key])
+
+
+def repost_raw(path: Path, dump: Path, bin: Path, conf: Path, debug: bool) -> None:
+    """
+    Try to repost failed articles from last run
+    """
+    sink = None if debug else subprocess.DEVNULL
+
+    articles = get_glob_matches(dump, "*")
+    raw_count = len(articles)
+    logger.info(f"Found {raw_count} raw articles. Attempting to repost")
+
+    bar = alive_it(articles, title=title_raw)
+
+    for article in bar:
+        nyuu = (
+            [bin]
+            + ["--config", conf]
+            + [
+                "--skip-errors",
+                "all",
+                "--delete-raw-posts",
+                "--input-raw-posts",
+                article,
+            ]
         )
-        # output/PRIVATE/basename/foo/foobar.mkv
+
+        bar.text(f"{current_raw} {article.name}")
+        logger.debug(nyuu)
+
+        subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)
+
+    raw_final_count = get_glob_matches(dump, "*")
+    if raw_final_count == 0:
+        logger.success("All raw articles reposted")
     else:
-        # foobar.mkv. Don't make a folder for each mkv file if input_path has no subdirectories
-        output_dir = os.path.join(NZB_OUTPUT_PATH, privacy, os.path.basename(input_path))
-        # output/PRIVATE/basename/foobar.mkv
-
-    os.makedirs(output_dir, exist_ok=True)
-
-    output_path = os.path.join(output_dir, f"{basename}.nzb")
-    shutil.move(current_path, output_path)
+        logger.info(f"Reposted {raw_count-raw_final_count} articles")
+        logger.warning(f"Failed to repost {raw_final_count} articles. Either retry or delete these manually.")
 
 
-@logger.catch
-def repost_raw(public: bool = False, verbose: bool = False) -> None:
+def main(
+    path: Path,
+    public: bool,
+    only_nyuu: bool,
+    only_parpar: bool,
+    only_raw: bool,
+    skip_raw: bool,
+    match: bool,
+    pattern: str,
+    debug: bool,
+    move: bool,
+    extensions: list[str] | None,
+):
     """
-    Function to repost the raw articles, uses the path from `dump-failed-posts`
-    in your Nyuu config.
-
-    These are articles that failed to post last Nyuu run.
-    They have no extension.
-
-    Arguments:
-
-    `public`:     Boolean. Uses your public config if true otherwise will use your private config.
-
-    `verbose`:    Boolean. Print extra info in terminal.
+    Do stuff here
     """
-    NYUU_CONFIG = NYUU_CONFIG_PUBLIC if public else NYUU_CONFIG_PRIVATE
 
-    base_args = "--skip-errors all --delete-raw-posts --input-raw-posts"
-    args = base_args if verbose else f"--log-level 1 {base_args}"
+    # Configure logger
+    fmt = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
+    level = "DEBUG" if debug else "INFO"
+    logger.remove(0)
+    logger.add(sys.stderr, format=fmt, level=level)
 
-    with open(NYUU_CONFIG) as file:
-        data = json.load(file)
-        try:
-            raw_articles_path = data["dump-failed-posts"]
-        except KeyError:
-            logger.error(f"dump-failed-posts is not defined in your Nyuu config")
-            exit()
+    # Progress bar config
+    disable = True if debug else False  # Disable progress bar if --debug is used
+    config_handler.set_global(length=50, theme="classic", dual_line=True, disable=disable)
 
-        initial_count = len(get_raw_articles(raw_articles_path))
+    # Read config file
+    try:
+        config = get_config(Path(__file__))
+    except FileNotFoundError as error:
+        logger.error(f"No such file: {error.filename}")
+        sys.exit()
 
-        if initial_count == 0:
-            logger.info(f"No raw articles found (This is a good thing)")
-            return None
+    # Get the values from config
+    nyuu = Path(config.get("NYUU"))
+    parpar = Path(config.get("PARPAR"))
+    priv_conf = Path(config.get("NYUU_CONFIG_PRIVATE"))
+    pub_conf = Path(config.get("NYUU_CONFIG_PUBLIC", priv_conf))
+    nzb_out = Path(config.get("NZB_OUTPUT_PATH"))
+    exts = list(extensions if extensions else config.get("EXTENSIONS"))
+    parpar_args = list(config.get("PARPAR_ARGS"))
 
-        logger.info(f"Found {initial_count} raw articles. Trying to repost.")
+    # Decide which config file to use
+    configurations = {"public": pub_conf, "private": priv_conf}
+    scope = "public" if public else "private"
+    conf = configurations[scope]
 
-        nyuu_cmd = f'"{NYUU}" -C "{NYUU_CONFIG}" {args} "{raw_articles_path}"'
-        subprocess.run(nyuu_cmd)
+    logger.debug(f"Config")
+    logger.debug(f"├── Nyuu: {nyuu}")
+    logger.debug(f"├── ParPar: {parpar}")
+    logger.debug(f"├── Nyuu config: {conf}")
+    logger.debug(f"├── NZB Output: {nzb_out}")
+    logger.debug(f"├── Extensions: {exts}")
+    logger.debug(f"└── Pattern: {pattern}")
 
-        final_count = len(get_raw_articles(raw_articles_path))
+    try:
+        dump = get_dump_failed_posts(conf)
+    except json.JSONDecodeError as error:
+        logger.error(error)
+        logger.error("Please check your Nyuu config and ensure it is valid")
+        sys.exit()
+    except KeyError as error:
+        logger.error(f"dump-failed-posts is not defined in your Nyuu config. Please define it")
+        sys.exit()
 
-        if final_count == 0:
-            logger.success(f"All raw articles reposted")
+    raw_articles = get_glob_matches(dump, "*")
+    raw_count = len(raw_articles)
+
+    if only_raw:
+        if raw_count != 0:
+            repost_raw(path, raw_articles, nyuu, conf, debug)
         else:
-            logger.info(f"Reposted {initial_count-final_count} articles")
-            logger.warning(f"Failed to repost {final_count} articles. Either retry or delete these manually.")
+            logger.info("No raw articles available for reposting")
+        sys.exit()
+
+    if match:
+        files = get_glob_matches(path, pattern)
+    else:
+        files = get_files(path, exts)
+
+    if not files:
+        logger.error("No matching glob pattern or files with the given extension found in the path")
+        sys.exit()
+
+    if not match and move:  # Do not move if --match was used
+        logger.info(f"Moving {len(files)} file(s)")
+        move_files(files)
+        logger.success(f"Files moved successfully")
+
+        # Get the new path of files
+        files = get_files(path, exts)
+
+    if only_parpar:
+        gen_par2(path, parpar, parpar_args, files, debug)
+        sys.exit()
+
+    if only_nyuu:
+        mapping = map_file_to_pars(files)
+        upload(path, nyuu, conf, mapping, nzb_out, scope, debug)
+        sys.exit()
+
+    if skip_raw:
+        gen_par2(path, parpar, parpar_args, files, debug)
+        mapping = map_file_to_pars(files)
+        upload(path, nyuu, conf, mapping, nzb_out, scope, debug)
+        sys.exit()
+
+    else:
+        if raw_count != 0:
+            repost_raw(path, raw_articles, nyuu, conf, debug)
+
+        gen_par2(path, parpar, parpar_args, files, debug)
+        mapping = map_file_to_pars(files)
+        upload(path, nyuu, conf, mapping, nzb_out, scope, debug)
 
 
-@logger.catch
-def parpar(input_path: str, verbose: bool = False) -> None:
+def CLI():
     """
-    Function to generate par2 files for every mkv file
-
-    Arguments:
-
-    `input_path`:    String. Path to a directory that contains mkv files
-
-    `verbose`:       Boolean. Print extra info in terminal.
+    CLI. Passes the arguments to main()
     """
-    base_args = "--overwrite -s700k --slice-size-multiple=700K --max-input-slices=4000 -r1n*1.2 -R --filepath-format basename -o"
-    args = base_args if verbose else f"--quiet {base_args}"
-    for file in get_files(input_path):
-        file_without_ext = os.path.splitext(file)[0]
-        parpar_cmd = f'"{PARPAR}" {args} "{file_without_ext}" "{file}"'
-        logger.info(f"Generating PAR2 files for {os.path.split(file)[1]}")
-        subprocess.run(parpar_cmd, cwd=input_path)
-    logger.success(f"Finished generating PAR2 files")
+    parser = argparse.ArgumentParser(
+        description="Crude CLI tool to upload files to Usenet using Nyuu and ParPar",
+        formatter_class=RichHelpFormatter,
+    )
 
-
-@logger.catch
-def nyuu(input_path: str, public: bool = False, verbose: bool = False) -> None:
-    """
-    Function to upload the mkv files along with par2 files.
-
-    This gets the relevant file and it's corresponding par2 files
-    and passes them individually to the `-o`. Doing it like this
-    means you don't have to move the files into a parent folder.
-
-    Arguments:
-
-    `input_path`:    String. Path to a directory that contains mkv files
-
-    `public`:        Boolean. Uses your public config if true otherwise will use your private config.
-
-    `verbose`:       Boolean. Print extra info in terminal.
-    """
-    par2_files = get_par2_files(input_path)
-
-    NYUU_CONFIG = NYUU_CONFIG_PUBLIC if public else NYUU_CONFIG_PRIVATE
-    privacy = "PUBLIC" if public else "PRIVATE"
-
-    args = f'-C "{NYUU_CONFIG}" --overwrite -o' if verbose else f'--log-level 1 -C "{NYUU_CONFIG}" --overwrite -o'
-
-    for file in get_files(input_path):
-        file_without_ext = os.path.splitext(file)[0]
-        basename = os.path.basename(file_without_ext)
-        filtered_par2_files = [par2_file for par2_file in par2_files if file_without_ext in par2_file]
-        par2_files_str = " ".join([f'"{par2_file}"' for par2_file in filtered_par2_files])
-
-        nyuu_cmd = f'"{NYUU}" {args} "{basename}.nzb" "{file}" {par2_files_str}'
-
-        logger.info(f"Uploading {os.path.split(file)[1]} along with {len(filtered_par2_files)} PAR2 files ({privacy})")
-
-        logger.info(nyuu_cmd) if verbose else None
-
-        subprocess.run(nyuu_cmd, cwd=input_path)
-        logger.success(f"Successfully uploaded {basename}.nzb")
-
-        nzb_output(input_path, file, basename, public)
-
-
-@logger.catch
-def main() -> None:
-    """CLI"""
-    parser = argparse.ArgumentParser(description="A script for conveniently uploading files to usenet")
-    parser.add_argument("path", type=str, help="Path to directory containing your files")
-    parser.add_argument("-P", "--public", action="store_true", help="Use your public config. Default: private")
-    parser.add_argument("-p", "--parpar", action="store_true", help="Only run Parpar")
-    parser.add_argument("-n", "--nyuu", action="store_true", help="Only run Nyuu")
-    parser.add_argument("-r", "--raw", action="store_true", help="Only repost raw articles")
-    parser.add_argument("-v", "--verbose", action="store_true", help="Show everything in terminal")
     parser.add_argument(
-        "-e",
-        "--extensions",
-        metavar=".mkv .mp4",
-        nargs="*",
+        "path",
+        metavar="path",
+        type=Path,
+        help="Directory containing your files",
+    )
+
+    parser.add_argument(
+        "--public",
+        action="store_true",
+        help="Use your public config",
+    )
+
+    parser.add_argument(
+        "--nyuu",
+        action="store_true",
+        help="Only run Nyuu",
+    )
+
+    parser.add_argument(
+        "--parpar",
+        action="store_true",
+        help="Only run ParPar",
+    )
+
+    parser.add_argument(
+        "--raw",
+        action="store_true",
+        help="Only repost raw articles",
+    )
+
+    parser.add_argument(
+        "--skip-raw",
+        action="store_true",
+        help="Skip reposting raw articles",
+    )
+
+    parser.add_argument(
+        "--match",
+        action="store_true",
+        help="Enable pattern matching mode",
+    )
+
+    parser.add_argument(
+        "--pattern",
+        type=str,
+        default="*/",  # glob pattern for subfolders in root of path
+        help="Specify the glob pattern to be matched in pattern matching mode",
+    )
+
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Show logs",
+    )
+
+    parser.add_argument(
+        "--move",
+        action="store_true",
+        help="Move files into their own directories. This will move foobar.ext to foobar/foobar.ext",
+    )
+
+    parser.add_argument(
+        "--exts",
         default=None,
-        help="Ignore config and look for these extensions only",
+        nargs="*",
+        metavar="mkv mp4",
+        help="Look for these extensions in <path> (ignores config)",
     )
-    parser.add_argument(
-        "-m", "--move", action="store_true", help="Move files into their own directories (not required)"
-    )
+
     args = parser.parse_args()
 
-    global EXTENSIONS
-    # Use extensions passed in the CLI instead of config
-    # --extensions .mkv .epub .mp4
-    EXTENSIONS = args.extensions if args.extensions is not None else EXTENSIONS
-
-    if args.move:  # --move
-        move_files(args.path)
-
-    elif args.parpar:  # --parpar
-        parpar(args.path, args.verbose)
-
-    elif args.nyuu:  # --nyuu
-        nyuu(args.path, args.public, args.verbose)
-
-    elif args.raw:  # --raw
-        repost_raw(args.public, args.verbose)
-
-    else:
-        repost_raw(args.public, args.verbose)
-        parpar(args.path, args.verbose)
-        nyuu(args.path, args.public, args.verbose)
+    main(
+        path=args.path,
+        public=args.public,
+        only_nyuu=args.nyuu,
+        only_parpar=args.parpar,
+        only_raw=args.raw,
+        skip_raw=args.skip_raw,
+        match=args.match,
+        pattern=args.pattern,
+        debug=args.debug,
+        move=args.move,
+        extensions=args.exts,
+    )
 
 
 if __name__ == "__main__":
-    main()
+    CLI()

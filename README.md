@@ -1,17 +1,18 @@
 # juicenet
 
-Crude script for conveniently uploading files to usenet.
+Crude CLI tool to upload files to Usenet using Nyuu and ParPar.
 
 ## Features
 
-- Looks into subdirectories for specific files as defined in `juicenet.yaml`
+- Looks into subdirectories for specific extensions as defined in `juicenet.yaml`
+- Alternatively, look for glob pattern instead of extensions
+- Rudimentary BDMV support
 - Generates `par2` files
 - Passes the file along with it's corresponding `.par2` files directly to Nyuu
 - Can move the files into their own folders if you wish to manually upload
 - Checks for raw articles every run and tries to repost if found
 - Can't continue from where it stopped if it gets interrupted for any reason
 - Probably has alot of cases where it breaks. Worked on my machine in my limited testing
-- Someone please make a better script I can't code
 
 ## Prerequisites
 
@@ -42,35 +43,37 @@ Rename `juicenet.yaml.example` to `juicenet.yaml` and replace the dummy values w
 
 ### Windows
 
-```txt
-py juicenet.py "path\to\directory\with\files"
+```powershell
+python juicenet.py "path\to\directory\with\files"
 ```
 
 ### Linux
 
-```txt
+```shell
 python3 juicenet.py "path/to/directory/with/files"
 ```
 
 ### help
 
-```txt
-> py juicenet.py --help
-usage: juicenet.py [-h] [-P] [-p] [-n] [-r] [-v] [-e [.mkv .mp4 ...]] [-m] path
+```console
+> python .\juicenet.py --help
+Usage: juicenet.py [-h] [--public] [--nyuu] [--parpar] [--raw] [--skip-raw] [--match] [--pattern PATTERN] [--debug] [--move] [--exts [mkv mp4 ...]] path
 
-A script for conveniently uploading files to usenet
+Crude CLI tool to upload files to Usenet using Nyuu and ParPar
 
-positional arguments:
-  path                  Path to directory containing your files
+Positional Arguments:
+  path                  Directory containing your files
 
-options:
+Options:
   -h, --help            show this help message and exit
-  -P, --public          Use your public config. Default: private
-  -p, --parpar          Only run Parpar
-  -n, --nyuu            Only run Nyuu
-  -r, --raw             Only repost raw articles
-  -v, --verbose         Show everything in terminal
-  -e [.mkv .mp4 ...], --extensions [.mkv .mp4 ...]
-                        Ignore config and look for these extensions only
-  -m, --move            Move files into their own directories (not required)
+  --public              Use your public config
+  --nyuu                Only run Nyuu
+  --parpar              Only run ParPar
+  --raw                 Only repost raw articles
+  --skip-raw            Skip reposting raw articles
+  --match               Enable pattern matching mode
+  --pattern PATTERN     Specify the glob pattern to be matched in pattern matching mode
+  --debug               Show logs
+  --move                Move files into their own directories. This will move foobar.ext to foobar/foobar.ext
+  --exts [mkv mp4 ...]  Look for these extensions in <path> (ignores config)
 ```
