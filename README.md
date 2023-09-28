@@ -6,7 +6,7 @@ Crude CLI tool to upload files to Usenet using Nyuu and ParPar.
 
 - Looks into subdirectories for specific extensions as defined in `juicenet.yaml`
 - Alternatively, look for glob pattern instead of extensions
-- Rudimentary BDMV support
+- Rudimentary BDMV support (read how to use it [here](https://github.com/Ravencentric/juicenet/wiki))
 - Generates `par2` files
 - Passes the file along with it's corresponding `.par2` files directly to Nyuu
 - Can move the files into their own folders if you wish to manually upload
