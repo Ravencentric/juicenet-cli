@@ -203,12 +203,12 @@ def repost_raw(path: Path, dump: Path, bin: Path, conf: Path, debug: bool) -> No
 
         subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)
 
-    raw_final_count = get_glob_matches(dump, "*")
+    raw_final_count = len(get_glob_matches(dump, "*"))
     if raw_final_count == 0:
         logger.success("All raw articles reposted")
     else:
         logger.info(f"Reposted {raw_count-raw_final_count} articles")
-        logger.warning(f"Failed to repost {raw_final_count} articles. Either retry or delete these manually.")
+        logger.warning(f"Failed to repost {raw_final_count} articles. Either retry or delete these manually")
 
 
 def main(
@@ -277,12 +277,11 @@ def main(
         logger.error(f"dump-failed-posts is not defined in your Nyuu config. Please define it")
         sys.exit()
 
-    raw_articles = get_glob_matches(dump, "*")
-    raw_count = len(raw_articles)
+    raw_count = len(get_glob_matches(dump, "*"))
 
     if only_raw:
         if raw_count != 0:
-            repost_raw(path, raw_articles, nyuu, conf, debug)
+            repost_raw(path, dump, nyuu, conf, debug)
         else:
             logger.info("No raw articles available for reposting")
         sys.exit()
@@ -321,7 +320,7 @@ def main(
 
     else:
         if raw_count != 0:
-            repost_raw(path, raw_articles, nyuu, conf, debug)
+            repost_raw(path, dump, nyuu, conf, debug)
 
         gen_par2(path, parpar, parpar_args, files, debug)
         mapping = map_file_to_pars(files)
