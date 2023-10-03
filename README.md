@@ -5,7 +5,7 @@ Crude CLI tool to upload files to Usenet using Nyuu and ParPar.
 ## Features
 
 - Looks into subdirectories for specific extensions as defined in `juicenet.yaml`
-- Alternatively, look for glob pattern instead of extensions
+- Alternatively, look for glob pattern(s) instead of extensions
 - Rudimentary BDMV support (read how to use it [here](https://github.com/Ravencentric/juicenet/wiki))
 - Generates `par2` files
 - Passes the file along with it's corresponding `.par2` files directly to Nyuu
@@ -57,7 +57,7 @@ python3 juicenet.py "path/to/directory/with/files"
 
 ```console
 > python .\juicenet.py --help
-Usage: juicenet.py [-h] [--public] [--nyuu] [--parpar] [--raw] [--skip-raw] [--match] [--pattern PATTERN] [--debug] [--move] [--exts [mkv mp4 ...]] path
+Usage: juicenet.py [-h] [--public] [--nyuu] [--parpar] [--raw] [--skip-raw] [--match] [--pattern [*/ ...]] [--debug] [--move] [--exts [mkv mp4 ...]] path
 
 Crude CLI tool to upload files to Usenet using Nyuu and ParPar
 
@@ -72,7 +72,7 @@ Options:
   --raw                 Only repost raw articles
   --skip-raw            Skip reposting raw articles
   --match               Enable pattern matching mode
-  --pattern PATTERN     Specify the glob pattern to be matched in pattern matching mode
+  --pattern [*/ ...]    Specify the glob pattern(s) to be matched in pattern matching mode
   --debug               Show logs
   --move                Move files into their own directories. This will move foobar.ext to foobar/foobar.ext
   --exts [mkv mp4 ...]  Look for these extensions in <path> (ignores config)

@@ -390,7 +390,7 @@ def CLI():
         nargs="*",
         default=["*/"],  # glob pattern for subfolders in root of path
         metavar="*/",
-        help="Specify the glob pattern to be matched in pattern matching mode",
+        help="Specify the glob pattern(s) to be matched in pattern matching mode",
     )
 
     parser.add_argument(
