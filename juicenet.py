@@ -60,11 +60,17 @@ def get_files(path: Path, exts: list[str]) -> list[Path] | None:
     return files
 
 
-def get_glob_matches(path: Path, pattern: str) -> list[Path] | None:
+def get_glob_matches(path: Path, patterns: list[str]) -> list[Path] | None:
     """
     Get files/folders in path matching the glob pattern
     """
-    return list(path.glob(pattern))
+    files = []
+
+    for pattern in patterns:
+        matches = list(path.glob(pattern))
+        files.extend(matches)
+
+    return files
 
 
 def map_file_to_pars(files: list[Path]) -> dict[Path, list[Path]]:
@@ -381,8 +387,9 @@ def CLI():
 
     parser.add_argument(
         "--pattern",
-        type=str,
-        default="*/",  # glob pattern for subfolders in root of path
+        nargs="*",
+        default=["*/"],  # glob pattern for subfolders in root of path
+        metavar="*/",
         help="Specify the glob pattern to be matched in pattern matching mode",
     )
 
