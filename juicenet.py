@@ -251,14 +251,20 @@ def main(
         logger.error(f"No such file: {error.filename}")
         sys.exit()
 
-    # Get the values from config
-    nyuu = Path(config.get("NYUU"))
-    parpar = Path(config.get("PARPAR"))
-    priv_conf = Path(config.get("NYUU_CONFIG_PRIVATE"))
+    # Get the required values from config
+    try:
+        nyuu = Path(config["NYUU"])
+        parpar = Path(config["PARPAR"])
+        priv_conf = Path(config["NYUU_CONFIG_PRIVATE"])
+        nzb_out = Path(config["NZB_OUTPUT_PATH"])
+        exts = list(extensions if extensions else config["EXTENSIONS"])
+        parpar_args = list(config["PARPAR_ARGS"])
+    except KeyError as error:
+        logger.error(f"{error.args[0]} is missing in {Path(__file__).stem}.yaml")
+        sys.exit()
+
+    # Get optional value from config
     pub_conf = Path(config.get("NYUU_CONFIG_PUBLIC", priv_conf))
-    nzb_out = Path(config.get("NZB_OUTPUT_PATH"))
-    exts = list(extensions if extensions else config.get("EXTENSIONS"))
-    parpar_args = list(config.get("PARPAR_ARGS"))
 
     # Decide which config file to use
     configurations = {"public": pub_conf, "private": priv_conf}
