@@ -73,6 +73,21 @@ def get_glob_matches(path: Path, patterns: list[str]) -> list[Path] | None:
     return files
 
 
+def rm_empty_dirs(files: list[Path]) -> list[Path]:
+    """
+    Removes empty directories from a list of paths
+    """
+    non_empty = []
+
+    for file in files:
+        if file.is_file():
+            non_empty.append(file)
+        elif file.is_dir() and any(file.iterdir()):
+            non_empty.append(file)
+
+    return non_empty
+
+
 def map_file_to_pars(files: list[Path]) -> dict[Path, list[Path]]:
     """
     For each file, get it's corresponding .par2 files as such:
@@ -85,6 +100,26 @@ def map_file_to_pars(files: list[Path]) -> dict[Path, list[Path]]:
         parent = file.parent
         par2_files = list(parent.glob(f"{glob.escape(file.name)}*.par2"))
         mapping[file] = par2_files
+
+    return mapping
+
+
+def map_filepath_formats(files: list[Path]) -> dict[Path, str]:
+    """
+    Check if the path is a directory or file and map it to the
+    corresponding value of `--filepath-format` for ParPar
+    https://github.com/animetosho/ParPar/blob/master/help.txt#L118C39-L128
+
+    This is required to preserve folder structure where it matters (BDMVs)
+    OR discard folders where it does not (common mkv files)
+    """
+    mapping = {}
+
+    for file in files:
+        if file.is_file():
+            mapping[file] = "basename"
+        else:
+            mapping[file] = "outrel"
 
     return mapping
 
@@ -132,15 +167,13 @@ def gen_par2(path: Path, bin: Path, args: list[str], files: list[Path], debug: b
     sink = None if debug else subprocess.DEVNULL
 
     bar = alive_it(files, title=title_parpar)
-    # something here deletes a line (I have no idea how or why)
-    # so I'm printing an empty line for it to delete
-    print()
+
+    format = map_filepath_formats(files)
 
     for file in bar:
-        format = "basename" if file.is_file() else "outrel"
-        parpar = [bin] + args + ["--filepath-format", format] + ["--out", file, file]
+        parpar = [bin] + args + ["--filepath-format", format[file]] + ["--out", file, file]
 
-        bar.text(f"{current_parpar} {file.name}")
+        bar.text(f"{current_parpar} {file.name} (format: {format[file]})")
         logger.debug(parpar)
 
         subprocess.run(parpar, cwd=path, stdout=sink, stderr=sink)
@@ -314,6 +347,9 @@ def main(
 
         # Get the new path of files
         files = get_files(path, exts)
+
+    # Remove empty directories
+    files = rm_empty_dirs(files)
 
     if only_parpar:
         gen_par2(path, parpar, parpar_args, files, debug)
