@@ -305,7 +305,7 @@ def main(
         exts = list(extensions if extensions else config["EXTENSIONS"])
         parpar_args = list(config["PARPAR_ARGS"])
     except KeyError as error:
-        logger.error(f"{error.args[0]} is missing in {Path(__file__).stem}.yaml")
+        logger.error(f"{error} is missing in {Path(__file__).stem}.yaml")
         sys.exit()
 
     # Get optional value from config
@@ -331,7 +331,7 @@ def main(
         logger.error("Please check your Nyuu config and ensure it is valid")
         sys.exit()
     except KeyError as error:
-        logger.error(f"dump-failed-posts is not defined in your Nyuu config. Please define it")
+        logger.error(f"{error} is not defined in your Nyuu config. Please define it")
         sys.exit()
 
     raw_count = len(get_glob_matches(dump, "*"))
