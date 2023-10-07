@@ -73,17 +73,29 @@ def get_glob_matches(path: Path, patterns: list[str]) -> list[Path] | None:
     return files
 
 
-def rm_empty_dirs(files: list[Path]) -> list[Path]:
+def rm_empty_paths(files: list[Path]) -> list[Path]:
     """
-    Removes empty directories from a list of paths
+    Removes empty files and directories from a list of paths
+
+    Empty file is a file whose size is 0 bytes
+    Empty directory is a directory with 0 non empty files
+
+    This step is necessary because Nyuu will skip empty paths
+    on it's own but the script expects an nzb for each path
+    causing it to error. So I'll remove these before passing
+    it further in the script.
     """
     non_empty = []
 
     for file in files:
-        if file.is_file():
+        if file.is_file() and file.stat().st_size > 0:
             non_empty.append(file)
-        elif file.is_dir() and any(file.iterdir()):
-            non_empty.append(file)
+
+        elif file.is_dir():
+            for item in file.iterdir():
+                if item.is_file() and item.stat().st_size > 0:
+                    non_empty.append(file)
+                    break
 
     return non_empty
 
@@ -349,7 +361,7 @@ def main(
         files = get_files(path, exts)
 
     # Remove empty directories
-    files = rm_empty_dirs(files)
+    files = rm_empty_paths(files)
 
     if only_parpar:
         gen_par2(path, parpar, parpar_args, files, debug)
