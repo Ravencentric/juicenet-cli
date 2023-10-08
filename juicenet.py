@@ -1,9 +1,11 @@
 import argparse
 import glob
 import json
+import os
 import shutil
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 import yaml
@@ -29,13 +31,43 @@ title_raw = f"{Fore.GREEN}Reposting Articles{Fore.RESET}  | NYUU     |"
 current_raw = f"{Fore.GREEN}Current Article{Fore.RESET}     | NYUU     |"
 
 
-def get_config(path: Path) -> dict:
+def get_version() -> str:
+    """
+    Get the version
+    """
+    return tomllib.loads(Path("pyproject.toml").read_text())["tool"]["poetry"]["version"]
+
+
+def get_config(path: Path) -> Path:
+    """
+    Get the path of the config file
+
+    This can be present in three locations:
+
+    1. `--config <path>`
+    2. env variable called `JUICENET_CONFIG`
+    3. CurrentWorkingDir/juicenet.yaml
+
+    Order of precedence is what you see above
+    """
+
+    default_path = Path.cwd() / "juicenet.yaml"
+
+    if path is None:
+        return Path(os.getenv("JUICENET_CONFIG", default_path))
+
+    elif path.is_file():
+        return path
+
+    elif path.is_dir():
+        return path / "juicenet.yaml"
+
+
+def read_config(path: Path) -> dict:
     """
     Reads the yaml config file
     """
-    config = path.with_suffix(".yaml")
-    config = yaml.safe_load(config.read_text())
-    return config
+    return yaml.safe_load(path.read_text())
 
 
 def get_dump_failed_posts(conf: Path) -> Path:
@@ -264,6 +296,8 @@ def repost_raw(path: Path, dump: Path, bin: Path, conf: Path, debug: bool) -> No
 
 def main(
     path: Path,
+    conf_path: Path,
+    version: bool,
     public: bool,
     only_nyuu: bool,
     only_parpar: bool,
@@ -279,6 +313,11 @@ def main(
     Do stuff here
     """
 
+    # if --version is passed, print and exit
+    if version:
+        print(get_version())
+        sys.exit()
+
     # Configure logger
     fmt = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
     level = "DEBUG" if debug else "INFO"
@@ -291,9 +330,14 @@ def main(
 
     # Read config file
     try:
-        config = get_config(Path(__file__))
+        config = get_config(conf_path)
+        config = read_config(config)
     except FileNotFoundError as error:
         logger.error(f"No such file: {error.filename}")
+        logger.error("You can provide the config in 3 ways:")
+        logger.error("1. Explicitly pass --config")
+        logger.error("2. Set the 'JUICENET_CONFIG' env variable")
+        logger.error("3. Place 'juicenet.yaml' in the current working directory")
         sys.exit()
 
     # Get the required values from config
@@ -399,8 +443,23 @@ def CLI():
     parser.add_argument(
         "path",
         metavar="path",
+        nargs="?",
+        default=Path.cwd(),
         type=Path,
-        help="Directory containing your files",
+        help="Directory containing your files (default: CWD)",
+    )
+
+    parser.add_argument(
+        "--config",
+        default=None,
+        type=Path,
+        help="Use your public config",
+    )
+
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        help="Print juicenet version",
     )
 
     parser.add_argument(
@@ -471,6 +530,8 @@ def CLI():
 
     main(
         path=args.path,
+        conf_path=args.config,
+        version=args.version,
         public=args.public,
         only_nyuu=args.nyuu,
         only_parpar=args.parpar,

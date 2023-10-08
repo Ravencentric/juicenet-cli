@@ -1,10 +1,17 @@
 [tool.poetry]
 name = "juicenet"
-version = "0.6.2"
+version = "0.7.0"
 description = "Crude CLI tool to upload files to Usenet using Nyuu and ParPar"
 authors = ["Raventric <78981416+Ravencentric@users.noreply.github.com>"]
+repository = "https://github.com/Ravencentric/juicenet"
 license = "Unlicense"
 readme = "README.md"
+documentation = "https://github.com/Ravencentric/juicenet/wiki"
+classifiers = [
+    "License :: OSI Approved :: The Unlicense (Unlicense)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -19,6 +26,9 @@ black = "^23.9.1"
 
 [tool.black]
 line-length = 120
+
+[tool.poetry.scripts]
+juicenet = "juicenet:CLI"
 
 [build-system]
 requires = ["poetry-core"]
