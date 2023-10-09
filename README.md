@@ -56,7 +56,7 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
 
 ### Installation
 
-1. With pipx (recommended):
+1. With [pipx](https://pypa.github.io/pipx/installation/) (recommended):
 
     ```sh
     pipx install juicenet-cli
@@ -68,7 +68,7 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
     pip install juicenet-cli
     ```
 
-3. With poetry:
+3. With [poetry](https://python-poetry.org/docs/#installation):
 
     ```sh
     git clone https://github.com/Ravencentric/juicenet-cli.git
