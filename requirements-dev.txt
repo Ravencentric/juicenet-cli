@@ -4,6 +4,7 @@ black==23.9.1 ; python_version >= "3.11" and python_version < "4.0"
 click==8.1.7 ; python_version >= "3.11" and python_version < "4.0"
 colorama==0.4.6 ; python_version >= "3.11" and python_version < "4.0" and (sys_platform == "win32" or platform_system == "Windows")
 grapheme==0.6.0 ; python_version >= "3.11" and python_version < "4"
+isort==5.12.0 ; python_version >= "3.11" and python_version < "4.0"
 loguru==0.7.2 ; python_version >= "3.11" and python_version < "4.0"
 markdown-it-py==3.0.0 ; python_version >= "3.11" and python_version < "4.0"
 mdurl==0.1.2 ; python_version >= "3.11" and python_version < "4.0"

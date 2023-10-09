@@ -48,19 +48,15 @@ def get_config(path: Path) -> Path:
     2. env variable called `JUICENET_CONFIG`
     3. CurrentWorkingDir/juicenet.yaml
 
-    Order of precedence is what you see above
+    The order of precedence, if all three are present, is:
+    `--config > env variable > CurrentWorkingDir/juicenet.yaml`
     """
 
-    default_path = Path.cwd() / "juicenet.yaml"
-
-    if path is None:
-        return Path(os.getenv("JUICENET_CONFIG", default_path))
-
-    elif path.is_file():
+    if path.is_file():
         return path
 
-    elif path.is_dir():
-        return path / "juicenet.yaml"
+    else:
+        return Path(os.getenv("JUICENET_CONFIG", path / "juicenet.yaml"))
 
 
 def read_config(path: Path) -> dict:
@@ -75,10 +71,10 @@ def get_dump_failed_posts(conf: Path) -> Path:
     Get the value of `dump-failed-posts` from Nyuu config
     """
     data = json.loads(conf.read_text())
-    return Path(data.get("dump-failed-posts", ""))
+    return Path(data["dump-failed-posts"])
 
 
-def get_files(path: Path, exts: list[str]) -> list[Path] | None:
+def get_files(path: Path, exts: list[str]) -> list[Path]:
     """
     Get all the files with the relevant extensions
     """
@@ -92,7 +88,7 @@ def get_files(path: Path, exts: list[str]) -> list[Path] | None:
     return files
 
 
-def get_glob_matches(path: Path, patterns: list[str]) -> list[Path] | None:
+def get_glob_matches(path: Path, patterns: list[str]) -> list[Path]:
     """
     Get files/folders in path matching the glob pattern
     """
@@ -262,7 +258,7 @@ def repost_raw(path: Path, dump: Path, bin: Path, conf: Path, debug: bool) -> No
     """
     sink = None if debug else subprocess.DEVNULL
 
-    articles = get_glob_matches(dump, "*")
+    articles = get_glob_matches(dump, ["*"])
     raw_count = len(articles)
     logger.info(f"Found {raw_count} raw articles. Attempting to repost")
 
@@ -286,7 +282,7 @@ def repost_raw(path: Path, dump: Path, bin: Path, conf: Path, debug: bool) -> No
 
         subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)
 
-    raw_final_count = len(get_glob_matches(dump, "*"))
+    raw_final_count = len(get_glob_matches(dump, ["*"]))
     if raw_final_count == 0:
         logger.success("All raw articles reposted")
     else:
@@ -304,7 +300,7 @@ def main(
     only_raw: bool,
     skip_raw: bool,
     match: bool,
-    pattern: str,
+    pattern: list[str],
     debug: bool,
     move: bool,
     extensions: list[str] | None,
@@ -330,8 +326,8 @@ def main(
 
     # Read config file
     try:
-        config = get_config(conf_path)
-        config = read_config(config)
+        conf_path = get_config(conf_path)
+        config = read_config(conf_path)
     except FileNotFoundError as error:
         logger.error(f"No such file: {error.filename}")
         logger.error("You can provide the config in 3 ways:")
@@ -348,8 +344,8 @@ def main(
         nzb_out = Path(config["NZB_OUTPUT_PATH"])
         exts = list(extensions if extensions else config["EXTENSIONS"])
         parpar_args = list(config["PARPAR_ARGS"])
-    except KeyError as error:
-        logger.error(f"{error} is missing in {Path(__file__).stem}.yaml")
+    except KeyError as key:
+        logger.error(f"{key} is missing in {conf_path}")
         sys.exit()
 
     # Get optional value from config
@@ -360,13 +356,14 @@ def main(
     scope = "public" if public else "private"
     conf = configurations[scope]
 
-    logger.debug(f"Config")
-    logger.debug(f"├── Nyuu: {nyuu}")
-    logger.debug(f"├── ParPar: {parpar}")
-    logger.debug(f"├── Nyuu config: {conf}")
-    logger.debug(f"├── NZB Output: {nzb_out}")
-    logger.debug(f"├── Extensions: {exts}")
-    logger.debug(f"└── Pattern: {pattern}")
+    logger.info(f"Config: {conf_path}")
+    logger.info(f"├── Nyuu: {nyuu}")
+    logger.info(f"├── ParPar: {parpar}")
+    logger.info(f"├── Nyuu config: {conf}")
+    logger.info(f"├── NZB Output: {nzb_out}")
+    logger.info(f"├── Extensions: {exts}")
+    logger.info(f"├── Pattern: {pattern}")
+    logger.info(f"└── Use Pattern: {match}")
 
     try:
         dump = get_dump_failed_posts(conf)
@@ -374,11 +371,14 @@ def main(
         logger.error(error)
         logger.error("Please check your Nyuu config and ensure it is valid")
         sys.exit()
-    except KeyError as error:
-        logger.error(f"{error} is not defined in your Nyuu config. Please define it")
+    except KeyError as key:
+        logger.error(f"{key} is not defined in your Nyuu config")
+        sys.exit()
+    except FileNotFoundError as error:
+        logger.error(f"No such file: {error.filename}")
         sys.exit()
 
-    raw_count = len(get_glob_matches(dump, "*"))
+    raw_count = len(get_glob_matches(dump, ["*"]))
 
     if only_raw:
         if raw_count != 0:
@@ -393,7 +393,8 @@ def main(
         files = get_files(path, exts)
 
     if not files:
-        logger.error("No matching glob pattern or files with the given extension found in the path")
+        logger.error("No matching files or patterns found with the given extension in:")
+        logger.error(path)
         sys.exit()
 
     if not match and move:  # Do not move if --match was used
@@ -451,7 +452,7 @@ def CLI():
 
     parser.add_argument(
         "--config",
-        default=None,
+        default=Path.cwd(),
         type=Path,
         help="Use your public config",
     )
