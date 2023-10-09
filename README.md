@@ -1,79 +1,110 @@
-# juicenet
+<br/>
+<p align="center">
+  <a href="https://github.com/Ravencentric/juicenet-cli">
+    <img src="https://em-content.zobj.net/source/twitter/376/beverage-box_1f9c3.png" alt="Logo" width="100" height="100">
+  </a>
 
-Crude CLI tool to upload files to Usenet using Nyuu and ParPar.
+  <h3 align="center">juicenet-cli</h3>
 
-## Features
+  <p align="center">
+    Crude CLI tool to upload files to Usenet using Nyuu and ParPar
+    <br/>
+    <br/>
+  </p>
+</p>
 
-- Looks into subdirectories for specific extensions as defined in `juicenet.yaml`
-- Alternatively, look for glob pattern(s) instead of extensions
-- Rudimentary BDMV support (read how to use it [here](https://github.com/Ravencentric/juicenet/wiki))
-- Generates `par2` files
-- Passes the file along with it's corresponding `.par2` files directly to Nyuu
-- Can move the files into their own folders if you wish to manually upload
-- Checks for raw articles every run and tries to repost if found
-- Can't continue from where it stopped if it gets interrupted for any reason
-- Probably has alot of cases where it breaks. Worked on my machine in my limited testing
+<div align="center">
+  
+[![PyPI - Version](https://img.shields.io/pypi/v/juicenet-cli?link=https%3A%2F%2Fpypi.org%2Fproject%2Fjuicenet-cli%2F)
+](https://pypi.org/project/juicenet-cli/) ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Ravencentric/juicenet-cli/pypi.yml) ![Issues](https://img.shields.io/github/issues/Ravencentric/juicenet-cli) ![License](https://img.shields.io/github/license/Ravencentric/juicenet-cli)
 
-## Prerequisites
+</div>
 
-- [Python 3.11](https://www.python.org/downloads/)
-- [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer) (optional)
-- [animetosho/Nyuu@a4b1712](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) - You need this version or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1).
-  - Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest).
-- [animetosho/ParPar](https://github.com/animetosho/ParPar)
+## Table Of Contents
 
-## Installation
+* [About the Project](#about-the-project)
+* [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+* [Usage](#usage)
+* [License](#license)
 
-### With Poetry
+## About The Project
 
-1. `git clone https://github.com/Ravencentric/juicenet.git` or download this [zip](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
-2. `cd juicenet`
-3. `poetry install` to install the 3rd party dependencies.
-4. `poetry shell` to pop a shell into the virtual environment.
+Uploading stuff to usenet is tedious so I tried to make it easier.
 
-### Without Poetry
+* Searches subdirectories for defined file extensions in `juicenet.yaml` or as passed in `--exts`
+* Alternatively, searches for glob patterns passed in `--pattern`
+* Provides basic BDMV support
+* Creates par2 files
+* Directly passes files and corresponding .par2 files to Nyuu
+* Offers the option to organize files into separate folders for manual upload
+* Automatically checks for and reposts raw articles on each run
+* Can **NOT** continue from where it stopped if it gets interrupted for any reason
+* Probably has alot of cases where it breaks. I've tried to keep it OS independent but I've mostly tested this on Windows
 
-1. `git clone https://github.com/Ravencentric/juicenet.git` or download this [zip](https://github.com/Ravencentric/juicenet/archive/refs/heads/main.zip)
-2. `cd juicenet`
-3. `pip install -r requirements.txt` to install 3rd party dependencies.
+## Getting Started
+
+This script uses ParPar for generating the PAR2 recovery files and Nyuu for uploading to usenet.
+
+### Prerequisites
+
+* [Python 3.11](https://www.python.org/downloads/)
+* [animetosho/Nyuu](https://github.com/animetosho/Nyuu) - You need version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1).
+  * Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest).
+* [animetosho/ParPar](https://github.com/animetosho/ParPar)
+
+### Installation
+
+1. With pipx (recommended):
+
+    ```sh
+    pipx install juicenet-cli
+    ```
+
+2. With pip:
+
+    ```sh
+    pip install juicenet-cli
+    ```
+
+3. With poetry:
+
+    ```sh
+    git clone https://github.com/Ravencentric/juicenet-cli.git
+    ```
+
+    ```sh
+    cd juicenet-cli
+    ```
+
+    ```sh
+    poetry install
+    ```
+
+    ```sh
+    poetry shell
+    ```
 
 ## Usage
 
-Rename `juicenet.yaml.example` to `juicenet.yaml` and replace the dummy values with your own. This must exist next to your `juicenet.py` and named the same as the py file.
+Before you can use this, you'll have to fill out [`juicenet.yaml`](https://github.com/Ravencentric/juicenet-cli/blob/main/juicenet.yaml). After you've specified all the values in the config you just have to pass it to juicenet-cli. You can do that in one of three ways:
 
-### Windows
+1. Using the command-line argument: `--config <path>`
+2. Setting an environment variable named `JUICENET_CONFIG`
+3. Placing the configuration file in the current working directory as `juicenet.yaml`
 
-```powershell
-python juicenet.py "path\to\directory\with\files"
+The order of precedence, if all three are present, is:
+`command-line argument > environment variable > local file in the current working directory`
+
+The above was the first time setup, after which you can simply run:
+
+```sh
+juicenet "path\to\directory\with\files"
 ```
 
-### Linux
+For more information, go [here](https://github.com/Ravencentric/juicenet-cli/wiki).
 
-```shell
-python3 juicenet.py "path/to/directory/with/files"
-```
+## License
 
-### help
-
-```console
-> python .\juicenet.py --help
-Usage: juicenet.py [-h] [--public] [--nyuu] [--parpar] [--raw] [--skip-raw] [--match] [--pattern [*/ ...]] [--debug] [--move] [--exts [mkv mp4 ...]] path
-
-Crude CLI tool to upload files to Usenet using Nyuu and ParPar
-
-Positional Arguments:
-  path                  Directory containing your files
-
-Options:
-  -h, --help            show this help message and exit
-  --public              Use your public config
-  --nyuu                Only run Nyuu
-  --parpar              Only run ParPar
-  --raw                 Only repost raw articles
-  --skip-raw            Skip reposting raw articles
-  --match               Enable pattern matching mode
-  --pattern [*/ ...]    Specify the glob pattern(s) to be matched in pattern matching mode
-  --debug               Show logs
-  --move                Move files into their own directories. This will move foobar.ext to foobar/foobar.ext
-  --exts [mkv mp4 ...]  Look for these extensions in <path> (ignores config)
-```
+Distributed under the [Unlicense](https://choosealicense.com/licenses/unlicense/) License. See [UNLICENSE](https://github.com/Ravencentric/juicenet-cli/blob/main/UNLICENSE) for more information.

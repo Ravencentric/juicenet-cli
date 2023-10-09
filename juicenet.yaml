@@ -2,7 +2,10 @@
 # Do not quote your paths. Paste them as is
 PARPAR: C:\Users\user\bin\parpar.exe
 NYUU: C:\Users\user\bin\nyuu.exe
+
+# https://github.com/Ravencentric/juicenet-cli/wiki/Nyuu-Config#private
 NYUU_CONFIG_PRIVATE: C:\Users\user\nyuu\config-private.json
+
 NZB_OUTPUT_PATH: D:\output\nzbs
 EXTENSIONS: [mkv, epub, cbr, cbz, cb7, cbt]
 
