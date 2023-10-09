@@ -1,0 +1,15 @@
+# Required Settings
+# Do not quote your paths. Paste them as is
+PARPAR: C:\Users\user\bin\parpar.exe
+NYUU: C:\Users\user\bin\nyuu.exe
+NYUU_CONFIG_PRIVATE: C:\Users\user\nyuu\config-private.json
+NZB_OUTPUT_PATH: D:\output\nzbs
+EXTENSIONS: [mkv, epub, cbr, cbz, cb7, cbt]
+
+# Optional Setting (Remove '#' to specify)
+# If NYUU_CONFIG_PUBLIC is undefined, the script will fall back to using the private config
+# NYUU_CONFIG_PUBLIC: C:\Users\user\nyuu\config-public.json
+
+# Advanced Setting (Only modify if you know what you're doing)
+# Do NOT pass -o or --filepath-format. They are handled by the script.
+PARPAR_ARGS: ["--overwrite", "-s700k", "--slice-size-multiple=700K", "--max-input-slices=4000", "-r1n*1.2", "-R"]
