@@ -168,6 +168,8 @@ def move_nzb(path: Path, subdir: Path, nzb: str, out: Path, scope: str) -> None:
     """
     Move NZB to a specified output path in a somewhat sorted manner
     """
+    subdir = path.name if subdir == Path(".") else subdir
+
     src = path / nzb  # ./foo/01.nzb
     dst = out / scope / subdir  # ./out/private/foo
     dst.mkdir(parents=True, exist_ok=True)
