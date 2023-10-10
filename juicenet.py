@@ -552,4 +552,7 @@ def CLI():
 
 
 if __name__ == "__main__":
-    CLI()
+    try:
+        CLI()
+    except KeyboardInterrupt:
+        logger.error("Process killed by user")
