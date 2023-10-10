@@ -5,6 +5,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tomllib
 from importlib import metadata
 from pathlib import Path
 
@@ -35,7 +36,14 @@ def get_version() -> str:
     """
     Get the version
     """
-    return metadata.version("juicenet-cli")
+    try:
+        return metadata.version("juicenet-cli")
+
+    except metadata.PackageNotFoundError:
+        pyproject = Path(__file__).with_name("pyproject.toml").read_text()
+        version = tomllib.loads(pyproject)["tool"]["poetry"]["version"]
+
+        return version
 
 
 def get_config(path: Path) -> Path:
