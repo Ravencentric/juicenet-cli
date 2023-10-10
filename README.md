@@ -41,7 +41,7 @@ Uploading stuff to usenet is tedious so I tried to make it easier.
 * Offers the option to organize files into separate folders for manual upload
 * Automatically checks for and reposts raw articles on each run
 * Can **NOT** continue from where it stopped if it gets interrupted for any reason
-* Probably has alot of cases where it breaks. I've tried to keep it OS independent but I've mostly tested this on Windows
+* Probably has cases where it breaks. I've tried to keep it OS independent but I've mostly tested this on Windows. I also only have limited knowledge on Python, so please bear with me if you encounter any issues or bad code. Feel free to open issues or pull requests and I'll see what I can do
 
 ## Getting Started
 
