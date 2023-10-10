@@ -309,11 +309,6 @@ def main(
     Do stuff here
     """
 
-    # if --version is passed, print and exit
-    if version:
-        print(get_version())
-        sys.exit()
-
     # Configure logger
     fmt = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
     level = "DEBUG" if debug else "INFO"
@@ -323,6 +318,14 @@ def main(
     # Progress bar config
     disable = True if debug else False  # Disable progress bar if --debug is used
     config_handler.set_global(length=50, theme="classic", dual_line=True, disable=disable)
+
+    # if --version is passed, print and exit
+    if version:
+        logger.info(f"Version: {get_version()}")
+        sys.exit()
+
+    # print version when --debug is used
+    logger.debug(f"Version: {get_version()}")
 
     # Read config file
     try:
