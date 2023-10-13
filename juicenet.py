@@ -3,6 +3,7 @@ import glob
 import json
 import os
 import shutil
+import signal
 import subprocess
 import sys
 import tomllib
@@ -15,6 +16,9 @@ from colorama import Fore
 from loguru import logger
 from rich.traceback import install
 from rich_argparse import RichHelpFormatter
+
+# Supress keyboardinterrupt traceback because I hate it
+signal.signal(signal.SIGINT, lambda x, y: sys.exit(1))
 
 # Install rich traceback
 install(show_locals=True)
