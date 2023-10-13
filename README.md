@@ -41,7 +41,8 @@ Uploading stuff to usenet is tedious so I tried to make it easier.
 * Offers the option to organize files into separate folders for manual upload
 * Automatically checks for and reposts raw articles on each run
 * Can **NOT** continue from where it stopped if it gets interrupted for any reason
-* Probably has cases where it breaks. I've tried to keep it OS independent but I've mostly tested this on Windows. I also only have limited knowledge on Python, so please bear with me if you encounter any issues or bad code. Feel free to open issues or pull requests and I'll see what I can do
+* Probably has cases where it breaks. Feel free to open an issue if you find any
+* Tried to keep it OS independent but I've mostly tested this on Windows
 
 ## Getting Started
 
@@ -50,8 +51,8 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
 ### Prerequisites
 
 * [Python 3.11](https://www.python.org/downloads/)
-* [animetosho/Nyuu](https://github.com/animetosho/Nyuu) - You need version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1).
-  * Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest).
+* [animetosho/Nyuu](https://github.com/animetosho/Nyuu) - You need version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1)
+  * Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest)
 * [animetosho/ParPar](https://github.com/animetosho/ParPar)
 
 ### Installation
