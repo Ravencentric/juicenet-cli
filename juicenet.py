@@ -422,8 +422,15 @@ def main(
         # Get the new path of files
         files = get_files(path, exts)
 
-    # Remove empty directories
+    # Remove empty paths
     files = rm_empty_paths(files)
+
+    if not files:
+        logger.error(
+            "Matching files or patterns found, but they are either empty or "
+            "contain only 0-byte files, making them effectively empty"
+        )
+        sys.exit()
 
     if only_parpar:
         gen_par2(path, parpar, parpar_args, files, debug)
