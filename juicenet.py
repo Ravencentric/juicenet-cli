@@ -374,13 +374,15 @@ def main(
     conf = configurations[scope]
 
     logger.info(f"Config: {conf_path}")
-    logger.info(f"├── Nyuu: {nyuu}")
-    logger.info(f"├── ParPar: {parpar}")
-    logger.info(f"├── Nyuu config: {conf}")
-    logger.info(f"├── NZB Output: {nzb_out}")
-    logger.info(f"├── Extensions: {exts}")
-    logger.info(f"├── Pattern: {pattern}")
-    logger.info(f"└── Use Pattern: {match}")
+    logger.info(f"Nyuu: {nyuu}")
+    logger.info(f"ParPar: {parpar}")
+    logger.info(f"Nyuu Config: {conf}")
+    logger.info(f"NZB Output: {nzb_out}")
+
+    if match:
+        logger.info(f"Pattern: {pattern}")
+    else:
+        logger.info(f"Extension: {exts}")
 
     try:
         dump = get_dump_failed_posts(conf)
