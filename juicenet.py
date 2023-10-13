@@ -132,7 +132,7 @@ def rm_empty_paths(files: list[Path]) -> list[Path]:
             non_empty.append(file)
 
         elif file.is_dir():
-            for item in file.iterdir():
+            for item in list(file.rglob("*")):
                 if item.is_file() and item.stat().st_size > 0:
                     non_empty.append(file)
                     break
