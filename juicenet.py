@@ -227,8 +227,8 @@ def gen_par2(path: Path, bin: Path, args: list[str], files: list[Path], debug: b
     for file in bar:
         parpar = [bin] + args + ["--filepath-format", format[file]] + ["--out", file, file]
 
-        bar.text(f"{current_parpar} {file.name} (format: {format[file]})")
         logger.debug(parpar)
+        bar.text(f"{current_parpar} {file.name} (format: {format[file]})")
 
         subprocess.run(parpar, cwd=path, stdout=sink, stderr=sink)
 
@@ -254,8 +254,8 @@ def upload(
         nzb = f"{key.name}.nzb"
         nyuu = [bin] + ["--config", conf] + ["--out", nzb] + [key] + files[key]
 
-        bar.text(f"{current_nyuu} {key.name} ({scope})")
         logger.debug(nyuu)
+        bar.text(f"{current_nyuu} {key.name} ({scope})")
 
         subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)
 
