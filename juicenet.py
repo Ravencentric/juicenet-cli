@@ -198,10 +198,10 @@ def move_files(files: list[Path]) -> None:
     """
     for file in files:
         src = file  # ./foo/01.mkv
-        dst = file.parent / file.stem  # ./foo/01/
+        dst = file.parent / file.name  # ./foo/01.mkv/
         dst.mkdir(parents=True, exist_ok=True)
-        dst = dst / file.name  # ./foo/01/01.mkv
-        src.rename(dst)  # ./foo/01.mkv -> ./foo/01/01.mkv
+        dst = dst / file.name  # ./foo/01.mkv/01.mkv
+        src.rename(dst)  # ./foo/01.mkv -> ./foo/01.mkv/01.mkv
 
         logger.debug(f"File Move: {src} -> {dst}")
 
