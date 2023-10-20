@@ -419,7 +419,7 @@ def main(
     if not match and move:  # Do not move if --match was used
         logger.info(f"Moving {len(files)} file(s)")
         move_files(files)
-        logger.success(f"Files moved successfully")
+        logger.success("Files moved successfully")
 
         # Get the new path of files
         files = get_files(path, exts)
