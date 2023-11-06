@@ -14,7 +14,7 @@
 </p>
 
 <div align="center">
-  
+
 [![PyPI - Version](https://img.shields.io/pypi/v/juicenet-cli?link=https%3A%2F%2Fpypi.org%2Fproject%2Fjuicenet-cli%2F)
 ](https://pypi.org/project/juicenet-cli/) ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Ravencentric/juicenet-cli/pypi.yml) ![Issues](https://img.shields.io/github/issues/Ravencentric/juicenet-cli) ![License](https://img.shields.io/github/license/Ravencentric/juicenet-cli)
 
@@ -87,9 +87,13 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
     poetry shell
     ```
 
+    ```sh
+    python -m juicenet --help
+    ```
+
 ## Usage
 
-Before you can use this, you'll have to fill out [`juicenet.yaml`](https://github.com/Ravencentric/juicenet-cli/blob/main/juicenet.yaml). After you've specified all the values in the config you just have to pass it to juicenet-cli. You can do that in one of three ways:
+Before you can use this, you'll have to fill out [`juicenet.yaml`](https://github.com/Ravencentric/juicenet-cli/blob/main/config/juicenet.yaml). After you've specified all the values in the config you just have to pass it to juicenet-cli. You can do that in one of three ways:
 
 1. Using the command-line argument: `--config <path>`
 2. Setting an environment variable named `JUICENET_CONFIG`
@@ -104,7 +108,9 @@ The above was the first time setup, after which you can simply run:
 juicenet "path\to\directory\with\files"
 ```
 
-For more information, go [here](https://github.com/Ravencentric/juicenet-cli/wiki).
+## Docs
+
+[Wiki](https://github.com/Ravencentric/juicenet-cli/wiki)
 
 ## License
 
