@@ -1,7 +1,10 @@
 from importlib import metadata
 from pathlib import Path
 
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib  # Python 3.10 compatibility
 
 
 def get_version() -> str:

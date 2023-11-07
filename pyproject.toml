@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.11.0"
+version = "0.12.0"
 description = "Crude CLI tool to upload files to Usenet using Nyuu and ParPar"
 authors = ["Raventric <78981416+Ravencentric@users.noreply.github.com>"]
 license = "Unlicense"
@@ -14,20 +14,23 @@ documentation = "https://github.com/Ravencentric/juicenet-cli/wiki"
 classifiers = [
     "License :: OSI Approved :: The Unlicense (Unlicense)",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
 ]
 
 [tool.poetry.urls]
 "Contact" = "https://discord.gg/snackbox"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 PyYAML = "^6.0.1"
 alive-progress = "^3.1.4"
 loguru = "^0.7.2"
 rich = "^13.6.0"
 rich-argparse = "^1.4.0"
 colorama = "^0.4.6"
+tomli = { version = "^2.0.1", python = "<3.11" }
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.1.4"
