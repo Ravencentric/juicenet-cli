@@ -78,11 +78,11 @@ def move_files(files: list[Path]) -> None:
     Moves files into their own directories
     Example: foo/01.mkv -> foo/01/01.mkv
     """
-    for file in files:
-        src = file  # ./foo/01.mkv
-        dst = file.parent / file.stem  # ./foo/01/
-        dst.mkdir(parents=True, exist_ok=True)
-        dst = dst / file.name  # ./foo/01/01.mkv
-        src.rename(dst)  # ./foo/01.mkv -> ./foo/01/01.mkv
+    for src in files:
+        if src.is_file():  # ./foo/01.mkv
+            dst = src.parent / src.stem  # ./foo/01/
+            dst.mkdir(parents=True, exist_ok=True)
+            dst = dst / src.name  # ./foo/01/01.mkv
+            src.rename(dst)  # ./foo/01.mkv -> ./foo/01/01.mkv
 
-        logger.debug(f"File Move: {src} -> {dst}")
+            logger.debug(f"File Move: {src} -> {dst}")

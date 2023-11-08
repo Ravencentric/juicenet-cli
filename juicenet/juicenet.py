@@ -36,6 +36,7 @@ def juicenet(
     pattern: list[str],
     debug: bool,
     move: bool,
+    only_move: bool,
     extensions: list[str] | None,
 ):
     """
@@ -138,10 +139,16 @@ def juicenet(
         logger.error(path)
         sys.exit()
 
-    if not match and move:  # Do not move if --match was used
-        logger.info(f"Moving {len(files)} file(s)")
+    if only_move:  # --only-move
+        logger.info("Moving file(s)")
         move_files(files)
-        logger.success("Files moved successfully")
+        logger.success("File(s) moved successfully")
+        sys.exit()
+
+    if move:  # --move
+        logger.info("Moving file(s)")
+        move_files(files)
+        logger.success("File(s) moved successfully")
 
         # Get the new path of files
         files = get_files(path, exts)

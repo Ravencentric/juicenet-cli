@@ -90,7 +90,13 @@ def CLI():
     parser.add_argument(
         "--move",
         action="store_true",
-        help="move files into their own directories. This will move foobar.ext to foobar/foobar.ext",
+        help="move files into their own directories (foobar.ext -> foobar/foobar.ext)",
+    )
+
+    parser.add_argument(
+        "--only-move",
+        action="store_true",
+        help="move files into their own directories (foobar.ext -> foobar/foobar.ext) and exit",
     )
 
     parser.add_argument(
@@ -116,6 +122,7 @@ def CLI():
         pattern=args.pattern,
         debug=args.debug,
         move=args.move,
+        only_move=args.only_move,
         extensions=args.exts,
     )
 
