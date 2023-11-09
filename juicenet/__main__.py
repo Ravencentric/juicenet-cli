@@ -11,6 +11,7 @@ def CLI():
     CLI. Passes the arguments to juicenet()
     """
     parser = argparse.ArgumentParser(
+        prog="juicenet",
         description="Crude CLI tool to upload files to Usenet using Nyuu and ParPar",
         formatter_class=RichHelpFormatter,
     )
@@ -101,7 +102,7 @@ def CLI():
 
     parser.add_argument(
         "--exts",
-        default=None,
+        default=[],
         nargs="*",
         metavar="mkv mp4",
         help="look for these extensions in <path> (ignores config)",

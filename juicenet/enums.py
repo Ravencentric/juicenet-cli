@@ -1,6 +1,6 @@
-from enum import StrEnum
-
 from colorama import Fore
+
+from .compat import StrEnum
 
 GREEN = Fore.GREEN
 RESET = Fore.RESET
