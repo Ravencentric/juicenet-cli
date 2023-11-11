@@ -55,7 +55,7 @@ def juicenet(
 
     # if --version is passed, print and exit
     if version:
-        logger.info(f"Version: {get_version()}")
+        print(get_version())
         sys.exit()
 
     # print version when --debug is used
