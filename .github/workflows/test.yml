@@ -26,8 +26,7 @@ jobs:
           poetry config virtualenvs.create true --local
           poetry config virtualenvs.in-project true --local
       - uses: actions/cache@v3
-        name: Define a cache for the virtual environment based on the dependencies
-          lock file
+        name: Define a cache for the venv based on the dependencies lock file
         with:
           path: ./.venv
           key: venv-${{ hashFiles('poetry.lock') }}
@@ -37,3 +36,15 @@ jobs:
         run: |
           poetry run python -m juicenet --help
           poetry run python -m juicenet --version
+      - name: Build
+        run: poetry build
+      - name: Get version
+        id: version
+        shell: bash
+        run: echo "version=$(poetry run python -m juicenet --version)" >> $GITHUB_OUTPUT
+      - name: Install juicenet
+        run: pipx install dist/juicenet_cli-${{ steps.version.outputs.version }}-py3-none-any.whl
+      - name: Run juicenet
+        run: |
+          juicenet --help
+          juicenet --version
