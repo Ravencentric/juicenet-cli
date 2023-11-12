@@ -50,7 +50,7 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
 
 ### Prerequisites
 
-* [Python 3.11](https://www.python.org/downloads/)
+* [Python >=3.9](https://www.python.org/downloads/)
 * [animetosho/Nyuu](https://github.com/animetosho/Nyuu) - You need version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1)
   * Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest)
 * [animetosho/ParPar](https://github.com/animetosho/ParPar)
