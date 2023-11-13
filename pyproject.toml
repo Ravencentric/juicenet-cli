@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.14.1"
+version = "0.14.2"
 description = "Crude CLI tool to upload files to Usenet using Nyuu and ParPar"
 authors = ["Raventric <78981416+Ravencentric@users.noreply.github.com>"]
 license = "Unlicense"
@@ -46,7 +46,7 @@ extend-select = ["I"]
 fixable = ["ALL"]
 
 [tool.poetry.scripts]
-juicenet = "juicenet.__main__:CLI"
+juicenet = "juicenet.__main__:cli"
 
 [build-system]
 requires = ["poetry-core"]
