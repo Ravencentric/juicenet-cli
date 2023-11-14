@@ -1,10 +1,6 @@
 ---
 name: Test
-on:
-  push:
-    tags-ignore: ['v*.*.*']
-  pull_request:
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 jobs:
   test:
     strategy:
