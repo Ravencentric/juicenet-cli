@@ -13,7 +13,7 @@ def move_nzb(path: Path, subdir: Path, nzb: str, out: Path, scope: str) -> None:
     """
     Move NZB to a specified output path in a somewhat sorted manner
     """
-    subdir = path.name if subdir == Path(".") else subdir
+    subdir = path.name if subdir == Path(".") else subdir  # type: ignore
 
     src = path / nzb  # ./foo/01.nzb
     dst = out / scope / subdir  # ./out/private/foo
@@ -56,7 +56,7 @@ def upload(
         logger.debug(nyuu)
         bar.text(f"{CurrentFile.NYUU} {key.name} ({scope})")
 
-        subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)
+        subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)  # type: ignore
 
         # Move each completed upload as they are done
         move_nzb(path, key.relative_to(path).parent, nzb, out, scope)
@@ -93,7 +93,7 @@ def repost_raw(path: Path, dump: Path, bin: Path, conf: Path, debug: bool) -> No
         bar.text(f"{CurrentFile.RAW} {article.name}")
         logger.debug(nyuu)
 
-        subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)
+        subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)  # type: ignore
 
     raw_final_count = len(get_glob_matches(dump, ["*"]))
     if raw_final_count == 0:

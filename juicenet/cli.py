@@ -6,7 +6,7 @@ from rich_argparse import RichHelpFormatter
 from .juicenet import juicenet
 
 
-def cli():
+def cli() -> None:
     """
     CLI. Passes the arguments to juicenet()
     """

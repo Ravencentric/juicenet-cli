@@ -38,7 +38,7 @@ def juicenet(
     move: bool,
     only_move: bool,
     extensions: list[str],
-):
+) -> None:
     """
     Do stuff here
     """

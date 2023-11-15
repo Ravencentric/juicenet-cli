@@ -14,4 +14,4 @@ def get_version() -> str:
         pyproject = Path(__file__).parent.with_name("pyproject.toml").read_text()
         version = tomllib.loads(pyproject)["tool"]["poetry"]["version"]
 
-        return version
+        return version  # type: ignore

@@ -28,7 +28,7 @@ python = "^3.9"
 PyYAML = "^6.0.1"
 alive-progress = "^3.1.5"
 loguru = "^0.7.2"
-rich = "^13.6.0"
+rich = "^13.7.0"
 rich-argparse = "^1.4.0"
 colorama = "^0.4.6"
 tomli = { version = "^2.0.1", python = "<3.11" }
@@ -37,6 +37,8 @@ importlib-metadata = { version = "^6.8.0", python = "<3.10" }
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.1.4"
+mypy = "^1.7.0"
+pre-commit = "^3.5.0"
 
 [tool.ruff]
 line-length = 120
@@ -44,6 +46,14 @@ line-length = 120
 [tool.ruff.lint]
 extend-select = ["I"]
 fixable = ["ALL"]
+
+[[tool.mypy.overrides]]
+module = [
+    "colorama",
+    "yaml",
+    "alive_progress"
+]
+ignore_missing_imports = true
 
 [tool.poetry.scripts]
 juicenet = "juicenet.__main__:cli"

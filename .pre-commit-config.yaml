@@ -1,5 +1,9 @@
 ---
 repos:
+  - repo: https://github.com/floatingpurr/sync_with_poetry
+    rev: 1.1.0
+    hooks:
+      - id: sync_with_poetry
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.1.5
     hooks:
@@ -15,4 +19,10 @@ repos:
       - id: poetry-check
       - id: poetry-lock
       - id: poetry-export
-        args: ['-f', 'requirements.txt', '--without-hashes', '--with', 'dev', '--output', 'requirements.txt']
+        args: ['-f', 'requirements.txt', '--without-hashes', '--without', 'dev', '--output', 'requirements.txt']
+      - id: poetry-export
+        args: ['-f', 'requirements.txt', '--without-hashes', '--with', 'dev', '--output', 'requirements-dev.txt']
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.0
+    hooks:
+      - id: mypy

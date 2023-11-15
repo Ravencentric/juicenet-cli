@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -26,7 +27,7 @@ def get_config(path: Path) -> Path:
         return Path(os.getenv("JUICENET_CONFIG", path / "juicenet.yaml"))
 
 
-def read_config(path: Path) -> dict:
+def read_config(path: Path) -> Any:
     """
     Reads the yaml config file
     """
