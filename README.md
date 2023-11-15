@@ -15,8 +15,13 @@
 
 <div align="center">
 
-[![PyPI - Version](https://img.shields.io/pypi/v/juicenet-cli?link=https%3A%2F%2Fpypi.org%2Fproject%2Fjuicenet-cli%2F)
-](https://pypi.org/project/juicenet-cli/) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/juicenet-cli) ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Ravencentric/juicenet-cli/pypi.yml) ![Issues](https://img.shields.io/github/issues/Ravencentric/juicenet-cli) ![License](https://img.shields.io/github/license/Ravencentric/juicenet-cli)
+[![PyPI - Version](https://img.shields.io/pypi/v/juicenet-cli?link=https%3A%2F%2Fpypi.org%2Fproject%2Fjuicenet-cli%2F)](https://pypi.org/project/juicenet-cli/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/juicenet-cli)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Ravencentric/juicenet-cli/pypi.yml)
+![Issues](https://img.shields.io/github/issues/Ravencentric/juicenet-cli)
+![License](https://img.shields.io/github/license/Ravencentric/juicenet-cli)
+![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)
+![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
 
 </div>
 
