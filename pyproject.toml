@@ -48,6 +48,10 @@ line-length = 120
 extend-select = ["I"]
 fixable = ["ALL"]
 
+[tool.mypy]
+strict = true
+pretty = true
+
 [[tool.mypy.overrides]]
 module = [
     "colorama",
