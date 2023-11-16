@@ -51,7 +51,9 @@ def upload(
 
     for key in bar:
         nzb = f"{key.name}.nzb"
-        nyuu = [bin] + ["--config", conf] + ["--out", nzb] + [key] + files[key]
+
+        # Nyuu does not like backticks in --out, so I'll escape it
+        nyuu = [bin] + ["--config", conf] + ["--out", nzb.replace("`", "\\`")] + [key] + files[key]
 
         logger.debug(nyuu)
         bar.text(f"{CurrentFile.NYUU} {key.name} ({scope})")
