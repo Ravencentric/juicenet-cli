@@ -13,13 +13,11 @@ def move_nzb(path: Path, subdir: Path, nzb: str, out: Path, scope: str) -> None:
     """
     Move NZB to a specified output path in a somewhat sorted manner
     """
-    subdir = path.name if subdir == Path(".") else subdir  # type: ignore
-
     src = path / nzb  # ./foo/01.nzb
-    dst = out / scope / subdir  # ./out/private/foo
+    dst = out / scope / path.name / subdir  # ./out/private/workdir/foo
     dst.mkdir(parents=True, exist_ok=True)
-    dst = dst / nzb  # ./out/private/foo/01.nzb
-    shutil.move(src, dst)  # ./foo/01.nzb -> ./out/private/foo/01.nzb
+    dst = dst / nzb  # ./out/private/workdir/foo/01.nzb
+    shutil.move(src, dst)  # ./foo/01.nzb -> ./out/private/workdir/foo/01.nzb
 
     logger.debug(f"NZB Move: {src} -> {dst}")
 
