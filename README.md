@@ -7,7 +7,7 @@
   <h3 align="center">juicenet-cli</h3>
 
   <p align="center">
-    Crude CLI tool to upload files to Usenet using Nyuu and ParPar
+    CLI tool to upload files to Usenet using Nyuu and ParPar
     <br/>
     <br/>
   </p>
