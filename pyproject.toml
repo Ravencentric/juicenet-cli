@@ -1,13 +1,11 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.19.2"
+version = "0.19.3a0"
 description = "CLI tool to upload files to Usenet using Nyuu and ParPar"
 authors = ["Raventric <78981416+Ravencentric@users.noreply.github.com>"]
 license = "Unlicense"
 readme = "README.md"
-packages = [
-    { include = "juicenet"},
-]
+packages = [{include = "juicenet", from = "src"}]
 homepage = "https://github.com/Ravencentric/juicenet-cli"
 repository = "https://github.com/Ravencentric/juicenet-cli"
 documentation = "https://github.com/Ravencentric/juicenet-cli/wiki"
