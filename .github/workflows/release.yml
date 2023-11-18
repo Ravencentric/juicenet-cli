@@ -1,14 +1,47 @@
----
-name: tagged-release
+name: Release
+
 on:
   push:
-    tags: ['v*.*.*']
+    tags:
+      - 'v*.*.*'
+
 jobs:
-  tagged-release:
-    name: Tagged Release
+  release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: marvinpinto/action-automatic-releases@latest
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Important for changelog
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Build project for distribution
+        run: poetry build
+
+      - name: Generate changelog with git-cliff
+        uses: tj-actions/git-cliff@v1
+        with:
+          args: --latest --strip all
+          output: "CHANGELOG.md"
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "dist/*"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bodyFile: "CHANGELOG.md"
+          draft: false
           prerelease: false
+
+      - name: Publish to PyPI
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: poetry publish

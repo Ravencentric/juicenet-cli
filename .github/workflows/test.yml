@@ -1,6 +1,7 @@
----
 name: Test
+
 on: [push, pull_request, workflow_dispatch]
+
 jobs:
   test:
     strategy:
@@ -13,37 +14,47 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install poetry
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: ${{ matrix.poetry-version }}
+
       - name: Setup a local virtual environment
         run: |
           poetry config virtualenvs.create true --local
           poetry config virtualenvs.in-project true --local
+
       - uses: actions/cache@v3
         name: Define a cache for the venv based on the dependencies lock file
         with:
           path: ./.venv
           key: venv-${{ hashFiles('poetry.lock') }}
+
       - name: Install the project dependencies
         run: poetry install
+
       - name: Run juicenet
         run: |
           poetry run python -m juicenet --help
           poetry run python -m juicenet --version
+
       - name: Build
         run: poetry build
+
       - name: Get version
         id: version
         shell: bash
         run: echo "version=$(poetry run python -m juicenet --version)" >> $GITHUB_OUTPUT
+
       - name: Install juicenet
         run: pipx install dist/juicenet_cli-${{ steps.version.outputs.version }}-py3-none-any.whl
+
       - name: Run juicenet
         run: |
           juicenet --help
