@@ -62,5 +62,5 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: juicenet-cli-${{ steps.version.outputs.version }}-${{ matrix.poetry-version }}-${{ matrix.os }}
+          name: juicenet-cli-${{ steps.version.outputs.version }}-${{ matrix.python-version }}-${{ matrix.os }}
           path: "dist/*"
