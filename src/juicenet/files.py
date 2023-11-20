@@ -1,5 +1,6 @@
 import glob
 from pathlib import Path
+from typing import Optional
 
 from loguru import logger
 
@@ -57,7 +58,7 @@ def rm_empty_paths(files: list[Path]) -> list[Path]:
     return non_empty
 
 
-def map_file_to_pars(files: list[Path]) -> dict[Path, list[Path]]:
+def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, list[Path]]:
     """
     For each file, get it's corresponding .par2 files as such:
 
@@ -66,7 +67,7 @@ def map_file_to_pars(files: list[Path]) -> dict[Path, list[Path]]:
     mapping = {}
 
     for file in files:
-        parent = file.parent
+        parent = file.parent if basedir is None else basedir
         par2_files = list(parent.glob(f"{glob.escape(file.name)}*.par2"))
         mapping[file] = par2_files
 

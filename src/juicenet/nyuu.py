@@ -1,6 +1,5 @@
-import shutil
 import subprocess
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from alive_progress import alive_it
 from loguru import logger
@@ -8,18 +7,31 @@ from loguru import logger
 from .enums import BarTitle, CurrentFile
 from .files import get_glob_matches
 
+# def move_nzb(path: Path, subdir: Path, nzb: str, out: Path, scope: str) -> None:
+#     """
+#     Move NZB to a specified output path in a somewhat sorted manner
+#     """
+#     src = path / nzb  # ./foo/01.nzb
+#     dst = out / scope / path.name / subdir  # ./out/private/workdir/foo
+#     dst.mkdir(parents=True, exist_ok=True)
+#     dst = dst / nzb  # ./out/private/workdir/foo/01.nzb
+#     shutil.move(src, dst)  # ./foo/01.nzb -> ./out/private/workdir/foo/01.nzb
 
-def move_nzb(path: Path, subdir: Path, nzb: str, out: Path, scope: str) -> None:
+#     logger.debug(f"NZB Move: {src} -> {dst}")
+
+
+def nzb_out(path: Path, subdir: Path, nzb: str, out: Path, scope: str) -> PurePosixPath:
     """
-    Move NZB to a specified output path in a somewhat sorted manner
+    Construct the output path of the NZB. This is where Nyuu will make the
+    NZB file in a somewhat sorted manner. This also returns a PurePosixPath because
+    Nyuu's `--out` argument only works with WindowsPath when the output is in the current
+    working directory.
     """
-    src = path / nzb  # ./foo/01.nzb
     dst = out / scope / path.name / subdir  # ./out/private/workdir/foo
     dst.mkdir(parents=True, exist_ok=True)
     dst = dst / nzb  # ./out/private/workdir/foo/01.nzb
-    shutil.move(src, dst)  # ./foo/01.nzb -> ./out/private/workdir/foo/01.nzb
 
-    logger.debug(f"NZB Move: {src} -> {dst}")
+    return PurePosixPath(dst)  # ./out/private/workdir/foo/01.nzb
 
 
 def cleanup(par2_files: list[Path]) -> None:
@@ -50,18 +62,16 @@ def upload(
     for key in bar:
         nzb = f"{key.name}.nzb"
 
-        # Nyuu does not like backticks in --out, so I'll escape it
-        nyuu = [bin] + ["--config", conf] + ["--out", nzb.replace("`", "\\`")] + [key] + files[key]
+        outfile = nzb_out(path, key.relative_to(path).parent, nzb, out, scope)
+
+        nyuu = [bin] + ["--config", conf] + ["--out", outfile] + [key] + files[key]
 
         logger.debug(nyuu)
         bar.text(f"{CurrentFile.NYUU} {key.name} ({scope})")
 
         subprocess.run(nyuu, cwd=path, stdout=sink, stderr=sink)  # type: ignore
 
-        # Move each completed upload as they are done
-        move_nzb(path, key.relative_to(path).parent, nzb, out, scope)
-
-        # Cleanup par2 files for the uploaded file
+        # # Cleanup par2 files for the uploaded file
         cleanup(files[key])
 
 

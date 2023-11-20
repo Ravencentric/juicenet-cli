@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.20.0"
+version = "0.20.0.dev0"
 description = "CLI tool to upload files to Usenet using Nyuu and ParPar"
 authors = ["Raventric <78981416+Ravencentric@users.noreply.github.com>"]
 license = "Unlicense"
 readme = "README.md"
-packages = [{include = "juicenet", from = "src"}]
+packages = [{ include = "juicenet", from = "src" }]
 homepage = "https://github.com/Ravencentric/juicenet-cli"
 repository = "https://github.com/Ravencentric/juicenet-cli"
 documentation = "https://github.com/Ravencentric/juicenet-cli/wiki"
@@ -51,11 +51,7 @@ strict = true
 pretty = true
 
 [[tool.mypy.overrides]]
-module = [
-    "colorama",
-    "yaml",
-    "alive_progress",
-]
+module = ["colorama", "yaml", "alive_progress"]
 ignore_missing_imports = true
 
 [tool.poetry.scripts]

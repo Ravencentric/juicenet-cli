@@ -1,5 +1,6 @@
 import subprocess
 from pathlib import Path
+from typing import Optional
 
 from alive_progress import alive_it
 from loguru import logger
@@ -27,7 +28,9 @@ def map_filepath_formats(files: list[Path]) -> dict[Path, str]:
     return mapping
 
 
-def gen_par2(path: Path, bin: Path, args: list[str], files: list[Path], debug: bool = False) -> None:
+def gen_par2(
+    path: Path, bin: Path, args: list[str], files: list[Path], outdir: Optional[Path], debug: bool = False
+) -> None:
     """
     Generate .par2 files with ParPar
     """
@@ -38,7 +41,8 @@ def gen_par2(path: Path, bin: Path, args: list[str], files: list[Path], debug: b
     format = map_filepath_formats(files)
 
     for file in bar:
-        parpar = [bin] + args + ["--filepath-format", format[file]] + ["--out", file, file]
+        outfile = file if outdir is None else outdir / file.name
+        parpar = [bin] + args + ["--filepath-format", format[file]] + ["--out", outfile, file]
 
         logger.debug(parpar)
         bar.text(f"{CurrentFile.PARPAR} {file.name} (format: {format[file]})")

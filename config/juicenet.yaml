@@ -7,6 +7,7 @@ NYUU: C:\Users\user\bin\nyuu.exe
 NYUU_CONFIG_PRIVATE: C:\Users\user\nyuu\config-private.json
 
 NZB_OUTPUT_PATH: D:\output\nzbs
+PAR2_OUTPUT_PATH: D:\output\par
 EXTENSIONS: [mkv, epub, cbr, cbz, cb7, cbt]
 
 # Optional Setting (Remove '#' to specify)
