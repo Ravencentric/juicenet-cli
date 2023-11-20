@@ -59,3 +59,8 @@ jobs:
         run: |
           juicenet --help
           juicenet --version
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: juicenet-cli-${{ steps.version.outputs.version }}-${{ matrix.poetry-version }}-${{ matrix.os }}
+          path: "dist/*"
