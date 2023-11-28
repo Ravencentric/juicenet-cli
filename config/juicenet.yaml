@@ -13,6 +13,10 @@ EXTENSIONS: [mkv, epub, cbr, cbz, cb7, cbt]
 # If NYUU_CONFIG_PUBLIC is undefined, the script will fall back to using the private config
 # NYUU_CONFIG_PUBLIC: C:\Users\user\nyuu\config-public.json
 
+# Optional Setting (Remove '#' to specify)
+# If PAR2_OUTPUT_PATH is undefined, par2 files will be generated right next to the files
+# PAR2_OUTPUT_PATH: D:\output\par
+
 # Advanced Setting (Only modify if you know what you're doing)
 # Do NOT pass -o or --filepath-format. They are handled by the script.
 PARPAR_ARGS: ["--overwrite", "-s700k", "--slice-size-multiple=700K", "--max-input-slices=4000", "-r1n*1.2", "-R"]

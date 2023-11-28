@@ -9,8 +9,8 @@ from rich.traceback import install
 
 from .config import get_config, get_dump_failed_posts, read_config
 from .files import get_files, get_glob_matches, map_file_to_pars, move_files, rm_empty_paths
-from .nyuu import repost_raw, upload
-from .parpar import gen_par2
+from .nyuu import Nyuu
+from .parpar import ParPar
 from .version import get_version
 
 # Supress keyboardinterrupt traceback because I hate it
@@ -50,8 +50,8 @@ def juicenet(
     logger.add(sys.stderr, format=fmt, level=level)
 
     # Progress bar config
-    disable = True if debug else False  # Disable progress bar if --debug is used
-    config_handler.set_global(length=50, theme="classic", dual_line=True, disable=disable)
+    # Disable progress bar if --debug is used
+    config_handler.set_global(length=50, theme="classic", dual_line=True, disable=debug)
 
     # if --version is passed, print and exit
     if version:
@@ -75,8 +75,8 @@ def juicenet(
 
     # Get the required values from config
     try:
-        nyuu = Path(config["NYUU"])
-        parpar = Path(config["PARPAR"])
+        nyuu_bin = Path(config["NYUU"])
+        parpar_bin = Path(config["PARPAR"])
         priv_conf = Path(config["NYUU_CONFIG_PRIVATE"])
         nzb_out = Path(config["NZB_OUTPUT_PATH"])
         exts = list(extensions if extensions else config["EXTENSIONS"])
@@ -87,6 +87,8 @@ def juicenet(
 
     # Get optional value from config
     pub_conf = Path(config.get("NYUU_CONFIG_PUBLIC", priv_conf))
+    par2_out = config.get("PAR2_OUTPUT_PATH")
+    par2_output_dir = Path(par2_out) if par2_out else None
 
     # Decide which config file to use
     configurations = {"public": pub_conf, "private": priv_conf}
@@ -94,15 +96,12 @@ def juicenet(
     conf = configurations[scope]
 
     logger.info(f"Config: {conf_path}")
-    logger.info(f"Nyuu: {nyuu}")
-    logger.info(f"ParPar: {parpar}")
+    logger.info(f"Nyuu: {nyuu_bin}")
+    logger.info(f"ParPar: {parpar_bin}")
     logger.info(f"Nyuu Config: {conf}")
     logger.info(f"NZB Output: {nzb_out}")
-
-    if match:
-        logger.info(f"Pattern: {pattern}")
-    else:
-        logger.info(f"Extension: {exts}")
+    logger.info(f"PAR2 Output: {path if par2_out is None else par2_out}")
+    logger.info(f"Pattern: {pattern}" if match else f"Extension: {exts}")
 
     # Check and get `dump-failed-posts` as defined in Nyuu config
     try:
@@ -118,19 +117,29 @@ def juicenet(
         logger.error(f"No such file: {error.filename}")
         sys.exit()
 
+    # Initialize ParPar class for generating par2 files ahead
+    parpar = ParPar(path, parpar_bin, parpar_args, par2_output_dir, debug)
+
+    # Initialize Nyuu class for uploading stuff ahead
+    nyuu = Nyuu(path, nyuu_bin, conf, nzb_out, scope, debug)
+
     # Check if there are any raw files from previous runs
     raw_count = len(get_glob_matches(dump, ["*"]))
 
     # --only-raw
     if only_raw:
         if raw_count != 0:
-            repost_raw(path, dump, nyuu, conf, debug)
+            nyuu.repost_raw(dump)
         else:
             logger.info("No raw articles available for reposting")
         sys.exit()
 
     if match:  # --match --pattern
-        files = get_glob_matches(path, pattern)
+        try:
+            files = get_glob_matches(path, pattern)
+        except NotImplementedError as error:
+            logger.error(error)
+            sys.exit()
     else:
         files = get_files(path, exts)
 
@@ -154,7 +163,9 @@ def juicenet(
         files = get_files(path, exts)
 
     # Remove empty paths
+    logger.debug("Filtering out empty paths")
     files = rm_empty_paths(files)
+    logger.debug("Filtering complete")
 
     if not files:
         logger.error(
@@ -164,25 +175,39 @@ def juicenet(
         sys.exit()
 
     if only_parpar:  # --parpar
-        gen_par2(path, parpar, parpar_args, files, debug)
+        logger.debug("Only running ParPar")
+        parpar.generate_par2_files(files)
         sys.exit()
 
     if only_nyuu:  # --nyuu
-        mapping = map_file_to_pars(files)
-        upload(path, nyuu, conf, mapping, nzb_out, scope, debug)
+        logger.debug("Only running Nyuu")
+
+        logger.debug("Mapping files to their corresponding par2 files")
+        mapping = map_file_to_pars(par2_output_dir, files)
+        logger.debug(f"Mapped {len(mapping.keys())} files")
+
+        nyuu.upload(mapping)
         sys.exit()
 
     if skip_raw:  # --skip-raw
         logger.warning("Raw article checking and reposting is being skipped")
-        gen_par2(path, parpar, parpar_args, files, debug)
-        mapping = map_file_to_pars(files)
-        upload(path, nyuu, conf, mapping, nzb_out, scope, debug)
+        parpar.generate_par2_files(files)
+
+        logger.debug("Mapping files to their corresponding par2 files")
+        mapping = map_file_to_pars(par2_output_dir, files)
+        logger.debug(f"Mapped {len(mapping.keys())} files")
+
+        nyuu.upload(mapping)
         sys.exit()
 
     else:  # default
         if raw_count != 0:
-            repost_raw(path, dump, nyuu, conf, debug)
+            nyuu.repost_raw(dump)
 
-        gen_par2(path, parpar, parpar_args, files, debug)
-        mapping = map_file_to_pars(files)
-        upload(path, nyuu, conf, mapping, nzb_out, scope, debug)
+        parpar.generate_par2_files(files)
+
+        logger.debug("Mapping files to their corresponding par2 files")
+        mapping = map_file_to_pars(par2_output_dir, files)
+        logger.debug(f"Mapped {len(mapping.keys())} files")
+
+        nyuu.upload(mapping)
