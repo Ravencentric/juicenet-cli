@@ -1,9 +1,10 @@
 import json
 import os
 from pathlib import Path
-from typing import Any
 
 import yaml
+
+from .types import JuicenetConfig
 
 
 def get_config(path: Path) -> Path:
@@ -27,11 +28,13 @@ def get_config(path: Path) -> Path:
         return Path(os.getenv("JUICENET_CONFIG", path / "juicenet.yaml"))
 
 
-def read_config(path: Path) -> Any:
+def read_config(path: Path) -> JuicenetConfig:
     """
     Reads the yaml config file
     """
-    return yaml.safe_load(path.read_text())
+    # safe_load returns a dict as `any`
+    config: JuicenetConfig = yaml.safe_load(path.read_text())
+    return config
 
 
 def get_dump_failed_posts(conf: Path) -> Path:
