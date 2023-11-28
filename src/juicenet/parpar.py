@@ -21,12 +21,13 @@ class ParPar:
         - `debug (bool)`:  Debug mode for extra logs
 
     Methods:
-        - `map_filepath_formats(files: list[Path]) -> dict[Path, str]`: Checks if the path is a directory or file 
+        - `map_filepath_formats(files: list[Path]) -> dict[Path, str]`: Checks if the path is a directory or file
            and maps it to the corresponding value of `--filepath-format` for ParPar.
         - `generate_par2_files(files: list[Path]) -> None`: Generates .par2 files with ParPar.
 
     This class is used to manage the generation of .par2 files using ParPar.
     """
+
     def __init__(self, path: Path, bin: Path, args: list[str], outdir: Optional[Path], debug: bool = False) -> None:
         self.path = path
         self.bin = bin
