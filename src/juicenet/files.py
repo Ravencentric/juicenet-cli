@@ -68,7 +68,7 @@ def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, l
 
     for file in files:
         parent = file.parent if basedir is None else basedir
-        par2_files = list(parent.glob(f"{glob.escape(file.name)}*.par2"))
+        par2_files = list(parent.glob(f"{glob.escape(file.name)}.vol*.par2"))
         mapping[file] = par2_files
 
     return mapping
