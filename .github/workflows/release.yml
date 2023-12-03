@@ -30,6 +30,7 @@ jobs:
         uses: tj-actions/git-cliff@v1
         with:
           args: --latest --strip all
+          template-config: .github/cliff-template.toml
           output: "CHANGELOG.md"
 
       - name: Create Release
