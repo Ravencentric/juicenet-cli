@@ -1,7 +1,7 @@
+import shutil
 import subprocess
-import sys
-from pathlib import Path, PurePosixPath
-from typing import Union
+from pathlib import Path
+from typing import Optional
 
 from alive_progress import alive_it
 from loguru import logger
@@ -18,7 +18,8 @@ class Nyuu:
         - `path (Path)`: The path to the directory containing the files to be uploaded
         - `bin (Path)`: The path to Nyuu binary
         - `conf (Path)`: The path to the Nyuu's configuration file
-        - `out (Path)`: The path to the output directory where Nyuu will create nzbs
+        - `workdir (Optional[Path])`: Path to the directory for Nyuu execution and nzb file generation
+        - `outdir (Path)`: The path to the output directory where nzbs will end up after completion
         - `scope (str)`: The scope of the nzbs made by Nyuu (Private or Public)
         - `debug (bool)`: Debug mode for extra logs
 
@@ -31,37 +32,33 @@ class Nyuu:
     This class is used to manage the uploading and reposting of files to usenet using Nyuu
     """
 
-    def __init__(self, path: Path, bin: Path, conf: Path, out: Path, scope: str, debug: bool) -> None:
+    def __init__(
+        self, path: Path, bin: Path, conf: Path, workdir: Optional[Path], outdir: Path, scope: str, debug: bool
+    ) -> None:
         self.path = path
         self.bin = bin
         self.conf = conf
-        self.out = out
+        self.workdir = workdir
+        self.outdir = outdir
         self.scope = scope
         self.debug = debug
 
-    def nzb_output_path(self, key: Path) -> Union[Path, PurePosixPath]:
+    def move_nzb(self, file: Path, basedir: Path, nzb: str) -> None:
         """
-        Construct the output path of the NZB. This is where Nyuu will make the
-        NZB file in a somewhat sorted manner.
-        Messy function because I can't think of a better solution
-
-        Issues:
-        - Nyuu throws SyntaxError when absolute WindowsPath is passed to `--out`
-        - Nyuu doesn't like backticks (``)
-
-        My hacky solution(s):
-        - Force PurePosixPath on Windows
-        - Replace all the bacticks (``) with apostrophe ('). Escaping with double backslashes still
-          throws syntax error which is why I'm replacing them
+        Move NZB to a specified output path in a somewhat sorted manner
         """
-        dst = self.out / self.scope / self.path.name / key.relative_to(self.path).parent  # ./out/private/workdir/foo
-        dst = Path(str(dst).replace("`", "'"))
+        # self.path = /data/raven/videos/show/
+        # file = /data/raven/videos/show/extras/specials/episode.mkv
+        subdir = file.relative_to(self.path)  # /extras/specials/episode.mkv
+        subdir = subdir.parent  # /extras/specials/
+
+        src = self.workdir / nzb if self.workdir else basedir / nzb
+        dst = self.outdir / self.scope / self.path.name / subdir  # ./out/private/show/extras/specials/
         dst.mkdir(parents=True, exist_ok=True)
-        dst = dst / f"{key.name}.nzb".replace("`", "'")  # ./out/private/workdir/foo/01.nzb
+        dst = dst / nzb  # ./out/private/show/extras/specials/episode.mkv.nzb
+        shutil.move(src, dst)  # ./workdir/01.nzb -> ./out/private/show/extras/specials/episode.mkv.nzb
 
-        if sys.platform == "win32":
-            return PurePosixPath(dst)
-        return dst
+        logger.debug(f"NZB Move: {src} -> {dst}")
 
     @staticmethod
     def cleanup(par2_files: list[Path]) -> None:
@@ -81,12 +78,18 @@ class Nyuu:
         bar = alive_it(keys, title=BarTitle.NYUU)
 
         for key in bar:
-            nyuu = [self.bin] + ["--config", self.conf] + ["--out", self.nzb_output_path(key)] + [key] + files[key]
+            nzb = f"{key.name}.nzb".replace("`", "'") # Nyuu doesn't like backticks
+
+            nyuu = [self.bin] + ["--config", self.conf] + ["--out", nzb] + [key] + files[key]
 
             logger.debug(nyuu)
             bar.text(f"{CurrentFile.NYUU} {key.name} ({self.scope})")
 
-            subprocess.run(nyuu, cwd=self.path, stdout=sink, stderr=sink)  # type: ignore
+            cwd = self.workdir if self.workdir else key.parent  # this is where nyuu will be executed
+            subprocess.run(nyuu, cwd=cwd, stdout=sink, stderr=sink)  # type: ignore
+
+            # move completed nzb to output dir
+            self.move_nzb(key, cwd, nzb)
 
             # Cleanup par2 files for the uploaded file
             self.cleanup(files[key])

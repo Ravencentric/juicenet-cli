@@ -13,11 +13,9 @@ class ParPar:
     A class representing ParPar
 
     Attributes:
-        - `path (Path)`: The path to the directory containing the files to be processed
         - `bin (Path)`: The path to ParPar binary
         - `args (list[str])`: The list of arguments to be passed to ParPar
-        - `outdir (Optional[Path])`: The optional path to the output directory where ParPar will create par2 files,
-           defaults to generating par2 right next to the files
+        - `workdir (Optional[Path])`: Path to the directory for ParPar execution and par2 file generation
         - `debug (bool)`:  Debug mode for extra logs
 
     Methods:
@@ -28,11 +26,10 @@ class ParPar:
     This class is used to manage the generation of .par2 files using ParPar.
     """
 
-    def __init__(self, path: Path, bin: Path, args: list[str], outdir: Optional[Path], debug: bool = False) -> None:
-        self.path = path
+    def __init__(self, bin: Path, args: list[str], workdir: Optional[Path], debug: bool = False) -> None:
         self.bin = bin
         self.args = args
-        self.outdir = outdir
+        self.workdir = workdir
         self.debug = debug
 
     def map_filepath_formats(self, files: list[Path]) -> dict[Path, str]:
@@ -50,7 +47,7 @@ class ParPar:
             if file.is_file():
                 mapping[file] = "basename"
             else:
-                mapping[file] = "outrel"
+                mapping[file] = "path"
 
         return mapping
 
@@ -65,12 +62,15 @@ class ParPar:
         format = self.map_filepath_formats(files)
 
         for file in bar:
-            # Generare par2 files in CWD if outdir is not specified
-            outfile = file if self.outdir is None else self.outdir / file.name
-
-            parpar = [self.bin] + self.args + ["--filepath-format", format[file]] + ["--out", outfile, file]
+            parpar = (
+                [self.bin]
+                + self.args
+                + ["--filepath-base", file.parent, "--filepath-format", format[file]]
+                + ["--out", file.name, file]
+            )
 
             logger.debug(parpar)
-            bar.text(f"{CurrentFile.PARPAR} {file.name} (format: {format[file]})")
+            bar.text(f"{CurrentFile.PARPAR} {file.name}")
 
-            subprocess.run(parpar, cwd=self.path, stdout=sink, stderr=sink)
+            cwd = self.workdir if self.workdir else file.parent  # this is where parpar will be executed
+            subprocess.run(parpar, cwd=cwd, stdout=sink, stderr=sink)

@@ -2,6 +2,7 @@ import json
 import signal
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from alive_progress import config_handler
 from loguru import logger
@@ -87,8 +88,16 @@ def juicenet(
 
     # Get optional value from config
     pub_conf = Path(config.get("NYUU_CONFIG_PUBLIC", priv_conf))
-    par2_out = config.get("PAR2_OUTPUT_PATH")
-    par2_output_dir = Path(par2_out) if par2_out else None
+    use_tempdir = config.get("USE_TEMPDIR", True)
+    tempdir_path = config.get("TEMPDIR_PATH")
+
+    if use_tempdir:
+        temp_dir = TemporaryDirectory(prefix=".JUICENET_", ignore_cleanup_errors=True)
+        work_dir = Path(temp_dir.name)
+        if tempdir_path is not None:
+            work_dir = Path(tempdir_path)
+    else:
+        work_dir = None
 
     # Decide which config file to use
     configurations = {"public": pub_conf, "private": priv_conf}
@@ -100,7 +109,7 @@ def juicenet(
     logger.info(f"ParPar: {parpar_bin}")
     logger.info(f"Nyuu Config: {conf}")
     logger.info(f"NZB Output: {nzb_out}")
-    logger.info(f"PAR2 Output: {path if par2_out is None else par2_out}")
+    logger.info(f"Working Directory: {work_dir if work_dir else path}")
     logger.info(f"Pattern: {pattern}" if match else f"Extension: {exts}")
 
     # Check and get `dump-failed-posts` as defined in Nyuu config
@@ -118,10 +127,10 @@ def juicenet(
         sys.exit()
 
     # Initialize ParPar class for generating par2 files ahead
-    parpar = ParPar(path, parpar_bin, parpar_args, par2_output_dir, debug)
+    parpar = ParPar(parpar_bin, parpar_args, work_dir, debug)
 
     # Initialize Nyuu class for uploading stuff ahead
-    nyuu = Nyuu(path, nyuu_bin, conf, nzb_out, scope, debug)
+    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug)
 
     # Check if there are any raw files from previous runs
     raw_count = len(get_glob_matches(dump, ["*"]))
@@ -176,6 +185,8 @@ def juicenet(
 
     if only_parpar:  # --parpar
         logger.debug("Only running ParPar")
+        # If you're using parpar only then you probably don't want it going in temp
+        parpar.workdir = None  # Generate par2 files next to the input files
         parpar.generate_par2_files(files)
         sys.exit()
 
@@ -183,7 +194,7 @@ def juicenet(
         logger.debug("Only running Nyuu")
 
         logger.debug("Mapping files to their corresponding par2 files")
-        mapping = map_file_to_pars(par2_output_dir, files)
+        mapping = map_file_to_pars(work_dir, files)
         logger.debug(f"Mapped {len(mapping.keys())} files")
 
         nyuu.upload(mapping)
@@ -194,7 +205,7 @@ def juicenet(
         parpar.generate_par2_files(files)
 
         logger.debug("Mapping files to their corresponding par2 files")
-        mapping = map_file_to_pars(par2_output_dir, files)
+        mapping = map_file_to_pars(work_dir, files)
         logger.debug(f"Mapped {len(mapping.keys())} files")
 
         nyuu.upload(mapping)
@@ -207,7 +218,7 @@ def juicenet(
         parpar.generate_par2_files(files)
 
         logger.debug("Mapping files to their corresponding par2 files")
-        mapping = map_file_to_pars(par2_output_dir, files)
+        mapping = map_file_to_pars(work_dir, files)
         logger.debug(f"Mapped {len(mapping.keys())} files")
 
         nyuu.upload(mapping)

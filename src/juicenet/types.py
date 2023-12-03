@@ -1,8 +1,10 @@
+from typing import Optional
+
 from .compat import NotRequired, TypedDict
 
 
 class JuicenetConfig(TypedDict):
-    """TypedDict for yaml.safe_load output since it simply returns `any` and leaves"""
+    """TypedDict for `yaml.safe_load()` output since it simply returns `Any` and leaves"""
 
     # Required keys
     PARPAR: str
@@ -19,7 +21,9 @@ class JuicenetConfig(TypedDict):
     """The arguments to be passed to the ParPar binary"""
 
     # Optional keys
-    PAR2_OUTPUT_PATH: NotRequired[str]
-    """The path where PAR2 files will be saved (cwd if not specified)"""
+    USE_TEMPDIR: NotRequired[bool]
+    """Whether or not to use a temporary directory for processing"""
+    TEMPDIR_PATH: NotRequired[Optional[str]]
+    """Path to a specific temporary directory if USE_TEMPDIR is True. If unspecified, it uses %Temp% or /tmp"""
     NYUU_CONFIG_PUBLIC: NotRequired[str]
     """The path to the public Nyuu configuration file (falls back to private config if not specified)"""
