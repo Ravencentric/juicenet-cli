@@ -78,7 +78,7 @@ class Nyuu:
         bar = alive_it(keys, title=BarTitle.NYUU)
 
         for key in bar:
-            nzb = f"{key.name}.nzb".replace("`", "'") # Nyuu doesn't like backticks
+            nzb = f"{key.name}.nzb".replace("`", "'")  # Nyuu doesn't like backticks
 
             nyuu = [self.bin] + ["--config", self.conf] + ["--out", nzb] + [key] + files[key]
 
