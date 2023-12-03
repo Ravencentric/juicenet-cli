@@ -73,7 +73,8 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
     pip install juicenet-cli
     ```
 
-3. With [poetry](https://python-poetry.org/docs/#installation):
+3. From source with [poetry](https://python-poetry.org/docs/#installation):
+    > **Note**: The `main` branch is not stable and maybe broken. Use this method if you know what you're doing. Stable (mostly) builds can be found in [releases](https://github.com/Ravencentric/juicenet-cli/releases) or [PyPI](https://pypi.org/project/juicenet-cli/)
 
     ```sh
     git clone https://github.com/Ravencentric/juicenet-cli.git
@@ -82,6 +83,8 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
     ```sh
     cd juicenet-cli
     ```
+
+    Run:
 
     ```sh
     poetry install
@@ -93,6 +96,12 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
 
     ```sh
     python -m juicenet --help
+    ```
+
+    Build:
+
+    ```sh
+    poetry build
     ```
 
 ## Usage
