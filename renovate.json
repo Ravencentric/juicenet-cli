@@ -4,6 +4,7 @@
         ":dependencyDashboard",
         ":semanticPrefixFixDepsChoreOthers",
         ":ignoreModulesAndTests",
-        "group:allNonMajor"
+        "group:allNonMajor",
+        ":semanticCommitTypeAll(chore)"
     ]
 }
