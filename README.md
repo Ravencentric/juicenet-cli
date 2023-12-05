@@ -7,7 +7,7 @@
   <h3 align="center">juicenet-cli</h3>
 
   <p align="center">
-    CLI tool to upload files to Usenet using Nyuu and ParPar
+    CLI tool designed to simplify the process of uploading files to usenet
     <br/>
     <br/>
   </p>
@@ -37,27 +37,25 @@
 
 Uploading stuff to usenet is tedious so I tried to make it easier.
 
-* Searches subdirectories for defined file extensions in `juicenet.yaml` or as passed in `--exts`
+* Uses [ParPar](https://github.com/animetosho/ParPar) and [Nyuu](https://github.com/animetosho/Nyuu) under the hood
+* Recursively searches for files with pre-defined extensions in `juicenet.yaml` or as passed in `--exts`
 * Alternatively, searches for glob patterns passed in `--pattern`
-* Provides basic BDMV support
-* Creates par2 files
-* Directly passes files and corresponding .par2 files to Nyuu
-* Offers the option to organize files into separate folders for manual upload
-* Automatically checks for and reposts raw articles on each run
+* Preserves folder structure without RAR. [RAR sucks and here's why](https://github.com/animetosho/Nyuu/wiki/Stop-RAR-Uploads)
+* Does everything automatically and gives you the resulting `nzbs` in a neatly sorted manner
+* Offers the option to pick and choose what it does if you don't want it doing everything automatically
+* Automatically checks for and reposts failed articles from last run. Also has the option to not do this.
 * Can **NOT** continue from where it stopped if it gets interrupted for any reason
-* Probably has cases where it breaks. Feel free to open an issue if you find any
-* Tried to keep it OS independent but I've mostly tested this on Windows
 
 ## Getting Started
 
-This script uses ParPar for generating the PAR2 recovery files and Nyuu for uploading to usenet.
+`juicenet-cli` is built with Python and uses Nyuu and ParPar under the hood.
 
 ### Prerequisites
 
 * [Python >=3.9](https://www.python.org/downloads/)
-* [animetosho/Nyuu](https://github.com/animetosho/Nyuu) - You need version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1)
+* [Nyuu](https://github.com/animetosho/Nyuu) - You need version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1)
   * Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest)
-* [animetosho/ParPar](https://github.com/animetosho/ParPar)
+* [ParPar](https://github.com/animetosho/ParPar)
 
 ### Installation
 
@@ -104,26 +102,9 @@ This script uses ParPar for generating the PAR2 recovery files and Nyuu for uplo
     poetry build
     ```
 
-## Usage
-
-Before you can use this, you'll have to fill out [`juicenet.yaml`](https://github.com/Ravencentric/juicenet-cli/blob/main/config/juicenet.yaml). After you've specified all the values in the config you just have to pass it to juicenet-cli. You can do that in one of three ways:
-
-1. Using the command-line argument: `--config <path>`
-2. Setting an environment variable named `JUICENET_CONFIG`
-3. Placing the configuration file in the current working directory as `juicenet.yaml`
-
-The order of precedence, if all three are present, is:
-`command-line argument > environment variable > local file in the current working directory`
-
-The above was the first time setup, after which you can simply run:
-
-```sh
-juicenet "path\to\directory\with\files"
-```
-
 ## Docs
 
-[Wiki](https://github.com/Ravencentric/juicenet-cli/wiki)
+Checkout the documentation [here](https://ravencentric.github.io/juicenet-cli/)
 
 ## License
 

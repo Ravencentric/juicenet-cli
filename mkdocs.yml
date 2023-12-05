@@ -1,0 +1,74 @@
+# Project information
+site_name: juicenet-cli
+site_author: Ravencentric
+site_description: Documentation for juicenet-cli
+
+# Repository
+repo_name: juicenet-cli
+repo_url: https://github.com/Ravencentric/juicenet-cli
+edit_uri: edit/main/docs/
+
+theme:
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil 
+    view: material/eye
+  name: material
+  favicon: assets/logo.png
+  logo: assets/logo.png
+  font:
+    text: Noto Sans
+  palette:
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default 
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - toc.follow
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.action.edit
+    - content.action.view
+    - content.code.copy
+    - content.code.annotate
+  plugins:
+    - search
+
+markdown_extensions:
+  - md_in_html
+  - attr_list
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      url_download: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - CLI Reference: cli-reference.md
+  - Config Files for Nyuu: nyuu-config-files.md
+  - Troubleshoot: troubleshoot.md
+  - Archive:
+      - Uploading to usenet: uploading-to-usenet.md
+      - ParPar filepath formats: parpar-filepath-formats.md
