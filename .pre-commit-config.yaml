@@ -15,9 +15,9 @@ repos:
       - id: poetry-check
       - id: poetry-lock
       - id: poetry-export
-        args: ['-f', 'requirements.txt', '--without-hashes', '--without', 'dev', '--output', 'requirements.txt']
+        args: ['-f', 'requirements.txt', '--without-hashes', '--without', 'dev,docs', '--output', 'requirements.txt']
       - id: poetry-export
-        args: ['-f', 'requirements.txt', '--without-hashes', '--with', 'dev', '--output', 'requirements-dev.txt']
+        args: ['-f', 'requirements.txt', '--without-hashes', '--with', 'dev,docs', '--output', 'requirements-dev.txt']
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.7.1
     hooks:

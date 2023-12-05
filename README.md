@@ -39,7 +39,7 @@ Uploading stuff to usenet is tedious so I tried to make it easier.
 
 * Uses [ParPar](https://github.com/animetosho/ParPar) and [Nyuu](https://github.com/animetosho/Nyuu) under the hood
 * Recursively searches for files with pre-defined extensions in `juicenet.yaml` or as passed in `--exts`
-* Alternatively, searches for glob patterns passed in `--pattern`
+* Alternatively, searches for glob patterns passed in `--glob`
 * Preserves folder structure without RAR. [RAR sucks and here's why](https://github.com/animetosho/Nyuu/wiki/Stop-RAR-Uploads)
 * Does everything automatically and gives you the resulting `nzbs` in a neatly sorted manner
 * Offers the option to pick and choose what it does if you don't want it doing everything automatically
