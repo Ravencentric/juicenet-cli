@@ -1,6 +1,10 @@
 name: Test
 
-on: [push, pull_request, workflow_dispatch]
+on: [pull_request, workflow_dispatch]
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   test:
@@ -21,9 +25,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
-        uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: ${{ matrix.poetry-version }}
+        run: pipx install poetry==${{ matrix.poetry-version }}
 
       - name: Setup a local virtual environment
         run: |
@@ -34,10 +36,13 @@ jobs:
         name: Define a cache for the venv based on the dependencies lock file
         with:
           path: ./.venv
-          key: venv-${{ hashFiles('poetry.lock') }}
+          key: poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-
+          enableCrossOsArchive: true
 
       - name: Install the project dependencies
-        run: poetry install
+        run: poetry install --without dev,docs
 
       - name: Run juicenet
         run: |
@@ -49,7 +54,6 @@ jobs:
 
       - name: Get version
         id: version
-        shell: bash
         run: echo "version=$(poetry run python -m juicenet --version)" >> $GITHUB_OUTPUT
 
       - name: Install juicenet
