@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - config/juicenet.yaml
       - docs/*
       - mkdocs.yml
   workflow_dispatch:
