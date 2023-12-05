@@ -69,17 +69,11 @@ def cli() -> None:
     )
 
     parser.add_argument(
-        "--match",
-        action="store_true",
-        help="enable pattern matching mode",
-    )
-
-    parser.add_argument(
-        "--pattern",
+        "--glob",
         nargs="*",
-        default=["*/"],  # glob pattern for subfolders in root of path
+        default=[],
         metavar="*/",
-        help="specify the glob pattern(s) to be matched in pattern matching mode",
+        help="specify the glob pattern(s) to be matched instead of extensions",
     )
 
     parser.add_argument(
@@ -119,8 +113,7 @@ def cli() -> None:
         only_parpar=args.parpar,
         only_raw=args.raw,
         skip_raw=args.skip_raw,
-        match=args.match,
-        pattern=args.pattern,
+        glob=args.glob,
         debug=args.debug,
         move=args.move,
         only_move=args.only_move,

@@ -33,8 +33,7 @@ def juicenet(
     only_parpar: bool,
     only_raw: bool,
     skip_raw: bool,
-    match: bool,
-    pattern: list[str],
+    glob: list[str],
     debug: bool,
     move: bool,
     only_move: bool,
@@ -110,7 +109,7 @@ def juicenet(
     logger.info(f"Nyuu Config: {conf}")
     logger.info(f"NZB Output: {nzb_out}")
     logger.info(f"Working Directory: {work_dir if work_dir else path}")
-    logger.info(f"Pattern: {pattern}" if match else f"Extension: {exts}")
+    logger.info(f"Glob Pattern: {glob}" if glob else f"Extension: {exts}")
 
     # Check and get `dump-failed-posts` as defined in Nyuu config
     try:
@@ -143,9 +142,9 @@ def juicenet(
             logger.info("No raw articles available for reposting")
         sys.exit()
 
-    if match:  # --match --pattern
+    if glob:  # --glob
         try:
-            files = get_glob_matches(path, pattern)
+            files = get_glob_matches(path, glob)
         except NotImplementedError as error:
             logger.error(error)
             sys.exit()
@@ -153,7 +152,7 @@ def juicenet(
         files = get_files(path, exts)
 
     if not files:
-        logger.error("No matching files or patterns found with the given extension in:")
+        logger.error("No matching files or glob patterns found with the given extension in:")
         logger.error(path)
         sys.exit()
 
@@ -178,7 +177,7 @@ def juicenet(
 
     if not files:
         logger.error(
-            "Matching files or patterns found, but they are either empty or "
+            "Matching files or glob patterns found, but they are either empty or "
             "contain only 0-byte files, making them effectively empty"
         )
         sys.exit()

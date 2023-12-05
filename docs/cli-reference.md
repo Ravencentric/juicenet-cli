@@ -28,10 +28,9 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `--parpar`              | Only run ParPar                                                                               |
 | `--raw`                 | Only repost raw articles                                                                      |
 | `--skip-raw`            | Skip reposting raw articles                                                                   |
-| `--match`               | Enable pattern matching mode                                                                  |
-| `--pattern [*/ ...]`    | Specify the glob pattern(s) to be matched                                                     |
+| `--glob    [*/ ...]`    | Specify the glob pattern(s) to be matched instead of extensions                               |
 | `--debug`               | Show logs for debugging purposes                                                              |
-| `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)`                     |
+| `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)` before processing   |
 | `--only-move`           | Same as `--move` except it immediately exists after it's done moving                          |
 | `--exts [mkv mp4 ...]`  | Look for these extensions in `<path>`                                                         |
 
@@ -64,29 +63,29 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 4. Upload all subfolders while preserving their structure
 
     ``` bash
-    juicenet --match --pattern "*/" # CWD
+    juicenet --glob "*/" # CWD
     ```
 
     ``` bash
-    juicenet "path/to/files" --match --pattern "*/"
+    juicenet "path/to/files" --glob "*/"
     ```
 
 5. Upload all subfolders with the word "BDMV" and "UHD" in it while preserving their structure
 
     ``` bash
-    juicenet --match --pattern "*BDMV*/" "*UHD*/" # CWD
+    juicenet --glob "*BDMV*/" "*UHD*/" # CWD
     ```
 
     ``` bash
-    juicenet "path/to/files" --match --pattern "*BDMV*/" "*UHD*/"
+    juicenet "path/to/files" --glob "*BDMV*/" "*UHD*/"
     ```
 
 6. Only Upload E10 to E15 from a folder with all the episodes
 
     ``` bash
-    juicenet --match --pattern "S01E1[0-5]" # CWD
+    juicenet --glob "S01E1[0-5]" # CWD
     ```
 
     ``` bash
-    juicenet "path/to/files" --match --pattern "S01E1[0-5]"
+    juicenet "path/to/files" --glob "S01E1[0-5]"
     ```
