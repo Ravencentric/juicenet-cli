@@ -1,7 +1,7 @@
 # Project information
-site_name: juicenet-cli
+site_name: juicenet
 site_author: Ravencentric
-site_description: Documentation for juicenet-cli
+site_description: CLI tool designed to simplify the process of uploading files to usenet
 
 # Repository
 repo_name: juicenet-cli
