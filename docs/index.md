@@ -4,7 +4,7 @@
     <img src="https://em-content.zobj.net/source/twitter/376/beverage-box_1f9c3.png" alt="Logo" width="100" height="100">
   </a>
 
-  <h3 align="center">juicenet-cli</h3>
+  <h3 align="center">juicenet</h3>
 
   <p align="center">
     CLI tool designed to simplify the process of uploading files to usenet

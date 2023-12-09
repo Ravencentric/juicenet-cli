@@ -2,7 +2,7 @@ This page contains some of the errors that the script might throw at you and how
 
 ### No such file: `{filename}`
 
-`juicenet-cli` was unable to find your `juicenet.yaml` config file. You can read about how to specify your config [here](configuration.md#loading-the-config-file)
+`juicenet` was unable to find your `juicenet.yaml` config file. You can read about how to specify your config [here](configuration.md#loading-the-config-file)
 
 ### `{key}` is missing in `{conf_path}`
 
