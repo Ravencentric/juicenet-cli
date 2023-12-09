@@ -53,9 +53,10 @@ Uploading stuff to usenet is tedious so I tried to make it easier.
 ### Prerequisites
 
 * [Python >=3.9](https://www.python.org/downloads/)
-* [Nyuu](https://github.com/animetosho/Nyuu) - You need version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1)
-  * Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest)
-* [ParPar](https://github.com/animetosho/ParPar)
+* [ParPar >= 0.4.2](https://github.com/animetosho/ParPar)
+* [Nyuu >= git@a4b1712](https://github.com/animetosho/Nyuu)
+
+For detailed instructions, check out the [docs](https://juicenet.in/installation/)
 
 ### Installation
 

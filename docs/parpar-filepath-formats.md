@@ -1,5 +1,5 @@
 !!! note
-    This page covers the usage of the `--filepath-format` option in ParPar. You do not need to know this to use `juicenet-cli`. I wrote this after testing all of the filepath formats to better understand them myself.
+    This page covers the usage of the `--filepath-format` option in ParPar. You do not need to know this to use `juicenet`. I wrote this after testing all of the filepath formats to better understand them myself.
 
 
 

@@ -1,79 +1,81 @@
 # Installation
 
-`juicenet` is a tool designed to simplify the process of uploading files to usenet. It's built with Python and uses Nyuu and ParPar under the hood.
+`juicenet` is built with Python and uses Nyuu and ParPar under the hood.
 
 ## Prerequisites
 
-=== "Executables (Windows)"
+Since `juicenet` uses Nyuu and ParPar, you need to have these installed.
 
-1. [ParPar >= 0.4.2](https://github.com/animetosho/ParPar) - Grab the executable from the [releases page](https://github.com/animetosho/ParPar/releases/tag/v0.4.3)
+=== "With Executables (Windows)"
 
-2. [Nyuu >= git@a4b1712](https://github.com/animetosho/Nyuu) - You can grab this (unofficial) [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest)
+    1. [`ParPar >= 0.4.2`](https://github.com/animetosho/ParPar) - Grab the executable from [here](https://github.com/animetosho/ParPar/releases/tag/v0.4.3)
 
-!!! note
-    The latest official Nyuu release at the time of writing this is `v0.4.1` which is outdated and missing important changes that are only available on the git repository
+    2. [`Nyuu >= git@a4b1712`](https://github.com/animetosho/Nyuu) - Grab the executable [here](https://github.com/Ravencentric/Nyuu/releases/latest) (unofficial)
 
-=== "NPM (Windows)"
+        !!! note
+            The latest official Nyuu release at the time of writing this is `v0.4.1` which is outdated and missing important changes that are only available on the git repository
 
-1. Install [`Visual C++ Build Environment`](https://github.com/nodejs/node-gyp#on-windows)
+=== "With NPM (Windows)"
 
-2. Install [`nvm`](https://github.com/coreybutler/nvm-windows/releases/latest)
+    1. Install [`Visual C++ Build Environment`](https://github.com/nodejs/node-gyp#on-windows)
 
-3. Install [`node`](https://nodejs.org/en)
+    2. Install [`nvm`](https://github.com/coreybutler/nvm-windows/releases/latest)
 
-    ``` bash
-    nvm install node
-    ```
+    3. Install [`node`](https://nodejs.org/en)
 
-4. Install [`yencode`](https://github.com/animetosho/node-yencode)
+        ``` bash
+        nvm install node
+        ```
 
-    ``` bash
-    npm install yencode
-    ```
+    4. Install [`yencode`](https://github.com/animetosho/node-yencode)
 
-5. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
+        ``` bash
+        npm install yencode
+        ```
 
-    ``` bash
-    npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
-    ```
+    5. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
 
-6. Install [`ParPar`](https://github.com/animetosho/ParPar)
+        ``` bash
+        npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+        ```
 
-    ``` bash
-    npm install -g @animetosho/parpar
-    ```
+    6. Install [`ParPar`](https://github.com/animetosho/ParPar)
 
-=== "Linux"
+        ``` bash
+        npm install -g @animetosho/parpar
+        ```
 
-1. Install [`nvm`](https://github.com/nvm-sh/nvm)
+=== "With NPM (Linux)"
 
-    ``` bash
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    ```
+    1. Install [`nvm`](https://github.com/nvm-sh/nvm)
 
-2. Install [`node`](https://nodejs.org/en)
+        ``` bash
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+        ```
 
-    ``` bash
-    nvm install node
-    ```
+    2. Install [`node`](https://nodejs.org/en)
 
-3. Install [`yencode`](https://github.com/animetosho/node-yencode)
+        ``` bash
+        nvm install node
+        ```
 
-    ``` bash
-    npm install yencode
-    ```
+    3. Install [`yencode`](https://github.com/animetosho/node-yencode)
 
-4. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
+        ``` bash
+        npm install yencode
+        ```
 
-    ``` bash
-    npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
-    ```
+    4. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
 
-5. Install [`ParPar`](https://github.com/animetosho/ParPar)
+        ``` bash
+        npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+        ```
 
-    ``` bash
-    npm install -g @animetosho/parpar
-    ```
+    5. Install [`ParPar`](https://github.com/animetosho/ParPar)
+
+        ``` bash
+        npm install -g @animetosho/parpar
+        ```
 
 ## Installing juicenet
 

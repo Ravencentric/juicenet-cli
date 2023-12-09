@@ -3,7 +3,7 @@
 PARPAR: C:\Users\user\bin\parpar.exe
 NYUU: C:\Users\user\bin\nyuu.exe
 
-# https://github.com/Ravencentric/juicenet-cli/wiki/Nyuu-Config#private
+# https://juicenet.in/nyuu-config-files/
 NYUU_CONFIG_PRIVATE: C:\Users\user\nyuu\config-private.json
 
 # Optional Setting (Remove '#' to specify)

@@ -1,13 +1,13 @@
 # Uploading to Usenet
 
 !!! note
-    This page covers the process of manually uploading a file to usenet. You do not need to know this to use the `juicenet-cli`. This is essentially what it does. This is what I initially wrote when I was first figuring this stuff out and seeing how there's no good guide out there, I've decided to keep it for anyone else trying to figure this stuff out. It's not a good guide because it was never meant to be one, but it's better than nothing.
+    This page covers the process of manually uploading a file to usenet. You do not need to know this to use the `juicenet`. This is essentially what it does. This is what I initially wrote when I was first figuring this stuff out and seeing how there's no good guide out there, I've decided to keep it for anyone else trying to figure this stuff out. It's not a good guide because it was never meant to be one, but it's better than nothing.
 
 ## Prerequisites
 
 ### Linux
 
-1. Install [nvm](https://github.com/nvm-sh/nvm)
+1. Install [`nvm`](https://github.com/nvm-sh/nvm)
 
     ``` bash
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash

@@ -33,7 +33,8 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)` before processing   |
 | `--only-move`           | Same as `--move` except it immediately exists after it's done moving                          |
 | `--exts [mkv mp4 ...]`  | Look for these extensions in `<path>`                                                         |
-
+| `--no-resume`           | ignore resume data                                                                            |
+| `--clear-resume`        | delete resume data                                                                            |
 
 ## Examples
 
