@@ -1,19 +1,83 @@
 # Installation
 
-juicenet-cli is a tool designed to simplify the process of uploading files to usenet. It's built with Python and uses Nyuu and ParPar under the hood.
+`juicenet` is a tool designed to simplify the process of uploading files to usenet. It's built with Python and uses Nyuu and ParPar under the hood.
 
 ## Prerequisites
 
-* [Python >=3.9](https://www.python.org/downloads/)
-* [Nyuu](https://github.com/animetosho/Nyuu)
-* [ParPar](https://github.com/animetosho/ParPar)
+=== "Executables (Windows)"
+
+1. [ParPar >= 0.4.2](https://github.com/animetosho/ParPar) - Grab the executable from the [releases page](https://github.com/animetosho/ParPar/releases/tag/v0.4.3)
+
+2. [Nyuu >= git@a4b1712](https://github.com/animetosho/Nyuu) - You can grab this (unofficial) [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest)
 
 !!! note
-    You need Nyuu version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1).
+    The latest official Nyuu release at the time of writing this is `v0.4.1` which is outdated and missing important changes that are only available on the git repository
 
-    Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest).
+=== "NPM (Windows)"
 
-## Installing juicenet-cli
+1. Install [`Visual C++ Build Environment`](https://github.com/nodejs/node-gyp#on-windows)
+
+2. Install [`nvm`](https://github.com/coreybutler/nvm-windows/releases/latest)
+
+3. Install [`node`](https://nodejs.org/en)
+
+    ``` bash
+    nvm install node
+    ```
+
+4. Install [`yencode`](https://github.com/animetosho/node-yencode)
+
+    ``` bash
+    npm install yencode
+    ```
+
+5. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
+
+    ``` bash
+    npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+    ```
+
+6. Install [`ParPar`](https://github.com/animetosho/ParPar)
+
+    ``` bash
+    npm install -g @animetosho/parpar
+    ```
+
+=== "Linux"
+
+1. Install [`nvm`](https://github.com/nvm-sh/nvm)
+
+    ``` bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    ```
+
+2. Install [`node`](https://nodejs.org/en)
+
+    ``` bash
+    nvm install node
+    ```
+
+3. Install [`yencode`](https://github.com/animetosho/node-yencode)
+
+    ``` bash
+    npm install yencode
+    ```
+
+4. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
+
+    ``` bash
+    npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+    ```
+
+5. Install [`ParPar`](https://github.com/animetosho/ParPar)
+
+    ``` bash
+    npm install -g @animetosho/parpar
+    ```
+
+## Installing juicenet
+
+`juicenet` currently supports [Python >= 3.9](https://www.python.org/downloads/)
 
 1. With [pipx](https://pypa.github.io/pipx/installation/) (recommended):
 

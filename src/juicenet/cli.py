@@ -102,6 +102,18 @@ def cli() -> None:
         help="look for these extensions in <path> (ignores config)",
     )
 
+    parser.add_argument(
+        "--no-resume",
+        action="store_true",
+        help="ignore resume data",
+    )
+
+    parser.add_argument(
+        "--clear-resume",
+        action="store_true",
+        help="delete resume data",
+    )
+
     args = parser.parse_args()
 
     juicenet(
@@ -118,4 +130,6 @@ def cli() -> None:
         move=args.move,
         only_move=args.only_move,
         extensions=args.exts,
+        no_resume=args.no_resume,
+        clear_resume=args.clear_resume,
     )

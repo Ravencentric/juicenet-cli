@@ -21,9 +21,11 @@ class JuicenetConfig(TypedDict):
     """The arguments to be passed to the ParPar binary"""
 
     # Optional keys
-    USE_TEMPDIR: NotRequired[bool]
+    USE_TEMP_DIR: NotRequired[bool]
     """Whether or not to use a temporary directory for processing"""
-    TEMPDIR_PATH: NotRequired[Optional[str]]
-    """Path to a specific temporary directory if USE_TEMPDIR is True. If unspecified, it uses %Temp% or /tmp"""
+    TEMP_DIR_PATH: NotRequired[Optional[str]]
+    """Path to a specific temporary directory if USE_TEMP_DIR is True. If unspecified, it uses %Temp% or /tmp"""
     NYUU_CONFIG_PUBLIC: NotRequired[str]
     """The path to the public Nyuu configuration file (falls back to private config if not specified)"""
+    APPDATA_DIR_PATH: NotRequired[str]
+    """The path to the folder where juicenet will store it's resume data, defaults to ~/.juicenet/"""
