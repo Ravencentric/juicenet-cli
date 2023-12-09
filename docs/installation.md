@@ -1,10 +1,8 @@
 # Installation
 
-`juicenet` is built with Python and uses Nyuu and ParPar under the hood.
-
 ## Prerequisites
 
-Since `juicenet` uses Nyuu and ParPar, you need to have these installed.
+Since `juicenet` uses Nyuu and ParPar, you need to have these installed. Follow the instructions below to install them.
 
 === "With Executables (Windows)"
 
@@ -79,7 +77,7 @@ Since `juicenet` uses Nyuu and ParPar, you need to have these installed.
 
 ## Installing juicenet
 
-`juicenet` currently supports [Python >= 3.9](https://www.python.org/downloads/)
+`juicenet` currently supports [`Python >= 3.9`](https://www.python.org/downloads/)
 
 1. With [pipx](https://pypa.github.io/pipx/installation/) (recommended):
 
