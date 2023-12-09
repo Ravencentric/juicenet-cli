@@ -8,6 +8,7 @@ from loguru import logger
 
 from .enums import BarTitle, CurrentFile
 from .files import get_glob_matches
+from .resume import Resume
 
 
 class Nyuu:
@@ -22,6 +23,7 @@ class Nyuu:
         - `outdir (Path)`: The path to the output directory where nzbs will end up after completion
         - `scope (str)`: The scope of the nzbs made by Nyuu (Private or Public)
         - `debug (bool)`: Debug mode for extra logs
+        - `resume (Resume)`: Resume class for logging uploaded files
 
     Methods:
         - `nzb_output_path(key: Path) -> Union[Path, PurePosixPath]`: Constructs the output path of the NZB
@@ -33,7 +35,15 @@ class Nyuu:
     """
 
     def __init__(
-        self, path: Path, bin: Path, conf: Path, workdir: Optional[Path], outdir: Path, scope: str, debug: bool
+        self,
+        path: Path,
+        bin: Path,
+        conf: Path,
+        workdir: Optional[Path],
+        outdir: Path,
+        scope: str,
+        debug: bool,
+        resume: Resume,
     ) -> None:
         self.path = path
         self.bin = bin
@@ -42,6 +52,7 @@ class Nyuu:
         self.outdir = outdir
         self.scope = scope
         self.debug = debug
+        self.resume = resume
 
     def move_nzb(self, file: Path, basedir: Path, nzb: str) -> None:
         """
@@ -90,6 +101,9 @@ class Nyuu:
 
             # move completed nzb to output dir
             self.move_nzb(key, cwd, nzb)
+
+            # save file info to resume data
+            self.resume.log_file_info(key)
 
             # Cleanup par2 files for the uploaded file
             self.cleanup(files[key])

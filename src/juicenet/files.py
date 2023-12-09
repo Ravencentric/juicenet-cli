@@ -31,16 +31,38 @@ def get_glob_matches(path: Path, patterns: list[str]) -> list[Path]:
     return files
 
 
-def rm_empty_paths(files: list[Path]) -> list[Path]:
+def get_file_info(file: Path) -> dict[str, str]:
     """
-    Removes empty files and directories from a list of paths
+    Get the name, total size, and number of file(s) given a Path
 
-    Empty file is a file whose size is 0 bytes
-    Empty directory is a directory with 0 non empty files
+    Returns `{"name": str, "size": str, "count": str}`
 
-    This step is necessary because Nyuu will skip empty paths
-    on it's own but the script expects an nzb for each path
-    causing it to error. So I'll remove these before passing
+    `size` and `count` are string for easier comparison when reading
+    these from a csv file
+    """
+
+    if file.is_file():
+        size = str(file.stat().st_size)
+        count = "1"
+        return dict(name=file.name, size=size, count=count)
+
+    else:  # it's a directory
+        all_files = tuple(file.rglob("*"))
+        count = str(len(all_files))
+        size = str(sum(f.stat().st_size for f in all_files if f.is_file()))
+        return dict(name=file.name, size=size, count=count)
+
+
+def filter_empty_files(files: list[Path]) -> list[Path]:
+    """
+    Filter out empty files and directories from a list of paths
+
+    - Empty file is a file whose size is 0 bytes
+    - Empty directory is a directory with 0 non empty files
+
+    This step is necessary because Nyuu will skip empty files
+    on it's own but `Nyuu.upload()` expects an nzb for every
+    file passed. So I'll remove these before passing
     it further in the script.
     """
     non_empty = []

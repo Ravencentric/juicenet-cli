@@ -9,9 +9,10 @@ from loguru import logger
 from rich.traceback import install
 
 from .config import get_config, get_dump_failed_posts, read_config
-from .files import get_files, get_glob_matches, map_file_to_pars, move_files, rm_empty_paths
+from .files import filter_empty_files, get_files, get_glob_matches, map_file_to_pars, move_files
 from .nyuu import Nyuu
 from .parpar import ParPar
+from .resume import Resume
 from .version import get_version
 
 # Supress keyboardinterrupt traceback because I hate it
@@ -38,6 +39,8 @@ def juicenet(
     move: bool,
     only_move: bool,
     extensions: list[str],
+    no_resume: bool,
+    clear_resume: bool,
 ) -> None:
     """
     Do stuff here
@@ -85,16 +88,24 @@ def juicenet(
         logger.error(f"{key} is missing in {conf_path}")
         sys.exit()
 
-    # Get optional value from config
+    # Get optional values from config
     pub_conf = Path(config.get("NYUU_CONFIG_PUBLIC", priv_conf))
-    use_tempdir = config.get("USE_TEMPDIR", True)
-    tempdir_path = config.get("TEMPDIR_PATH")
 
-    if use_tempdir:
+    appdata_dir = Path(config.get("APPDATA_DIR_PATH", Path.home()))
+    appdata_dir = appdata_dir / ".juicenet"
+    appdata_dir.mkdir(parents=True, exist_ok=True)
+
+    resume_file = appdata_dir / "juicenet.resume"
+    resume_file.touch(exist_ok=True)
+
+    use_temp_dir = config.get("USE_TEMP_DIR", True)
+    temp_dir_path = config.get("TEMP_DIR_PATH")
+
+    if use_temp_dir:
         temp_dir = TemporaryDirectory(prefix=".JUICENET_", ignore_cleanup_errors=True)
         work_dir = Path(temp_dir.name)
-        if tempdir_path is not None:
-            work_dir = Path(tempdir_path)
+        if temp_dir_path is not None:
+            work_dir = Path(temp_dir_path)
     else:
         work_dir = None
 
@@ -108,6 +119,7 @@ def juicenet(
     logger.info(f"ParPar: {parpar_bin}")
     logger.info(f"Nyuu Config: {conf}")
     logger.info(f"NZB Output: {nzb_out}")
+    logger.info(f"Appdata Directory: {appdata_dir}")
     logger.info(f"Working Directory: {work_dir if work_dir else path}")
     logger.info(f"Glob Pattern: {glob}" if glob else f"Extension: {exts}")
 
@@ -125,11 +137,18 @@ def juicenet(
         logger.error(f"No such file: {error.filename}")
         sys.exit()
 
+    # Initialize Resume class
+    resume = Resume(resume_file, scope, no_resume)
+
     # Initialize ParPar class for generating par2 files ahead
     parpar = ParPar(parpar_bin, parpar_args, work_dir, debug)
 
     # Initialize Nyuu class for uploading stuff ahead
-    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug)
+    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, resume)
+
+    if clear_resume:  # --clear-resume
+        resume.clear_resume()  # Delete resume data
+        sys.exit()
 
     # Check if there are any raw files from previous runs
     raw_count = len(get_glob_matches(dump, ["*"]))
@@ -152,7 +171,7 @@ def juicenet(
         files = get_files(path, exts)
 
     if not files:
-        logger.error("No matching files or glob patterns found with the given extension in:")
+        logger.error("No matching files/folders found in:")
         logger.error(path)
         sys.exit()
 
@@ -170,15 +189,29 @@ def juicenet(
         # Get the new path of files
         files = get_files(path, exts)
 
-    # Remove empty paths
-    logger.debug("Filtering out empty paths")
-    files = rm_empty_paths(files)
-    logger.debug("Filtering complete")
+    total = len(files)
+    logger.debug(f"Total files: {total}")
+
+    # Filter out empty paths
+    files = filter_empty_files(files)
+
+    non_empty_count = len(files)
+    logger.debug(f"Empty files: {total-non_empty_count}")
+    logger.debug(f"Total files left: {non_empty_count}")
 
     if not files:
         logger.error(
-            "Matching files or glob patterns found, but they are either empty or "
+            "Matching files/folders found, but they are either empty or "
             "contain only 0-byte files, making them effectively empty"
+        )
+        sys.exit()
+
+    files = resume.filter_uploaded_files(files)
+
+    if not files:
+        logger.info(
+            "Matching files/folders found, but they were already uploaded before. "
+            "You can force upload these with --no-resume"
         )
         sys.exit()
 
