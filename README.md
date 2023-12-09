@@ -1,7 +1,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/Ravencentric/juicenet-cli">
-    <img src="https://em-content.zobj.net/source/twitter/376/beverage-box_1f9c3.png" alt="Logo" width="100" height="100">
+    <img src="https://raw.githubusercontent.com/Ravencentric/juicenet-cli/main/docs/assets/logo.png" alt="Logo" width="100" height="100">
   </a>
 
   <h3 align="center">juicenet</h3>
@@ -44,7 +44,7 @@ Uploading stuff to usenet is tedious so I tried to make it easier.
 * Does everything automatically and gives you the resulting `nzbs` in a neatly sorted manner
 * Offers the option to pick and choose what it does if you don't want it doing everything automatically
 * Automatically checks for and reposts failed articles from last run. Also has the option to not do this.
-* Can **NOT** continue from where it stopped if it gets interrupted for any reason
+* Can continue from where it stopped if it gets interrupted for any reason
 
 ## Getting Started
 
