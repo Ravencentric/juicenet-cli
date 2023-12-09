@@ -19,7 +19,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `path`                  | Directory containing your files (default: CWD)                                                |
 
 | Options:                | Description                                                                                   |
-| ----------------------- | ------------------------------------------------------                                        |
+| ----------------------- | ----------------------------------------------------------------------------------------------|
 | `-h, --help`            | Show this help message and exit                                                               |
 | `--config CONFIG`       | Specify the path to your juicenet config file                                                 |
 | `--version`             | Print juicenet version                                                                        |
