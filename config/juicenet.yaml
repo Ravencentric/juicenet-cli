@@ -11,7 +11,7 @@ NYUU_CONFIG_PRIVATE: C:\Users\user\nyuu\config-private.json
 # NYUU_CONFIG_PUBLIC: C:\Users\user\nyuu\config-public.json
 
 NZB_OUTPUT_PATH: D:\output\nzbs
-EXTENSIONS: [mkv, epub, cbr, cbz, cb7, cbt]
+EXTENSIONS: ["mkv", "epub", "cbr", "cbz", "cb7", "cbt"]
 
 # Use %Temp% on Windows or /tmp on POSIX for temporary files.
 # Setting it to False will generate temporary files right next to the input files
