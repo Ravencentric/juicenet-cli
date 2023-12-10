@@ -226,9 +226,11 @@ def juicenet(
         logger.debug("Only running Nyuu")
 
         logger.debug("Mapping files to their corresponding par2 files")
-        mapping = map_file_to_pars(work_dir, files)
+        mapping = map_file_to_pars(None, files)
         logger.debug(f"Mapped {len(mapping.keys())} files")
 
+        # same logic as for --parpar
+        nyuu.workdir = None
         nyuu.upload(mapping)
         sys.exit()
 

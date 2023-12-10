@@ -24,8 +24,8 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `--config CONFIG`       | Specify the path to your juicenet config file                                                 |
 | `--version`             | Print juicenet version                                                                        |
 | `--public`              | Use your public config                                                                        |
-| `--nyuu`                | Only run Nyuu                                                                                 |
-| `--parpar`              | Only run ParPar                                                                               |
+| `--nyuu`                | Only run Nyuu in `<path>` (default: `cwd`)                                                    |
+| `--parpar`              | Only run ParPar in `<path>` (default: `cwd`)                                                  |
 | `--raw`                 | Only repost raw articles                                                                      |
 | `--skip-raw`            | Skip reposting raw articles                                                                   |
 | `--glob    [*/ ...]`    | Specify the glob pattern(s) to be matched instead of extensions                               |

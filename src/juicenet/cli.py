@@ -18,7 +18,7 @@ def cli() -> None:
 
     parser.add_argument(
         "path",
-        metavar="path",
+        metavar="<path>",
         nargs="?",
         default=Path.cwd(),
         type=Path,
@@ -47,13 +47,13 @@ def cli() -> None:
     parser.add_argument(
         "--nyuu",
         action="store_true",
-        help="only run Nyuu",
+        help="only run Nyuu in <path>",
     )
 
     parser.add_argument(
         "--parpar",
         action="store_true",
-        help="only run ParPar",
+        help="only run ParPar in <path>",
     )
 
     parser.add_argument(
