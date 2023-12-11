@@ -122,7 +122,7 @@ class Nyuu:
 
         for article in bar:
             nyuu = (
-                [bin]
+                [self.bin]
                 + ["--config", self.conf]
                 + [
                     "--skip-errors",
