@@ -19,7 +19,7 @@ from .version import get_version
 signal.signal(signal.SIGINT, lambda x, y: sys.exit(1))
 
 # Install rich traceback
-install(show_locals=True)
+install()
 
 # Set up logger
 logger = logger.opt(colors=True)
