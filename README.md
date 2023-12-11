@@ -30,7 +30,7 @@
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
-* [Usage](#usage)
+* [Docs](#docs)
 * [License](#license)
 
 ## About The Project
