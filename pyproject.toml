@@ -6,9 +6,9 @@ authors = ["Raventric <raven@juicenet.in>"]
 license = "Unlicense"
 readme = "README.md"
 packages = [{ include = "juicenet", from = "src" }]
-homepage = "https://github.com/Ravencentric/juicenet-cli"
+homepage = "https://juicenet.in"
 repository = "https://github.com/Ravencentric/juicenet-cli"
-documentation = "https://ravencentric.github.io/juicenet-cli/"
+documentation = "https://juicenet.in"
 classifiers = [
     "License :: OSI Approved :: The Unlicense (Unlicense)",
     "Operating System :: OS Independent",
