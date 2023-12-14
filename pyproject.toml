@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.26.4"
+version = "0.26.5"
 description = "CLI tool designed to simplify the process of uploading files to usenet"
 authors = ["Raventric <raven@juicenet.in>"]
 license = "Unlicense"
@@ -20,7 +20,7 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-"Contact" = "https://discord.gg/snackbox"
+Contact = "https://discord.gg/snackbox"
 
 [tool.poetry.dependencies]
 python = "^3.9"
