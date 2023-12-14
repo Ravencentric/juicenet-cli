@@ -103,7 +103,7 @@ def juicenet(
 
     if use_temp_dir:
         temp_dir = TemporaryDirectory(prefix=".JUICENET_", ignore_cleanup_errors=True)
-        work_dir = Path(temp_dir.name)
+        work_dir = Path(temp_dir.name).resolve()
         if temp_dir_path is not None:
             work_dir = Path(temp_dir_path)
     else:
