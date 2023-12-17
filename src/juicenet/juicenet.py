@@ -224,24 +224,16 @@ def juicenet(
 
     if only_nyuu:  # --nyuu
         logger.debug("Only running Nyuu")
-
-        logger.debug("Mapping files to their corresponding par2 files")
+        # Try to find any pre-existing `.par2` files
         mapping = map_file_to_pars(None, files)
-        logger.debug(f"Mapped {len(mapping.keys())} files")
-
-        # same logic as for --parpar
+        # Same logic as for --parpar
         nyuu.workdir = None
         nyuu.upload(mapping)
         sys.exit()
 
     if skip_raw:  # --skip-raw
         logger.warning("Raw article checking and reposting is being skipped")
-        parpar.generate_par2_files(files)
-
-        logger.debug("Mapping files to their corresponding par2 files")
-        mapping = map_file_to_pars(work_dir, files)
-        logger.debug(f"Mapped {len(mapping.keys())} files")
-
+        mapping = parpar.generate_par2_files(files)
         nyuu.upload(mapping)
         sys.exit()
 
@@ -249,10 +241,5 @@ def juicenet(
         if raw_count != 0:
             nyuu.repost_raw(dump)
 
-        parpar.generate_par2_files(files)
-
-        logger.debug("Mapping files to their corresponding par2 files")
-        mapping = map_file_to_pars(work_dir, files)
-        logger.debug(f"Mapped {len(mapping.keys())} files")
-
+        mapping = parpar.generate_par2_files(files)
         nyuu.upload(mapping)

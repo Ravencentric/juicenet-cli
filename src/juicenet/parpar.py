@@ -1,6 +1,8 @@
+import glob
 import subprocess
 from pathlib import Path
 from typing import Optional
+from uuid import uuid4
 
 from alive_progress import alive_it
 from loguru import logger
@@ -51,15 +53,37 @@ class ParPar:
 
         return mapping
 
-    def generate_par2_files(self, files: list[Path]) -> None:
+    def get_workdir(self, file: Path) -> Path:
         """
-        Generate .par2 files with ParPar
+        Get the working directory. This is where ParPar
+        will be executed and `.par2` files will be generated
+
+        Files can often have duplicate names when located in
+        different folders. This isn't an issue if `.par2` files
+        are being generated right next to the input file but can
+        be a problem when using a seperate working and/or temporary
+        directory. So I'll create unique folder names for this case.
+        """
+        if self.workdir:
+            cwd = self.workdir / uuid4().hex.upper()[:10]
+            cwd.mkdir(parents=True, exist_ok=True)
+            return cwd
+        else:
+            return file.parent
+
+    def generate_par2_files(self, files: list[Path]) -> dict[Path, list[Path]]:
+        """
+        Generate `.par2` files with ParPar and return a dictionary of the
+        resulting `.par2` files where the key is the input file and value is
+        a list of it's `.par2` files
         """
         sink = None if self.debug else subprocess.DEVNULL
 
         bar = alive_it(files, title=BarTitle.PARPAR)
 
         format = self.map_filepath_formats(files)
+
+        file_to_par_mapping = {}
 
         for file in bar:
             parpar = (
@@ -72,5 +96,13 @@ class ParPar:
             logger.debug(parpar)
             bar.text(f"{CurrentFile.PARPAR} {file.name}")
 
-            cwd = self.workdir if self.workdir else file.parent  # this is where parpar will be executed
+            # Get the working directory
+            cwd = self.get_workdir(file)
+
+            # Execute ParPar and generate `.par2` files
             subprocess.run(parpar, cwd=cwd, stdout=sink, stderr=sink)
+
+            # Finally map the generated par2 files to the input file that they belong to
+            file_to_par_mapping[file] = list(cwd.glob(f"{glob.escape(file.name)}*.par2"))
+
+        return file_to_par_mapping
