@@ -27,7 +27,8 @@ class Nyuu:
         - `bdmv_naming (bool)`: Use alternate naming for the output nzbs if they are BDMV discs
 
     Methods:
-        - `nzb_output_path(key: Path) -> Union[Path, PurePosixPath]`: Constructs the output path of the NZB
+        - `move_nzb(file: Path, basedir: Path, nzb: str) -> None`: Move NZB to a specified output 
+           path in a somewhat sorted manner
         - `cleanup(par2_files: list[Path]) -> None`: Cleans up par2 files after they are uploaded
         - `upload(files: dict[Path, list[Path]]) -> None`: Uploads files to usenet with Nyuu
         - `repost_raw(dump: Path) -> None`: Tries to repost failed articles from the last run
