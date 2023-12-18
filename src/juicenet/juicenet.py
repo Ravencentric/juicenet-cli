@@ -124,7 +124,7 @@ def juicenet(
     logger.info(f"Working Directory: {work_dir if work_dir else path}")
     
     if glob or bdmv:
-        logger.info(f"Glob Pattern: {glob if glob else ["*/"]}")
+        logger.info(f"Glob Pattern: {glob if glob else ['*/']}")
     else:
         logger.info(f"Extensions: {exts}")
 
