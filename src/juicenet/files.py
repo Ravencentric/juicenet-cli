@@ -159,7 +159,12 @@ def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, l
     for file in files:
         parent = file.parent if basedir is None else basedir
         par2_files = []
-        par2_files.append(parent / f"{file.name}.par2")
+        # The first par2 file doesn't have the word `vol` in it
+        first_par2_file = parent / f"{file.name}.par2"
+        if first_par2_file.is_file():
+            par2_files.append(first_par2_file)
+        
+        # Rest of the par2 files strictly follow the `foobar.mkv.vol01+02.par2` naming scheme
         par2_files.extend(list(parent.glob(f"{glob.escape(file.name)}.vol*.par2")))
         mapping[file] = par2_files
 
