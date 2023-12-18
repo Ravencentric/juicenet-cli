@@ -23,6 +23,8 @@ class ParPar:
     Methods:
         - `map_filepath_formats(files: list[Path]) -> dict[Path, str]`: Checks if the path is a directory or file
            and maps it to the corresponding value of `--filepath-format` for ParPar.
+        - `get_workdir(self, file: Path) -> Path`: Get the working directory. This is where ParPar
+           will be executed and `.par2` files will be generated
         - `generate_par2_files(files: list[Path]) -> None`: Generates .par2 files with ParPar.
 
     This class is used to manage the generation of .par2 files using ParPar.
