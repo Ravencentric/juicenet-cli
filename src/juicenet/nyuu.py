@@ -13,27 +13,27 @@ from .resume import Resume
 
 class Nyuu:
     """
-    A class representing Nyuu
+    A class representing Nyuu.
 
     Attributes:
-        - `path (Path)`: The path to the directory containing the files to be uploaded
-        - `bin (Path)`: The path to Nyuu binary
-        - `conf (Path)`: The path to the Nyuu's configuration file
-        - `workdir (Optional[Path])`: Path to the directory for Nyuu execution and nzb file generation
-        - `outdir (Path)`: The path to the output directory where nzbs will end up after completion
-        - `scope (str)`: The scope of the nzbs made by Nyuu (Private or Public)
-        - `debug (bool)`: Debug mode for extra logs
-        - `resume (Resume)`: Resume class for logging uploaded files
-        - `bdmv_naming (bool)`: Use alternate naming for the output nzbs if they are BDMV discs
+        - `path (Path)`: The path to the directory containing the files to be uploaded.
+        - `bin (Path)`: The path to Nyuu binary.
+        - `conf (Path)`: The path to the Nyuu's configuration file.
+        - `workdir (Optional[Path])`: Path to the directory for Nyuu execution and nzb file generation.
+        - `outdir (Path)`: The path to the output directory where nzbs will end up after completion.
+        - `scope (str)`: The scope of the nzbs made by Nyuu (Private or Public).
+        - `debug (bool)`: Debug mode for extra logs.
+        - `resume (Resume)`: Resume class for logging uploaded files.
+        - `bdmv_naming (bool)`: Use alternate naming for the output nzbs if they are BDMV discs.
 
     Methods:
         - `move_nzb(file: Path, basedir: Path, nzb: str) -> None`: Move NZB to a specified output 
-           path in a somewhat sorted manner
-        - `cleanup(par2_files: list[Path]) -> None`: Cleans up par2 files after they are uploaded
-        - `upload(files: dict[Path, list[Path]]) -> None`: Uploads files to usenet with Nyuu
-        - `repost_raw(dump: Path) -> None`: Tries to repost failed articles from the last run
+           path in a somewhat sorted manner.
+        - `cleanup(par2_files: list[Path]) -> None`: Cleans up par2 files after they are uploaded.
+        - `upload(files: dict[Path, list[Path]]) -> None`: Uploads files to usenet with Nyuu.
+        - `repost_raw(dump: Path) -> None`: Tries to repost failed articles from the last run.
 
-    This class is used to manage the uploading and reposting of files to usenet using Nyuu
+    This class is used to manage the uploading and reposting of files to usenet using Nyuu.
     """
 
     def __init__(

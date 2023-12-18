@@ -12,19 +12,19 @@ from .enums import BarTitle, CurrentFile
 
 class ParPar:
     """
-    A class representing ParPar
+    A class representing ParPar.
 
     Attributes:
-        - `bin (Path)`: The path to ParPar binary
-        - `args (list[str])`: The list of arguments to be passed to ParPar
-        - `workdir (Optional[Path])`: Path to the directory for ParPar execution and par2 file generation
-        - `debug (bool)`:  Debug mode for extra logs
+        - `bin (Path)`: The path to ParPar binary.
+        - `args (list[str])`: The list of arguments to be passed to ParPar.
+        - `workdir (Optional[Path])`: Path to the directory for ParPar execution and par2 file generation.
+        - `debug (bool)`:  Debug mode for extra logs.
 
     Methods:
         - `map_filepath_formats(files: list[Path]) -> dict[Path, str]`: Checks if the path is a directory or file
            and maps it to the corresponding value of `--filepath-format` for ParPar.
         - `get_workdir(self, file: Path) -> Path`: Get the working directory. This is where ParPar
-           will be executed and `.par2` files will be generated
+           will be executed and `.par2` files will be generated.
         - `generate_par2_files(files: list[Path]) -> None`: Generates .par2 files with ParPar.
 
     This class is used to manage the generation of .par2 files using ParPar.
