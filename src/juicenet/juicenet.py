@@ -9,7 +9,7 @@ from loguru import logger
 from rich.traceback import install
 
 from .config import get_config, get_dump_failed_posts, read_config
-from .files import filter_empty_files, get_files, get_glob_matches, get_bdmv_discs, map_file_to_pars, move_files
+from .files import filter_empty_files, get_bdmv_discs, get_files, get_glob_matches, map_file_to_pars, move_files
 from .nyuu import Nyuu
 from .parpar import ParPar
 from .resume import Resume
@@ -122,7 +122,11 @@ def juicenet(
     logger.info(f"NZB Output: {nzb_out}")
     logger.info(f"Appdata Directory: {appdata_dir}")
     logger.info(f"Working Directory: {work_dir if work_dir else path}")
-    logger.info(f"Glob Pattern: {glob}" if glob else f"Extension: {exts}")
+    
+    if glob or bdmv:
+        logger.info(f"Glob Pattern: {glob if glob else ["*/"]}")
+    else:
+        logger.info(f"Extensions: {exts}")
 
     # Check and get `dump-failed-posts` as defined in Nyuu config
     try:

@@ -90,11 +90,11 @@ def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
             index = list(folder.rglob("BDMV/index.bdmv"))
             if len(index) == 1:
                 bdmvs.append(folder)
-                logger.info(f"BDMV: {folder}")
+                logger.info(f"BDMV: {folder.relative_to(path)}")
             else:
                 for file in index:
                     bdmvs.append(file.parents[1])
-                    logger.info(f"BDMV: {file.parents[1]}")
+                    logger.info(f"BDMV: {file.parents[1].relative_to(path)}")
 
     return bdmvs
 
