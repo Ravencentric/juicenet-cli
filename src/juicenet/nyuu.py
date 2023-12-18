@@ -24,6 +24,7 @@ class Nyuu:
         - `scope (str)`: The scope of the nzbs made by Nyuu (Private or Public)
         - `debug (bool)`: Debug mode for extra logs
         - `resume (Resume)`: Resume class for logging uploaded files
+        - `bdmv_naming (bool)`: Use alternate naming for the output nzbs if they are BDMV discs
 
     Methods:
         - `nzb_output_path(key: Path) -> Union[Path, PurePosixPath]`: Constructs the output path of the NZB
@@ -44,6 +45,7 @@ class Nyuu:
         scope: str,
         debug: bool,
         resume: Resume,
+        bdmv_naming: bool,
     ) -> None:
         self.path = path
         self.bin = bin
@@ -53,6 +55,7 @@ class Nyuu:
         self.scope = scope
         self.debug = debug
         self.resume = resume
+        self.bdmv_naming = bdmv_naming
 
     def move_nzb(self, file: Path, basedir: Path, nzb: str) -> None:
         """
@@ -90,6 +93,11 @@ class Nyuu:
 
         for key in bar:
             nzb = f"{key.name}.nzb".replace("`", "'")  # Nyuu doesn't like backticks
+
+            if self.bdmv_naming:
+                parent = key.relative_to(self.path).parent.name.replace("`", "'")
+                if parent:
+                    nzb = f"{parent}_{nzb}"
 
             nyuu = [self.bin] + ["--config", self.conf] + ["--out", nzb] + [key] + files[key]
 

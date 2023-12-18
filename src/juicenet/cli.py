@@ -77,6 +77,12 @@ def cli() -> None:
     )
 
     parser.add_argument(
+        "--bdmv",
+        action="store_true",
+        help="try to automatically find BDMV discs, can be used with --glob",
+    )
+
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="show logs",
@@ -126,6 +132,7 @@ def cli() -> None:
         only_raw=args.raw,
         skip_raw=args.skip_raw,
         glob=args.glob,
+        bdmv=args.bdmv,
         debug=args.debug,
         move=args.move,
         only_move=args.only_move,

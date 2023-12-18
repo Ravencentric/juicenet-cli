@@ -9,7 +9,7 @@ from loguru import logger
 from rich.traceback import install
 
 from .config import get_config, get_dump_failed_posts, read_config
-from .files import filter_empty_files, get_files, get_glob_matches, map_file_to_pars, move_files
+from .files import filter_empty_files, get_files, get_glob_matches, get_bdmv_discs, map_file_to_pars, move_files
 from .nyuu import Nyuu
 from .parpar import ParPar
 from .resume import Resume
@@ -35,6 +35,7 @@ def juicenet(
     only_raw: bool,
     skip_raw: bool,
     glob: list[str],
+    bdmv: bool,
     debug: bool,
     move: bool,
     only_move: bool,
@@ -144,7 +145,7 @@ def juicenet(
     parpar = ParPar(parpar_bin, parpar_args, work_dir, debug)
 
     # Initialize Nyuu class for uploading stuff ahead
-    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, resume)
+    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, resume, bdmv)
 
     if clear_resume:  # --clear-resume
         resume.clear_resume()  # Delete resume data
@@ -161,7 +162,14 @@ def juicenet(
             logger.info("No raw articles available for reposting")
         sys.exit()
 
-    if glob:  # --glob
+    if path.is_file():
+        files = [path]
+
+    elif bdmv:
+        pattern = glob if glob else ["*/"]
+        files = get_bdmv_discs(path, pattern)
+
+    elif glob:  # --glob
         try:
             files = get_glob_matches(path, glob)
         except NotImplementedError as error:
