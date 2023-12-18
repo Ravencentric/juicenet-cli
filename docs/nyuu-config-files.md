@@ -1,7 +1,7 @@
 # Configuration files for Nyuu
 
 You can read what all the options do [here](https://github.com/animetosho/Nyuu/blob/master/help-full.txt). 
-You don't need to know what each option does. Most likely you'll be good to go by just replacing the dummy values.
+You don't need to know what each option does since most likely you'll be good to go by just replacing the dummy values, but I'll recommend going through them regardless.
 You should also consider using a paid BLOCK account for uploading.
 
 ## Dummy values
@@ -124,7 +124,7 @@ All three of the provided configs below have 3 dummy values that you need to rep
     This is an alternative private config that randomizes the length of the randomizer for the schizophrenic.
 
     !!! note
-        Nyuu can accept arbitrary `js` code as input, which we can use to further randomize the built in `${rand(N)}`
+        Nyuu can accept arbitrary `JavaScript` code as input, which we can use to further randomize the built in `${rand(N)}`
 
         ```js
         ${rand(Math.floor(Math.random()*(30-10)+10))}

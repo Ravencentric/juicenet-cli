@@ -29,14 +29,22 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `--raw`                 | Only repost raw articles                                                                      |
 | `--skip-raw`            | Skip reposting raw articles                                                                   |
 | `--glob    [*/ ...]`    | Specify the glob pattern(s) to be matched instead of extensions                               |
-| `--debug`               | Show logs for debugging purposes                                                              |
+| `--bdmv`                | Try to automatically find BDMV discs, can be used with `--glob`                               |
+| `--debug`               | Show logs for debugging                                                                       |
 | `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)` before processing   |
 | `--only-move`           | Same as `--move` except it immediately exists after it's done moving                          |
 | `--exts [mkv mp4 ...]`  | Look for these extensions in `<path>`                                                         |
 | `--no-resume`           | ignore resume data                                                                            |
 | `--clear-resume`        | delete resume data                                                                            |
 
+!!! note
+    If you don't feel like using `--config` every single time, you can use the environment variable `JUICENET_CONFIG` to hold the path of your config file. If set, this will always be used unless overridden by explicitly passing `--config`.
+
 ## Examples
+
+!!! note
+    `juicenet` will automatically preserve structure for all folder uploads and discard them for singular files.
+
 
 1. Uploading the files in current working directory with config passed via the environment variable `JUICENET_CONFIG`
 
@@ -45,13 +53,23 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
     ```
     Yep, that's it. That'll do the rest for you.
 
-2. Upload files from an arbitrary directory with an explicit config
+2. Upload a single file
+
+    ```bash
+    juicenet "path/to/file.mkv" # config loaded from $JUICENET_CONFIG
+    ```
+
+    ```bash
+    juicenet --config "path/to/juicenet.yaml" "path/to/file.mkv"
+    ```
+
+3. Upload files from an arbitrary directory with an explicit config
 
     ``` bash
     juicenet --config "path/to/juicenet.yaml" "path/to/files"
     ```
 
-3. Specify arbitrary extensions at runtime, ignoring the extensions defined in config
+4. Specify arbitrary extensions at runtime, ignoring the extensions defined in config
 
     ``` bash
     juicenet --exts mp4 epub # CWD
@@ -61,7 +79,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
     juicenet "path/to/files" --exts mp4 epub
     ```
 
-4. Upload all subfolders while preserving their structure
+5. Upload all subfolders in `<path>`
 
     ``` bash
     juicenet --glob "*/" # CWD
@@ -71,17 +89,28 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
     juicenet "path/to/files" --glob "*/"
     ```
 
-5. Upload all subfolders with the word "BDMV" and "UHD" in it while preserving their structure
+6. Upload all subfolders with the word "BDMV" anywhere in their name and all the subfolders that start with the word "UHD"
 
     ``` bash
-    juicenet --glob "*BDMV*/" "*UHD*/" # CWD
+    juicenet --glob "*BDMV*/" "UHD*/" # CWD
     ```
 
     ``` bash
     juicenet "path/to/files" --glob "*BDMV*/" "*UHD*/"
     ```
 
-6. Only Upload E10 to E15 from a folder with all the episodes
+7. Upload BDMV discs automatically (This may not be perfect, it simply finds BDMVs by looking for `BDMV/index.bdmv`)
+
+    ``` bash
+    juicenet "path/to/files" --bdmv
+    ```
+    Can be paired with `--glob` to further filter what you want to upload
+
+    ``` bash
+    juicenet "path/to/files" --bdmv --glob "*BDMV*/" "*UHD*/"
+    ```
+
+8. Only Upload E10 to E15 from a folder with all the episodes
 
     ``` bash
     juicenet --glob "S01E1[0-5]" # CWD
