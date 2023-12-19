@@ -79,7 +79,7 @@ def cli() -> None:
     parser.add_argument(
         "--bdmv",
         action="store_true",
-        help="try to automatically find BDMV discs, can be used with --glob",
+        help="find and upload BDMV discs in cwd, can be used with --glob",
     )
 
     parser.add_argument(

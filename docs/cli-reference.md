@@ -29,7 +29,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `--raw`                 | Only repost raw articles                                                                      |
 | `--skip-raw`            | Skip reposting raw articles                                                                   |
 | `--glob    [*/ ...]`    | Specify the glob pattern(s) to be matched instead of extensions                               |
-| `--bdmv`                | Try to automatically find BDMV discs, can be used with `--glob`                               |
+| `--bdmv`                | Find and upload BDMV discs in cwd, can be used with `--glob`                                  |
 | `--debug`               | Show logs for debugging                                                                       |
 | `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)` before processing   |
 | `--only-move`           | Same as `--move` except it immediately exists after it's done moving                          |
@@ -99,12 +99,15 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
     juicenet "path/to/files" --glob "*BDMV*/" "*UHD*/"
     ```
 
-7. Upload BDMV discs automatically (This may not be perfect, it simply finds BDMVs by looking for `BDMV/index.bdmv`)
+7. Find and upload BDMV discs in current working directory automatically
+
+    !!! note
+        This may not be perfect, it simply finds BDMVs by looking for `BDMV/index.bdmv`
 
     ``` bash
     juicenet "path/to/files" --bdmv
     ```
-    Can be paired with `--glob` to further filter what you want to upload
+    Can be paired with `--glob` to further filter what you want to upload. For example, if you only want to find BDMV discs in folders that have the word "BDMV" and "UHD" in them, you would run the following command
 
     ``` bash
     juicenet "path/to/files" --bdmv --glob "*BDMV*/" "*UHD*/"
