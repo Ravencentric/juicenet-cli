@@ -66,16 +66,17 @@ def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
                 ├── index.bdmv
                 └── MovieObject.bdmv
     ```
-    This functions finds the `index.bdmv` located under `BDMV`,
-    and then goes two directories up.
+    From the above example, this function finds the
+    `BDMV/index.bdmv` file and then goes 1 directory up 
+    relative to `BDMV/index.bdmv` which ends up being `DISC_01`
 
-    Example:
+    Practical Examples:
 
-    Found:
+    - Found:
         - `Big Buck Bunny [Vol.1]/DISC_01/BDMV/index.bdmv`
         - `Big Buck Bunny [Vol.2]/DISC_01/BDMV/index.bdmv`
 
-    Return:
+    - Return:
         - `Big Buck Bunny [Vol.1]/DISC_01`
         - `Big Buck Bunny [Vol.2]/DISC_01`
 
