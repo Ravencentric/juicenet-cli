@@ -1,3 +1,4 @@
+import shlex
 import shutil
 import subprocess
 from pathlib import Path
@@ -27,7 +28,7 @@ class Nyuu:
         - `bdmv_naming (bool)`: Use alternate naming for the output nzbs if they are BDMV discs.
 
     Methods:
-        - `move_nzb(file: Path, basedir: Path, nzb: str) -> None`: Move NZB to a specified output 
+        - `move_nzb(file: Path, basedir: Path, nzb: str) -> None`: Move NZB to a specified output
            path in a somewhat sorted manner.
         - `cleanup(par2_files: list[Path]) -> None`: Cleans up par2 files after they are uploaded.
         - `upload(files: dict[Path, list[Path]]) -> None`: Uploads files to usenet with Nyuu.
@@ -102,7 +103,7 @@ class Nyuu:
 
             nyuu = [self.bin] + ["--config", self.conf] + ["--out", nzb] + [key] + files[key]
 
-            logger.debug(nyuu)
+            logger.debug(shlex.join(str(arg) for arg in nyuu))
             bar.text(f"{CurrentFile.NYUU} {key.name} ({self.scope})")
 
             cwd = self.workdir if self.workdir else key.parent  # this is where nyuu will be executed
@@ -143,7 +144,7 @@ class Nyuu:
             )
 
             bar.text(f"{CurrentFile.RAW} {article.name}")
-            logger.debug(nyuu)
+            logger.debug(shlex.join(str(arg) for arg in nyuu))
 
             subprocess.run(nyuu, cwd=self.path, stdout=sink, stderr=sink)  # type: ignore
 

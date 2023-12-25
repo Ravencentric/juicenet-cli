@@ -4,7 +4,7 @@ from pathlib import Path
 
 import yaml
 
-from .types import JuicenetConfig
+from .model import JuicenetConfig
 
 
 def get_config(path: Path) -> Path:
@@ -31,10 +31,12 @@ def get_config(path: Path) -> Path:
 def read_config(path: Path) -> JuicenetConfig:
     """
     Reads the yaml config file
+
+    Returns a JuicenetConfig object with the data validated and type casted
     """
-    # safe_load returns a dict as `any`
-    config: JuicenetConfig = yaml.safe_load(path.read_text())
-    return config
+    data = yaml.safe_load(path.read_text()) or {}
+
+    return JuicenetConfig.model_validate(data)
 
 
 def get_dump_failed_posts(conf: Path) -> Path:
