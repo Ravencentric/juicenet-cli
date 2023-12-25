@@ -2,10 +2,10 @@ import json
 import signal
 import sys
 from pathlib import Path
-from tempfile import TemporaryDirectory
 
 from alive_progress import config_handler
 from loguru import logger
+from pydantic import ValidationError
 from rich.traceback import install
 
 from .config import get_config, get_dump_failed_posts, read_config
@@ -68,50 +68,35 @@ def juicenet(
     # Read config file
     try:
         conf_path = get_config(conf_path)
-        config = read_config(conf_path)
+        conf_data = read_config(conf_path)
     except FileNotFoundError as error:
-        logger.error(f"No such file: {error.filename}")
-        logger.error("You can provide the config in 3 ways:")
-        logger.error("1. Explicitly pass --config")
-        logger.error("2. Set the 'JUICENET_CONFIG' env variable")
-        logger.error("3. Place 'juicenet.yaml' in the current working directory")
+        logger.error(f"Config file not found: {error.filename}")
+        sys.exit()
+    except ValidationError as errors:
+        logger.error(f"{errors.error_count()} errors in {conf_path.name}")
+        for err in errors.errors():
+            logger.error(f"{err.get('loc')[0]}: {err.get('msg')}")  # type: ignore
         sys.exit()
 
-    # Get the required values from config
-    try:
-        nyuu_bin = Path(config["NYUU"])
-        parpar_bin = Path(config["PARPAR"])
-        priv_conf = Path(config["NYUU_CONFIG_PRIVATE"])
-        nzb_out = Path(config["NZB_OUTPUT_PATH"])
-        exts = list(extensions if extensions else config["EXTENSIONS"])
-        parpar_args = list(config["PARPAR_ARGS"])
-    except KeyError as key:
-        logger.error(f"{key} is missing in {conf_path}")
-        sys.exit()
-
-    # Get optional values from config
-    pub_conf = Path(config.get("NYUU_CONFIG_PUBLIC", priv_conf))
-
-    appdata_dir = Path(config.get("APPDATA_DIR_PATH", Path.home()))
-    appdata_dir = appdata_dir / ".juicenet"
+    # Get the values from config
+    nyuu_bin = conf_data.NYUU.resolve()
+    parpar_bin = conf_data.PARPAR.resolve()
+    priv_conf = conf_data.NYUU_CONFIG_PRIVATE
+    pub_conf = conf_data.NYUU_CONFIG_PUBLIC or priv_conf
+    nzb_out = conf_data.NZB_OUTPUT_PATH.resolve()
+    exts = extensions or conf_data.EXTENSIONS
+    parpar_args = conf_data.PARPAR_ARGS
+    appdata_dir = conf_data.APPDATA_DIR_PATH.resolve()
     appdata_dir.mkdir(parents=True, exist_ok=True)
-
     resume_file = appdata_dir / "juicenet.resume"
-    resume_file.touch(exist_ok=True)
 
-    use_temp_dir = config.get("USE_TEMP_DIR", True)
-    temp_dir_path = config.get("TEMP_DIR_PATH")
-
-    if use_temp_dir:
-        temp_dir = TemporaryDirectory(prefix=".JUICENET_", ignore_cleanup_errors=True)
-        work_dir = Path(temp_dir.name).resolve()
-        if temp_dir_path is not None:
-            work_dir = Path(temp_dir_path)
+    if conf_data.USE_TEMP_DIR:
+        work_dir = conf_data.TEMP_DIR_PATH
     else:
         work_dir = None
 
     # Decide which config file to use
-    configurations = {"public": pub_conf, "private": priv_conf}
+    configurations = {"public": pub_conf.resolve(), "private": priv_conf.resolve()}
     scope = "public" if public else "private"
     conf = configurations[scope]
 
@@ -121,10 +106,10 @@ def juicenet(
     logger.info(f"Nyuu Config: {conf}")
     logger.info(f"NZB Output: {nzb_out}")
     logger.info(f"Appdata Directory: {appdata_dir}")
-    logger.info(f"Working Directory: {work_dir if work_dir else path}")
-    
+    logger.info(f"Working Directory: {work_dir or path}")
+
     if glob or bdmv:
-        logger.info(f"Glob Pattern: {glob if glob else ['*/']}")
+        logger.info(f"Glob Pattern: {glob or ['*/']}")
     else:
         logger.info(f"Extensions: {exts}")
 
@@ -166,10 +151,10 @@ def juicenet(
             logger.info("No raw articles available for reposting")
         sys.exit()
 
-    if path.is_file():
+    if path.is_file():  # juicenet "file.mkv"
         files = [path]
 
-    elif bdmv:
+    elif bdmv:  # --bdmv
         pattern = glob if glob else ["*/"]
         files = get_bdmv_discs(path, pattern)
 
@@ -204,7 +189,7 @@ def juicenet(
     total = len(files)
     logger.debug(f"Total files: {total}")
 
-    # Filter out empty paths
+    # Filter out empty paths and remove anything that isn't a directory or file
     files = filter_empty_files(files)
 
     non_empty_count = len(files)

@@ -1,5 +1,6 @@
 import glob
 import subprocess
+import shlex
 from pathlib import Path
 from typing import Optional
 from uuid import uuid4
@@ -95,7 +96,7 @@ class ParPar:
                 + ["--out", file.name, file]
             )
 
-            logger.debug(parpar)
+            logger.debug(shlex.join(str(arg) for arg in parpar))
             bar.text(f"{CurrentFile.PARPAR} {file.name}")
 
             # Get the working directory

@@ -67,7 +67,7 @@ def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
                 └── MovieObject.bdmv
     ```
     From the above example, this function finds the
-    `BDMV/index.bdmv` file and then goes 1 directory up 
+    `BDMV/index.bdmv` file and then goes 1 directory up
     relative to `BDMV/index.bdmv` which ends up being `DISC_01`
 
     Practical Examples:
@@ -164,7 +164,7 @@ def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, l
         first_par2_file = parent / f"{file.name}.par2"
         if first_par2_file.is_file():
             par2_files.append(first_par2_file)
-        
+
         # Rest of the par2 files strictly follow the `foobar.mkv.vol01+02.par2` naming scheme
         par2_files.extend(list(parent.glob(f"{glob.escape(file.name)}.vol*.par2")))
         mapping[file] = par2_files
