@@ -34,7 +34,7 @@ class JuicenetConfig(BaseModel):
     USE_TEMP_DIR: bool = True
     """Whether or not to use a temporary directory for processing"""
 
-    TEMP_DIR_PATH: DirectoryPath = Path(TemporaryDirectory(prefix=".JUICENET_", ignore_cleanup_errors=True).name).resolve()
+    TEMP_DIR_PATH: DirectoryPath = Path(TemporaryDirectory(prefix=".JUICENET_").name).resolve()
     """Path to a specific temporary directory if USE_TEMP_DIR is True. If unspecified, it uses %Temp% or /tmp"""
 
     APPDATA_DIR_PATH: Path = Path.home() / ".juicenet"
