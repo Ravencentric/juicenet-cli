@@ -1,12 +1,12 @@
 ---
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.8
+    rev: v0.1.9
     hooks:
       - id: ruff
         args: ['--fix']
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.8
+    rev: v0.1.9
     hooks:
       - id: ruff-format
   - repo: https://github.com/python-poetry/poetry
@@ -18,7 +18,3 @@ repos:
         args: ['-f', 'requirements.txt', '--without-hashes', '--without', 'dev,docs', '--output', 'requirements.txt']
       - id: poetry-export
         args: ['-f', 'requirements.txt', '--without-hashes', '--with', 'dev,docs', '--output', 'requirements-dev.txt']
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.1
-    hooks:
-      - id: mypy
