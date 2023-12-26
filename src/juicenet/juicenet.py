@@ -90,7 +90,7 @@ def juicenet(
     appdata_dir = conf_data.APPDATA_DIR_PATH.resolve()
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
-    resume_file.touch()
+    resume_file.touch(exist_ok=True)
 
     if conf_data.USE_TEMP_DIR:
         work_dir = conf_data.TEMP_DIR_PATH
