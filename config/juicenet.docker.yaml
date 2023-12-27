@@ -1,0 +1,9 @@
+# All paths here reflect the inside of the container. These must
+# be identical to the container paths passed in docker-compose.yml
+NYUU_CONFIG_PRIVATE: /config/nyuu.docker.private.json
+NYUU_CONFIG_PUBLIC: /config/nyuu.docker.public.json
+NZB_OUTPUT_PATH: /data/nzbs
+EXTENSIONS: ["mkv"]
+USE_TEMP_DIR: True
+APPDATA_DIR_PATH: /data/appdata
+PARPAR_ARGS: ["--overwrite", "-s700k", "--slice-size-multiple=700K", "--max-input-slices=4000", "-r1n*1.2", "-R"]
