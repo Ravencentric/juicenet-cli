@@ -42,7 +42,6 @@ jobs:
           images: |
             ${{ github.repository }}
             ghcr.io/${{ github.repository }}
-            ghcr.io/juicenet
       
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
