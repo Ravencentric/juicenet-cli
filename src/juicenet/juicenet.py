@@ -86,7 +86,7 @@ def juicenet(
     nzb_out = conf_data.NZB_OUTPUT_PATH.resolve()
     exts = extensions or conf_data.EXTENSIONS
     parpar_args = conf_data.PARPAR_ARGS
-    
+
     appdata_dir = conf_data.APPDATA_DIR_PATH.resolve()
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
