@@ -1,4 +1,4 @@
-# Installation
+# Local Installation
 
 ## Prerequisites
 
