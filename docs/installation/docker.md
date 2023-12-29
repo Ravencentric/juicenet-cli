@@ -1,18 +1,19 @@
 # Docker Installation
 
-`juicenet` is available as a docker image on both [ghcr.io](https://github.com/Ravencentric/juicenet-cli/pkgs/container/juicenet-cli) and [Docker Hub](https://hub.docker.com/r/ravencentric/juicenet-cli)
+`juicenet` is available as a docker image on both [Docker Hub](https://hub.docker.com/r/ravencentric/juicenet-cli) and [ghcr.io](https://github.com/Ravencentric/juicenet-cli/pkgs/container/juicenet-cli).
 
-=== "ghcr"
-
-``` shell
-docker pull ghcr.io/ravencentric/juicenet-cli
-```
 
 === "Docker Hub"
 
-``` shell
-docker pull ravencentric/juicenet-cli
-```
+    ``` shell
+    docker pull ravencentric/juicenet-cli
+    ```
+
+=== "ghcr"
+
+    ``` shell
+    docker pull ghcr.io/ravencentric/juicenet-cli
+    ```
 
 ### `docker-compose.yml`
 
@@ -21,6 +22,7 @@ docker pull ravencentric/juicenet-cli
 docker-compose.yml
 --8<--
 ```
+
 !!! note
     The value of `dump-failed-posts` in your [nyuu config](../nyuu-config-files.md) must match the compose file, i.e, it must be set to `/data/raw`
 
