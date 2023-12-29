@@ -18,6 +18,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/juicenet-cli?link=https%3A%2F%2Fpypi.org%2Fproject%2Fjuicenet-cli%2F)](https://pypi.org/project/juicenet-cli/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/juicenet-cli)
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Ravencentric/juicenet-cli/release.yml)
+[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/ravencentric/juicenet-cli/docker.yml?label=docker)](https://hub.docker.com/r/ravencentric/juicenet-cli)
 ![License](https://img.shields.io/github/license/Ravencentric/juicenet-cli)
 ![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)
 ![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
@@ -27,9 +28,9 @@
 ## Table Of Contents
 
 * [About the Project](#about-the-project)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
+* [Installation](#installation)
+  * [Local](#local)
+  * [Docker](#docker)
 * [Docs](#docs)
 * [License](#license)
 
@@ -46,19 +47,17 @@ Uploading stuff to usenet is tedious so I tried to make it easier.
 * Automatically checks for and reposts failed articles from last run. Also has the option to not do this.
 * Can continue from where it stopped if it gets interrupted for any reason
 
-## Getting Started
+## Installation
 
-`juicenet` is built with Python and uses Nyuu and ParPar under the hood.
+### Local
 
-### Prerequisites
+#### Prerequisites
 
 * [Python >=3.9](https://www.python.org/downloads/)
 * [ParPar >= 0.4.2](https://github.com/animetosho/ParPar)
 * [Nyuu >= git@a4b1712](https://github.com/animetosho/Nyuu)
 
-For detailed instructions, check out the [docs](https://juicenet.in/installation/)
-
-### Installation
+#### Installation
 
 1. With [pipx](https://pypa.github.io/pipx/installation/) (recommended):
 
@@ -72,40 +71,39 @@ For detailed instructions, check out the [docs](https://juicenet.in/installation
     pip install juicenet-cli
     ```
 
-3. From source with [poetry](https://python-poetry.org/docs/#installation):
-    > **Note**: The `main` branch is not stable and maybe broken. Use this method if you know what you're doing. Stable (mostly) builds can be found in [releases](https://github.com/Ravencentric/juicenet-cli/releases) or [PyPI](https://pypi.org/project/juicenet-cli/)
+For more details, checkout the local installation guide [here](https://juicenet.in/installation/docker/)
 
-    ```sh
-    git clone https://github.com/Ravencentric/juicenet-cli.git
-    ```
+### Docker
 
-    ```sh
-    cd juicenet-cli
-    ```
+```yaml
+---
+version: "2.1"
+services:
+  juicenet:
+    image: ravencentric/juicenet-cli:latest
+    container_name: juicenet
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - host/path/to/config/nyuu.docker.private.json:/config/nyuu.docker.private.json
+      - host/path/to/config/nyuu.docker.public.json:/config/nyuu.docker.public.json
+      - host/path/to/data/nzbs:/data/nzbs
+      - host/path/to/data/appdata:/data/appdata
+      - host/path/to/data/raw:/data/raw
+      - host/path/to/media:/media
+```
 
-    Run:
+```shell
+docker compose -f "path/to/docker-compose.yml" run juicenet --help
+```
 
-    ```sh
-    poetry install
-    ```
-
-    ```sh
-    poetry shell
-    ```
-
-    ```sh
-    python -m juicenet --help
-    ```
-
-    Build:
-
-    ```sh
-    poetry build
-    ```
+For more details, checkout the docker installation guide [here](https://juicenet.in/installation/docker/)
 
 ## Docs
 
-Checkout the documentation [here](https://juicenet.in/)
+Checkout the complete documentation [here](https://juicenet.in/)
 
 ## License
 

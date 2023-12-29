@@ -64,11 +64,13 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Installation: installation.md
+  - Installation:
+      - Local: installation/local.md
+      - Docker: installation/docker.md
   - Configuration: configuration.md
   - CLI Reference: cli-reference.md
   - Config Files for Nyuu: nyuu-config-files.md
   - Troubleshoot: troubleshoot.md
   - Archive:
-      - Uploading to usenet: uploading-to-usenet.md
-      - ParPar filepath formats: parpar-filepath-formats.md
+      - Uploading to usenet: archive/uploading-to-usenet.md
+      - ParPar filepath formats: archive/parpar-filepath-formats.md

@@ -9,6 +9,7 @@ RUN npm install -g @animetosho/parpar
 WORKDIR /app
 
 COPY . .
+COPY ./config/juicenet.docker.yaml /config/juicenet.docker.yaml
 
 RUN pip install .
 

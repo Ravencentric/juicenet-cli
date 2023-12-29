@@ -14,7 +14,7 @@ class JuicenetConfig(BaseModel):
     """The path to the ParPar binary"""
 
     NYUU: Annotated[FilePath, Field(validate_default=True)] = which("nyuu") # type: ignore
-    """The path to the Nyuu executable"""
+    """The path to the Nyuu binary"""
 
     NYUU_CONFIG_PRIVATE: FilePath
     """The path to the private Nyuu configuration file"""

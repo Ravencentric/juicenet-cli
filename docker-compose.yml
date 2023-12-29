@@ -1,19 +1,17 @@
-# ---
-# version: "3.8"
-# services:
-#   juicenet:
-#     image: juicenet
-#     container_name: juicenet
-#     environment:
-#       - PUID=1000
-#       - PGID=1000
-#       - TZ=Etc/UTC
-#     volumes:
-#       - host/path/to/config/juicenet.docker.yaml:/config/juicenet.docker.yaml
-#       - host/path/to/config/nyuu.docker.private.json:/config/nyuu.docker.private.json
-#       - host/path/to/config/nyuu.docker.private.json:/config/nyuu.docker.public.json
-#       - host/path/to/data/nzbs:/data/nzbs
-#       - host/path/to/data/appdata:/data/appdata
-#       - host/path/to/data/raw:/data/raw
-#       - host/path/to/media:/media
-
+---
+version: "2.1"
+services:
+  juicenet:
+    image: ravencentric/juicenet-cli:latest
+    container_name: juicenet
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - host/path/to/config/nyuu.docker.private.json:/config/nyuu.docker.private.json
+      - host/path/to/config/nyuu.docker.public.json:/config/nyuu.docker.public.json
+      - host/path/to/data/nzbs:/data/nzbs
+      - host/path/to/data/appdata:/data/appdata
+      - host/path/to/data/raw:/data/raw
+      - host/path/to/media:/media

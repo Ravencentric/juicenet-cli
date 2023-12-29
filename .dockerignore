@@ -168,5 +168,4 @@ test*.py
 
 # stuff not required for bulding the image
 .github/
-config/
 docs/

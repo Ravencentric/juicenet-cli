@@ -2,9 +2,31 @@
 
 Before you can use `juicenet`, you'll have to configure it. This is a one time thing after which you can pretty much forget about it.
 
-## juicenet.yaml
+## Reference
 
-`juicenet` requires you to put your configuration in a file called `juicenet.yaml`. Below is an example `juicenet.yaml` which you can copy and edit:
+`juicenet` requires you to put your configuration in a file called `juicenet.yaml`.
+
+### Required keys
+
+| Key                 | Description                                                 |
+| ------------------- | ----------------------------------------------------------- |
+| NYUU_CONFIG_PRIVATE | Path to a valid Nyuu configuration file                     |
+| NZB_OUTPUT_PATH     | Path to a directory where `juicenet` will store it's output |
+
+### Optional keys
+
+| Key                | Description                                                    | Default                                                                             |
+|--------------------|----------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| PARPAR             | The path to the ParPar binary                                  | `PATH`                                                                              |
+| NYUU               | The path to the Nyuu binary                                    | `PATH`                                                                              |
+| NYUU_CONFIG_PUBLIC | The path to the public Nyuu configuration file                 | `NYUU_CONFIG_PRIVATE`                                                               |
+| EXTENSIONS         | The list of file extensions to be processed                    | `["mkv"]`                                                                           |
+| PARPAR_ARGS        | The arguments to be passed to the ParPar binary                | `--overwrite -s700k --slice-size-multiple=700K --max-input-slices=4000 -r1n*1.2 -R` |
+| USE_TEMP_DIR       | Whether or not to use a temporary directory for processing     | `True`                                                                              |
+| TEMP_DIR_PATH      | Path to a specific temporary directory if USE_TEMP_DIR is True | `%Temp%` or `/tmp/`                                                                 |
+| APPDATA_DIR_PATH   | The path to the folder where juicenet will store its data      | `~/.juicenet`                                                                       |
+
+### Example configuration file
 
 ``` yaml
 --8<--
@@ -18,7 +40,7 @@ Now that you've got your `juicenet.yaml` ready, you have to pass it to `juicenet
 
 - Using the command-line argument
 
-    ```console
+    ``` shell
     juicenet --config "path/to/juicenet.yaml" [OPTIONS] <path>
     ```
 
