@@ -7,7 +7,7 @@ Filepath format is what allows us to either discard paths for singular files or 
 
 ParPar's help text on `--filepath-format`:
 
-``` console
+``` shell
   -f,  --filepath-format     How to format input file paths, can be either:
                                  basename: discard paths
                                  keep: retain full paths as specified
@@ -61,13 +61,13 @@ I'll be using `[EAC][170215] Porter Robinson & Madeon - SHELTER` BDMV as an exam
 
 Example:
 
-``` console
+``` shell
 parpar [args] --filepath-format basename -o "[EAC][170215] Porter Robinson & Madeon - SHELTER" "[EAC][170215] Porter Robinson & Madeon - SHELTER"
 ```
 
 Result:
 
-``` console
+``` shell
 00000.1.clpi
 00000.1.mpls
 00000.clpi
@@ -102,25 +102,25 @@ As you can see it simply discarded all paths and added numbers to duplicate file
 
 Example 1:
 
-``` console
+``` shell
 parpar [args] --filepath-format keep -o "anything-goes-here" "[EAC][170215] Porter Robinson & Madeon - SHELTER"
 ```
 
 Result:
 
-``` console
+``` shell
 [EAC][170215] Porter Robinson & Madeon - SHELTER\BDROM\PORTER_ROBINSON_MADEON_SHELTER\BDMV\BACKUP\CLIPINF\00000.clpi
 ```
 
 Example 2:
 
-``` console
+``` shell
 parpar [args] --filepath-format keep -o "anything-goes-here" "D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER\BDROM\PORTER_ROBINSON_MADEON_SHELTER\BDMV\BACKUP\CLIPINF\00000.clpi"
 ```
 
 Result:
 
-``` console
+``` shell
 D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER\BDROM\PORTER_ROBINSON_MADEON_SHELTER\BDMV\BACKUP\CLIPINF\00000.clpi
 ```
 
@@ -131,13 +131,13 @@ D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER\BDROM\PORTER_R
 
 Example:
 
-``` console
+``` shell
 parpar [args] --filepath-format common -o "anything-goes-here" "[EAC][170215] Porter Robinson & Madeon - SHELTER"
 ```
 
 Result:
 
-``` console
+``` shell
 BDMV\BACKUP\CLIPINF\00000.clpi
 ```
 
@@ -151,13 +151,13 @@ Look at the BDMV directory structure provided at the top and see how `[EAC][1702
 
 Example 1:
 
-``` console
+``` shell
 parpar [args] --filepath-format outrel -o "[EAC][170215] Porter Robinson & Madeon - SHELTER" "D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER"
 ```
 
 Result:
 
-``` console
+``` shell
 [EAC][170215] Porter Robinson & Madeon - SHELTER\BDROM\PORTER_ROBINSON_MADEON_SHELTER\BDMV\BACKUP\CLIPINF\00000.clpi
 ```
 
@@ -166,13 +166,13 @@ I passed `"[EAC][170215] Porter Robinson & Madeon - SHELTER"` as my output path 
 
 Example 2:
 
-``` console
+``` shell
 parpar [args] --filepath-format outrel -o "D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER" "D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER"
 ```
 
 Result:
 
-``` console
+``` shell
 [EAC][170215] Porter Robinson & Madeon - SHELTER\BDROM\PORTER_ROBINSON_MADEON_SHELTER\BDMV\BACKUP\CLIPINF\00000.clpi
 ```
 
@@ -181,13 +181,13 @@ I passed `"D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER"` a
 
 Example 3:
 
-``` console
+``` shell
 parpar [args] --filepath-format outrel -o "C:\test\[EAC][170215] Porter Robinson & Madeon - SHELTER" "D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER"
 ```
 
 Result:
 
-``` console
+``` shell
 D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER\BDROM\PORTER_ROBINSON_MADEON_SHELTER\BDMV\BACKUP\CLIPINF\00000.clpi
 ```
 
@@ -202,13 +202,13 @@ My current working directory: `D:\topdir`
 
 Example:
 
-``` console
+``` shell
 parpar [args] --filepath-base "D:\topdir\subdir" --filepath-format path -o "arbitrary\path\[EAC][170215] Porter Robinson & Madeon - SHELTER" "D:\topdir\subdir\[EAC][170215] Porter Robinson & Madeon - SHELTER"
 ```
 
 Result:
 
-``` console
+``` shell
 [EAC][170215] Porter Robinson & Madeon - SHELTER\BDROM\PORTER_ROBINSON_MADEON_SHELTER\BDMV\BACKUP\CLIPINF\00000.clpi
 ```
 

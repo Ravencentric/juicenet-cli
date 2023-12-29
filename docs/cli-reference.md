@@ -2,13 +2,13 @@
 
 ## Usage
 
-```console
+``` shell
 $ juicenet [OPTIONS] <path>
 ```
-```console
+``` shell
 $ juicenet <path> [OPTIONS]
 ```
-```console
+``` shell
 $ juicenet [OPTIONS] <path> [OPTIONS]
 ```
 

@@ -81,13 +81,13 @@ Since `juicenet` uses Nyuu and ParPar, you need to have these installed. Follow 
 
 1. With [pipx](https://pypa.github.io/pipx/installation/) (recommended):
 
-    ```console
+    ``` shell
     pipx install juicenet-cli
     ```
 
 2. With pip:
 
-    ```console
+    ``` shell
     pip install juicenet-cli
     ```
 
@@ -98,26 +98,26 @@ Since `juicenet` uses Nyuu and ParPar, you need to have these installed. Follow 
 
         Stable (mostly) builds can be found in [releases](https://github.com/Ravencentric/juicenet-cli/releases) or [PyPI](https://pypi.org/project/juicenet-cli/).
 
-    ```console
+    ``` shell
     git clone https://github.com/Ravencentric/juicenet-cli.git
     ```
 
-    ```console
+    ``` shell
     cd juicenet-cli
     ```
 
     Run:
 
-    ```console
+    ``` shell
     poetry install
     ```
 
-    ```console
+    ``` shell
     poetry run juicenet --help
     ```
 
     Build:
 
-    ```console
+    ``` shell
     poetry build
     ```
