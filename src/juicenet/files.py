@@ -185,3 +185,11 @@ def move_files(files: list[Path]) -> None:
             src.rename(dst)  # ./foo/01.mkv -> ./foo/01/01.mkv
 
             logger.debug(f"File Move: {src} -> {dst}")
+
+
+def delete_files(files: list[Path]) -> None:
+    """
+    Delete the files in the given list
+    """
+    for file in files:
+        file.unlink(missing_ok=True)

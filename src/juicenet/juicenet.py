@@ -9,7 +9,15 @@ from pydantic import ValidationError
 from rich.traceback import install
 
 from .config import get_config, get_dump_failed_posts, read_config
-from .files import filter_empty_files, get_bdmv_discs, get_files, get_glob_matches, map_file_to_pars, move_files
+from .files import (
+    filter_empty_files,
+    get_bdmv_discs,
+    get_files,
+    get_glob_matches,
+    map_file_to_pars,
+    delete_files,
+    move_files,
+)
 from .nyuu import Nyuu
 from .parpar import ParPar
 from .resume import Resume
@@ -34,6 +42,7 @@ def juicenet(
     only_parpar: bool,
     only_raw: bool,
     skip_raw: bool,
+    clear_raw: bool,
     glob: list[str],
     bdmv: bool,
     debug: bool,
@@ -102,19 +111,6 @@ def juicenet(
     scope = "public" if public else "private"
     conf = configurations[scope]
 
-    logger.info(f"Config: {conf_path}")
-    logger.info(f"Nyuu: {nyuu_bin}")
-    logger.info(f"ParPar: {parpar_bin}")
-    logger.info(f"Nyuu Config: {conf}")
-    logger.info(f"NZB Output: {nzb_out}")
-    logger.info(f"Appdata Directory: {appdata_dir}")
-    logger.info(f"Working Directory: {work_dir or path}")
-
-    if glob or bdmv:
-        logger.info(f"Glob Pattern: {glob or ['*/']}")
-    else:
-        logger.info(f"Extensions: {exts}")
-
     # Check and get `dump-failed-posts` as defined in Nyuu config
     try:
         dump = get_dump_failed_posts(conf)
@@ -127,6 +123,28 @@ def juicenet(
         sys.exit()
     except FileNotFoundError as error:
         logger.error(f"No such file: {error.filename}")
+        sys.exit()
+
+    logger.info(f"Config: {conf_path}")
+    logger.info(f"Nyuu: {nyuu_bin}")
+    logger.info(f"ParPar: {parpar_bin}")
+    logger.info(f"Nyuu Config: {conf}")
+    logger.info(f"NZB Output: {nzb_out}")
+    logger.info(f"Raw Articles: {dump}")
+    logger.info(f"Appdata Directory: {appdata_dir}")
+    logger.info(f"Working Directory: {work_dir or path}")
+
+    if glob or bdmv:
+        logger.info(f"Glob Pattern: {glob or ['*/']}")
+    else:
+        logger.info(f"Extensions: {exts}")
+
+    # --clear-raw
+    if clear_raw:
+        raw = get_glob_matches(dump, ["*"])
+        count = len(raw)
+        delete_files(raw)
+        logger.info(f"Deleted {count} raw articles(s)")
         sys.exit()
 
     # Initialize Resume class
