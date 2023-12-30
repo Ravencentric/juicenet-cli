@@ -8,7 +8,7 @@ from alive_progress import alive_it
 from loguru import logger
 
 from .enums import BarTitle, CurrentFile
-from .files import get_glob_matches
+from .files import delete_files, get_glob_matches
 from .resume import Resume
 
 
@@ -76,14 +76,6 @@ class Nyuu:
 
         logger.debug(f"NZB Move: {src} -> {dst}")
 
-    @staticmethod
-    def cleanup(par2_files: list[Path]) -> None:
-        """
-        Clean up par2 files after they are uploaded
-        """
-        for par2 in par2_files:
-            par2.unlink(missing_ok=True)
-
     def upload(self, files: dict[Path, list[Path]]) -> None:
         """
         Upload files to usenet with Nyuu
@@ -116,7 +108,7 @@ class Nyuu:
             self.resume.log_file_info(key)
 
             # Cleanup par2 files for the uploaded file
-            self.cleanup(files[key])
+            delete_files(files[key])
 
     def repost_raw(self, dump: Path) -> None:
         """
@@ -153,4 +145,4 @@ class Nyuu:
             logger.success("All raw articles reposted")
         else:
             logger.info(f"Reposted {raw_count-raw_final_count} articles")
-            logger.warning(f"Failed to repost {raw_final_count} articles. Either retry or delete these manually")
+            logger.warning(f"Failed to repost {raw_final_count} articles. Either retry or use --clear-raw")

@@ -69,6 +69,12 @@ def cli() -> None:
     )
 
     parser.add_argument(
+        "--clear-raw",
+        action="store_true",
+        help="delete existing raw articles",
+    )
+
+    parser.add_argument(
         "--glob",
         nargs="*",
         default=[],
@@ -131,6 +137,7 @@ def cli() -> None:
         only_parpar=args.parpar,
         only_raw=args.raw,
         skip_raw=args.skip_raw,
+        clear_raw=args.clear_raw,
         glob=args.glob,
         bdmv=args.bdmv,
         debug=args.debug,
