@@ -7,7 +7,7 @@
   <h3 align="center">juicenet</h3>
 
   <p align="center">
-    CLI tool designed to simplify the process of uploading files to usenet
+    CLI tool designed to simplify the process of uploading files to Usenet
     <br/>
     <br/>
   </p>
@@ -25,7 +25,7 @@
 
 ## About The Project
 
-Uploading stuff to usenet is tedious so I tried to make it easier.
+Uploading stuff to Usenet is tedious so I tried to make it easier.
 
 * Uses [ParPar](https://github.com/animetosho/ParPar) and [Nyuu](https://github.com/animetosho/Nyuu) under the hood
 * Recursively searches for files with pre-defined extensions in `juicenet.yaml` or as passed in `--exts`

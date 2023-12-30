@@ -1,7 +1,7 @@
 # Project information
 site_name: juicenet
 site_author: Ravencentric
-site_description: CLI tool designed to simplify the process of uploading files to usenet
+site_description: CLI tool designed to simplify the process of uploading files to Usenet
 
 # Repository
 repo_name: juicenet-cli
@@ -72,5 +72,5 @@ nav:
   - Config Files for Nyuu: nyuu-config-files.md
   - Troubleshoot: troubleshoot.md
   - Archive:
-      - Uploading to usenet: archive/uploading-to-usenet.md
+      - Uploading to Usenet: archive/uploading-to-usenet.md
       - ParPar filepath formats: archive/parpar-filepath-formats.md

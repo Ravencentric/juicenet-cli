@@ -12,7 +12,7 @@ def cli() -> None:
     """
     parser = argparse.ArgumentParser(
         prog="juicenet",
-        description="CLI tool designed to simplify the process of uploading files to usenet",
+        description="CLI tool designed to simplify the process of uploading files to Usenet",
         formatter_class=RichHelpFormatter,
     )
 

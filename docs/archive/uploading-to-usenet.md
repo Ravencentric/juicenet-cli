@@ -1,7 +1,7 @@
 # Uploading to Usenet
 
 !!! note
-    This page covers the process of manually uploading a file to usenet. You do not need to know this to use the `juicenet`. This is essentially what it does. This is what I initially wrote when I was first figuring this stuff out and seeing how there's no good guide out there, I've decided to keep it for anyone else trying to figure this stuff out. It's not a good guide because it was never meant to be one, but it's better than nothing.
+    This page covers the process of manually uploading a file to Usenet. You do not need to know this to use the `juicenet`. This is essentially what it does. This is what I initially wrote when I was first figuring this stuff out and seeing how there's no good guide out there, I've decided to keep it for anyone else trying to figure this stuff out. It's not a good guide because it was never meant to be one, but it's better than nothing.
 
 ## Prerequisites
 
@@ -69,7 +69,7 @@ parpar -s700k --slice-size-multiple=700K --max-input-slices=4000 -r1n*1.2 -R \
 "path/to/Show.S01E01.BluRay.1080p.FLAC2.0.H.265-Group.mkv"
 ```
 !!! note
-    You must generate PAR2 files for every single file you upload. Uploading stuff to usenet without `PAR2` files is as good as not uploading them.
+    You must generate PAR2 files for every single file you upload. Uploading stuff to Usenet without `PAR2` files is as good as not uploading them.
 
 Apart from being parity data, `PAR2` files also store the path of the file. This then allows downloaders like [SABnzbd](https://sabnzbd.org/) to reconstruct folder structures. This is really handy for stuff like `BDMVs` where the folder structure is important.
 

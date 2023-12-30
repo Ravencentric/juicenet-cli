@@ -31,10 +31,10 @@ class Nyuu:
         - `move_nzb(file: Path, basedir: Path, nzb: str) -> None`: Move NZB to a specified output
            path in a somewhat sorted manner.
         - `cleanup(par2_files: list[Path]) -> None`: Cleans up par2 files after they are uploaded.
-        - `upload(files: dict[Path, list[Path]]) -> None`: Uploads files to usenet with Nyuu.
+        - `upload(files: dict[Path, list[Path]]) -> None`: Uploads files to Usenet with Nyuu.
         - `repost_raw(dump: Path) -> None`: Tries to repost failed articles from the last run.
 
-    This class is used to manage the uploading and reposting of files to usenet using Nyuu.
+    This class is used to manage the uploading and reposting of files to Usenet using Nyuu.
     """
 
     def __init__(
@@ -78,7 +78,7 @@ class Nyuu:
 
     def upload(self, files: dict[Path, list[Path]]) -> None:
         """
-        Upload files to usenet with Nyuu
+        Upload files to Usenet with Nyuu
         """
         sink = None if self.debug else subprocess.DEVNULL
 

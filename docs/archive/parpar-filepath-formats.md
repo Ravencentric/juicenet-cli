@@ -3,7 +3,7 @@
 
 
 
-Filepath format is what allows us to either discard paths for singular files or preserve complex folder structures such as those in BDMVs when uploading to usenet without the need of RAR. PAR2 files can store the folder structure which can then be used by SABnzbd to reconstruct the folder structure from the PAR2 files completely eliminating the need to RAR them. [What's wrong with RAR?](https://github.com/animetosho/Nyuu/wiki/Stop-RAR-Uploads)
+Filepath format is what allows us to either discard paths for singular files or preserve complex folder structures such as those in BDMVs when uploading to Usenet without the need of RAR. PAR2 files can store the folder structure which can then be used by SABnzbd to reconstruct the folder structure from the PAR2 files completely eliminating the need to RAR them. [What's wrong with RAR?](https://github.com/animetosho/Nyuu/wiki/Stop-RAR-Uploads)
 
 ParPar's help text on `--filepath-format`:
 

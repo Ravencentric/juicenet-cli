@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "juicenet-cli"
 version = "0.29.0"
-description = "CLI tool designed to simplify the process of uploading files to usenet"
+description = "CLI tool designed to simplify the process of uploading files to Usenet"
 authors = ["Raventric <raven@juicenet.in>"]
 license = "Unlicense"
 readme = "README.md"

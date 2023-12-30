@@ -27,7 +27,7 @@ Script couldn't find any files with the defined extensions or glob pattern. This
 
 ### dump-failed-posts is not defined in your Nyuu config
 
-When you upload stuff to usenet, it gets split into several small chunks called `articles` (equivalent of pieces in bittorrent). Sometimes these `articles` will fail to post. You have the define path to a folder in your [nyuu config](nyuu-config-files.md) with `dump-failed-posts`. This is where those failed articles will get dumped and the script will try to repost them next run.
+When you upload stuff to Usenet, it gets split into several small chunks called `articles` (equivalent of pieces in bittorrent). Sometimes these `articles` will fail to post. You have the define path to a folder in your [nyuu config](nyuu-config-files.md) with `dump-failed-posts`. This is where those failed articles will get dumped and the script will try to repost them next run.
 
 ### Failed to repost {raw_final_count} articles. Either retry or delete these manually
 
