@@ -9,18 +9,18 @@ from pydantic import ValidationError
 from rich.traceback import install
 
 from .config import get_config, get_dump_failed_posts, read_config
-from .files import (
+from .nyuu import Nyuu
+from .parpar import ParPar
+from .resume import Resume
+from .utils import (
+    delete_files,
     filter_empty_files,
     get_bdmv_discs,
     get_files,
     get_glob_matches,
     map_file_to_pars,
-    delete_files,
     move_files,
 )
-from .nyuu import Nyuu
-from .parpar import ParPar
-from .resume import Resume
 from .version import get_version
 
 # Supress keyboardinterrupt traceback because I hate it

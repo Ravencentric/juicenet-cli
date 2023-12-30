@@ -3,7 +3,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from .files import get_file_info
+from .utils import get_file_info
 
 
 class Resume:

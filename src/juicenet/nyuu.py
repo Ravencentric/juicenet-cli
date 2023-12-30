@@ -8,8 +8,8 @@ from alive_progress import alive_it
 from loguru import logger
 
 from .enums import BarTitle, CurrentFile
-from .files import delete_files, get_glob_matches
 from .resume import Resume
+from .utils import delete_files, get_glob_matches
 
 
 class Nyuu:
