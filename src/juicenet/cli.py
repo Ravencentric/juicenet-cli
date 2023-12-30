@@ -3,7 +3,7 @@ from pathlib import Path
 
 from rich_argparse import RichHelpFormatter
 
-from .juicenet import juicenet
+from .main import juicenet
 
 
 def cli() -> None:
