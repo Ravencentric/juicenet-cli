@@ -43,9 +43,6 @@ docker compose -f "path/to/docker-compose.yml" run juicenet --help
 
 ### Available Tags
 
-!!! note
-    Docker images are only available for `v0.30.0`+
-
 | Tag           | Description                                                                                                  |
 |---------------|--------------------------------------------------------------------------------------------------------------|
 | `latest`      | [Latest stable release](https://github.com/Ravencentric/juicenet-cli/releases/latest) (default)              |
@@ -53,3 +50,6 @@ docker compose -f "path/to/docker-compose.yml" run juicenet --help
 | `X.Y.Z`       | Specific release, for example, [`0.30.0`](https://github.com/Ravencentric/juicenet-cli/releases/tag/v0.30.0) |
 | `X.Y`         | Latest release in the specified major and minor version                                                      |
 | `sha-ed9e6ff` | Specific git commit identified by its unique short SHA                                                       |
+
+!!! note
+    Docker images are only available for `v0.30.0`+
