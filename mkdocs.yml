@@ -70,7 +70,6 @@ nav:
   - Configuration: configuration.md
   - CLI Reference: cli-reference.md
   - Config Files for Nyuu: nyuu-config-files.md
-  - Troubleshoot: troubleshoot.md
   - Archive:
       - Uploading to Usenet: archive/uploading-to-usenet.md
       - ParPar filepath formats: archive/parpar-filepath-formats.md
