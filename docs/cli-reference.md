@@ -22,7 +22,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | ----------------------- | ----------------------------------------------------------------------------------------------|
 | `-h, --help`            | Show a help message and exit                                                                  |
 | `--config CONFIG`       | Specify the path to your juicenet config file                                                 |
-| `--version`             | Print juicenet version                                                                        |
+| `--version`             | Show juicenet's version number and exit                                                       |
 | `--public`              | Use your public config                                                                        |
 | `--nyuu`                | Only run Nyuu in `<path>` (default: `cwd`)                                                    |
 | `--parpar`              | Only run ParPar in `<path>` (default: `cwd`)                                                  |
