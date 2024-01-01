@@ -45,7 +45,7 @@ class Resume:
         ```
         """
         csv.DictWriter(
-            self.path.open("a", encoding="utf-8-sig"),
+            self.path.open("a", encoding="utf-8"),
             fieldnames=["name", "size", "count", "scope"],
             quoting=csv.QUOTE_ALL,
         ).writerow(info)
@@ -66,7 +66,7 @@ class Resume:
         """
         data = tuple(
             csv.DictReader(
-                self.path.open("r", encoding="utf-8-sig"),
+                self.path.open("r", encoding="utf-8"),
                 fieldnames=["name", "size", "count", "scope"],
                 quoting=csv.QUOTE_ALL,
             )
