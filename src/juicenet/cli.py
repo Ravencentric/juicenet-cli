@@ -37,6 +37,7 @@ def cli() -> None:
         "--version",
         action="version",
         version=get_version(),
+        help="show juicenet's version number and exit",
     )
 
     parser.add_argument(
