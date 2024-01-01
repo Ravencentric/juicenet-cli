@@ -1,17 +1,12 @@
-from pathlib import Path
-
-from .compat import metadata, tomllib
+from .compat import metadata
 
 
 def get_version() -> str:
     """
-    Get the version
+    Get the version of juicenet
     """
     try:
         return metadata.version("juicenet-cli")
 
     except metadata.PackageNotFoundError:
-        pyproject = Path(__file__).parent.with_name("pyproject.toml").read_text()
-        version = tomllib.loads(pyproject)["tool"]["poetry"]["version"]
-
-        return version  # type: ignore
+        return "0.0.0"

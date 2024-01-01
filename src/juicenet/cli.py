@@ -4,6 +4,7 @@ from pathlib import Path
 from rich_argparse import RichHelpFormatter
 
 from .main import juicenet
+from .version import get_version
 
 
 def cli() -> None:
@@ -34,8 +35,8 @@ def cli() -> None:
 
     parser.add_argument(
         "--version",
-        action="store_true",
-        help="print juicenet version",
+        action="version",
+        version=get_version(),
     )
 
     parser.add_argument(
@@ -131,7 +132,6 @@ def cli() -> None:
     juicenet(
         path=args.path.resolve(),  # Resolve and pass the absolute path
         conf_path=args.config,
-        version=args.version,
         public=args.public,
         only_nyuu=args.nyuu,
         only_parpar=args.parpar,

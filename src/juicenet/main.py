@@ -36,7 +36,6 @@ logger = logger.opt(colors=True)
 def juicenet(
     path: Path,
     conf_path: Path,
-    version: bool,
     public: bool,
     only_nyuu: bool,
     only_parpar: bool,
@@ -65,14 +64,6 @@ def juicenet(
     # Progress bar config
     # Disable progress bar if --debug is used
     config_handler.set_global(length=50, theme="classic", dual_line=True, disable=debug)
-
-    # if --version is passed, print and exit
-    if version:
-        print(get_version())
-        sys.exit()
-
-    # print version when --debug is used
-    logger.debug(f"Version: {get_version()}")
 
     # Read config file
     try:
@@ -125,6 +116,7 @@ def juicenet(
         logger.error(f"No such file: {error.filename}")
         sys.exit()
 
+    logger.debug(f"Version: {get_version()}")
     logger.info(f"Config: {conf_path}")
     logger.info(f"Nyuu: {nyuu_bin}")
     logger.info(f"ParPar: {parpar_bin}")
