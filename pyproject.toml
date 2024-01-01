@@ -31,10 +31,8 @@ rich = "^13.7.0"
 rich-argparse = "^1.4.0"
 colorama = "^0.4.6"
 pydantic = "^2.5.2"
-tomli = { version = "^2.0.1", python = "<3.11" }
 strenum = { version = "^0.4.15", python = "<3.11" }
 importlib-metadata = { version = "^7.0.0", python = "<3.10" }
-typing-extensions = { version = "^4.9.0", python = "<3.11" }
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.1.9"
