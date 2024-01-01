@@ -122,6 +122,21 @@ def get_file_info(file: Path) -> dict[str, str]:
         return dict(name=file.name, size=size, count=count)
 
 
+def filter_par2_files(files: list[Path]) -> list[Path]:
+    """
+    Filter out any `.par2` files present in the given
+    list of path. There's no reason to process these.
+    """
+
+    filtered = []
+
+    for file in files:
+        if not file.suffix.lower() == ".par2":
+            filtered.append(file)
+
+    return filtered
+
+
 def filter_empty_files(files: list[Path]) -> list[Path]:
     """
     Filter out empty files and directories from a list of paths
@@ -134,19 +149,19 @@ def filter_empty_files(files: list[Path]) -> list[Path]:
     file passed. So I'll remove these before passing
     it further in the script.
     """
-    non_empty = []
+    filtered = []
 
     for file in files:
         if file.is_file() and file.stat().st_size > 0:
-            non_empty.append(file)
+            filtered.append(file)
 
         elif file.is_dir():
             for item in list(file.rglob("*")):
                 if item.is_file() and item.stat().st_size > 0:
-                    non_empty.append(file)
+                    filtered.append(file)
                     break
 
-    return non_empty
+    return filtered
 
 
 def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, list[Path]]:

@@ -15,6 +15,7 @@ from .resume import Resume
 from .utils import (
     delete_files,
     filter_empty_files,
+    filter_par2_files,
     get_bdmv_discs,
     get_files,
     get_glob_matches,
@@ -178,6 +179,10 @@ def juicenet(
             sys.exit()
     else:
         files = get_files(path, exts)
+
+    # Remove any par2 files present in the input
+    # trying to run ParPar on a par2 file doesn't go well
+    files = filter_par2_files(files)
 
     if not files:
         logger.error("No matching files/folders found in:")
