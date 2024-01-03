@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.31.1"
+version = "0.31.2"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
 authors = ["Raventric <raven@juicenet.in>"]
 license = "Unlicense"
@@ -35,7 +35,7 @@ strenum = { version = "^0.4.15", python = "<3.11" }
 importlib-metadata = { version = "^7.0.1", python = "<3.10" }
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.1.9"
+ruff = "^0.1.11"
 mypy = "^1.8.0"
 pre-commit = "^3.6.0"
 
