@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 from loguru import logger
 
@@ -50,7 +50,7 @@ class Resume:
             quoting=csv.QUOTE_ALL,
         ).writerow(info)
 
-    def read_resume(self) -> tuple[dict[str | Any, str | Any], ...]:
+    def read_resume(self) -> tuple[dict[Union[str, Any], Union[str, Any]], ...]:
         """
         Reads the resume data from a CSV file written by `Resume.write_resume()`
 
