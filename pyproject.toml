@@ -24,6 +24,7 @@ Contact = "https://discord.gg/snackbox"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+cyclopts = "^2.0.0"
 PyYAML = "^6.0.1"
 alive-progress = "^3.1.5"
 loguru = "^0.7.2"
@@ -35,7 +36,7 @@ strenum = { version = "^0.4.15", python = "<3.11" }
 importlib-metadata = { version = "^7.0.1", python = "<3.10" }
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.1.11"
+ruff = "^0.1.13"
 mypy = "^1.8.0"
 pre-commit = "^3.6.0"
 
@@ -58,7 +59,7 @@ module = ["colorama", "yaml", "alive_progress"]
 ignore_missing_imports = true
 
 [tool.poetry.scripts]
-juicenet = "juicenet.__main__:cli"
+juicenet = "juicenet.__main__:app"
 
 [build-system]
 requires = ["poetry-core"]

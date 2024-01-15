@@ -1,150 +1,162 @@
-import argparse
 from pathlib import Path
+from typing import Annotated, Optional
 
-from rich_argparse import RichHelpFormatter
+from cyclopts import App, Group, Parameter, validators
+from cyclopts.types import ResolvedExistingFile, ResolvedExistingPath
 
 from .main import juicenet
 from .version import get_version
 
+app = App(
+    name="juicenet",
+    help="CLI tool designed to simplify the process of uploading files to Usenet",
+    usage="Usage: juicenet [PATH] [PARAMETERS]",
+    version=get_version(),
+    default_parameter=Parameter(negative="", show_default=False),
+)
 
-def cli() -> None:
+# Mutually exclusive group to handle mutually exclusive options in cli
+exclusive = (app.group_parameters, Group(validator=validators.LimitedChoice()))
+
+# Change the default command group
+app["--help"].group = exclusive
+app["--help"].help = "display this message and exit"
+
+app["--version"].group = exclusive
+app["--version"].help = "display application version"
+
+
+@app.default
+def cli(
+    path: Annotated[
+        ResolvedExistingPath,
+        Parameter(
+            help="file or directory.",
+            show_default=True,
+        ),
+    ] = Path.cwd(),
+    /,
+    *,
+    config: Annotated[
+        ResolvedExistingFile,
+        Parameter(
+            help="path to your juicenet config file",
+            env_var="JUICENET_CONFIG",
+        ),
+    ] = Path.cwd() / "juicenet.yaml",
+    public: Annotated[
+        bool,
+        Parameter(
+            help="use your public/secondary nyuu config",
+        ),
+    ] = False,
+    nyuu: Annotated[
+        bool,
+        Parameter(
+            help="only run nyuu",
+            group=exclusive,
+        ),
+    ] = False,
+    parpar: Annotated[
+        bool,
+        Parameter(
+            help="only run parpar",
+            group=exclusive,
+        ),
+    ] = False,
+    raw: Annotated[
+        bool,
+        Parameter(
+            help="only repost raw articles",
+            group=exclusive,
+        ),
+    ] = False,
+    skip_raw: Annotated[
+        bool,
+        Parameter(
+            help="skip raw article reposting",
+            group=exclusive,
+        ),
+    ] = False,
+    clear_raw: Annotated[
+        bool,
+        Parameter(
+            help="delete existing raw articles",
+            group=exclusive,
+        ),
+    ] = False,
+    exts: Annotated[
+        Optional[list[str]],
+        Parameter(
+            help="file extensions to be matched, overrides config",
+        ),
+    ] = None,
+    glob: Annotated[
+        Optional[list[str]],
+        Parameter(
+            help="glob pattern(s) to be matched instead of extensions",
+        ),
+    ] = None,
+    bdmv: Annotated[
+        bool,
+        Parameter(
+            help="search for BDMVs in path, can be used with --glob",
+        ),
+    ] = False,
+    debug: Annotated[
+        bool,
+        Parameter(
+            env_var="JUICENET_DEBUG",
+            help="show debug logs",
+        ),
+    ] = False,
+    move: Annotated[
+        bool,
+        Parameter(
+            help="move foobar.ext to foobar/foobar.ext",
+            group=exclusive,
+        ),
+    ] = False,
+    only_move: Annotated[
+        bool,
+        Parameter(
+            help="move foobar.ext to foobar/foobar.ext and exit",
+            group=exclusive,
+        ),
+    ] = False,
+    no_resume: Annotated[
+        bool,
+        Parameter(
+            help="ignore existing resume data",
+        ),
+    ] = False,
+    clear_resume: Annotated[
+        bool,
+        Parameter(
+            help="delete existing resume data",
+            group=exclusive,
+        ),
+    ] = False,
+) -> None:
     """
-    CLI. Passes the arguments to juicenet()
+    CLI for juicenet. Does a bit of input validation thanks to cyclopts and then passes it over to juicenet.
     """
-    parser = argparse.ArgumentParser(
-        prog="juicenet",
-        description="CLI tool designed to simplify the process of uploading files to Usenet",
-        formatter_class=RichHelpFormatter,
-    )
-
-    parser.add_argument(
-        "path",
-        metavar="<path>",
-        nargs="?",
-        default=Path.cwd(),
-        type=Path,
-        help="directory containing your files (default: CWD)",
-    )
-
-    parser.add_argument(
-        "--config",
-        default=Path.cwd(),
-        type=Path,
-        help="specify the path to your juicenet config file",
-    )
-
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=get_version(),
-        help="show juicenet's version number and exit",
-    )
-
-    parser.add_argument(
-        "--public",
-        action="store_true",
-        help="use your public config",
-    )
-
-    parser.add_argument(
-        "--nyuu",
-        action="store_true",
-        help="only run Nyuu in <path>",
-    )
-
-    parser.add_argument(
-        "--parpar",
-        action="store_true",
-        help="only run ParPar in <path>",
-    )
-
-    parser.add_argument(
-        "--raw",
-        action="store_true",
-        help="only repost raw articles",
-    )
-
-    parser.add_argument(
-        "--skip-raw",
-        action="store_true",
-        help="skip reposting raw articles",
-    )
-
-    parser.add_argument(
-        "--clear-raw",
-        action="store_true",
-        help="delete existing raw articles",
-    )
-
-    parser.add_argument(
-        "--glob",
-        nargs="*",
-        default=[],
-        metavar="*/",
-        help="specify the glob pattern(s) to be matched instead of extensions",
-    )
-
-    parser.add_argument(
-        "--bdmv",
-        action="store_true",
-        help="find and upload BDMV discs in cwd, can be used with --glob",
-    )
-
-    parser.add_argument(
-        "--debug",
-        action="store_true",
-        help="show logs",
-    )
-
-    parser.add_argument(
-        "--move",
-        action="store_true",
-        help="move files into their own directories (foobar.ext -> foobar/foobar.ext)",
-    )
-
-    parser.add_argument(
-        "--only-move",
-        action="store_true",
-        help="move files into their own directories (foobar.ext -> foobar/foobar.ext) and exit",
-    )
-
-    parser.add_argument(
-        "--exts",
-        default=[],
-        nargs="*",
-        metavar="mkv mp4",
-        help="look for these extensions in <path> (ignores config)",
-    )
-
-    parser.add_argument(
-        "--no-resume",
-        action="store_true",
-        help="ignore resume data",
-    )
-
-    parser.add_argument(
-        "--clear-resume",
-        action="store_true",
-        help="delete resume data",
-    )
-
-    args = parser.parse_args()
 
     juicenet(
-        path=args.path.resolve(),  # Resolve and pass the absolute path
-        conf_path=args.config,
-        public=args.public,
-        only_nyuu=args.nyuu,
-        only_parpar=args.parpar,
-        only_raw=args.raw,
-        skip_raw=args.skip_raw,
-        clear_raw=args.clear_raw,
-        glob=args.glob,
-        bdmv=args.bdmv,
-        debug=args.debug,
-        move=args.move,
-        only_move=args.only_move,
-        extensions=args.exts,
-        no_resume=args.no_resume,
-        clear_resume=args.clear_resume,
+        path=path,
+        conf_path=config,
+        public=public,
+        only_nyuu=nyuu,
+        only_parpar=parpar,
+        only_raw=raw,
+        skip_raw=skip_raw,
+        clear_raw=clear_raw,
+        glob=glob,
+        bdmv=bdmv,
+        debug=debug,
+        move=move,
+        only_move=only_move,
+        extensions=exts,
+        no_resume=no_resume,
+        clear_resume=clear_resume,
     )
