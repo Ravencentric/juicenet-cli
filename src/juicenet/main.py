@@ -2,6 +2,7 @@ import json
 import signal
 import sys
 from pathlib import Path
+from typing import Optional
 
 from alive_progress import config_handler
 from loguru import logger
@@ -43,12 +44,12 @@ def juicenet(
     only_raw: bool,
     skip_raw: bool,
     clear_raw: bool,
-    glob: list[str],
+    glob: Optional[list[str]],
     bdmv: bool,
     debug: bool,
     move: bool,
     only_move: bool,
-    extensions: list[str],
+    extensions: Optional[list[str]],
     no_resume: bool,
     clear_resume: bool,
 ) -> None:
@@ -167,7 +168,7 @@ def juicenet(
         files = [path]
 
     elif bdmv:  # --bdmv
-        pattern = glob if glob else ["*/"]
+        pattern = glob or ["*/"]
         files = get_bdmv_discs(path, pattern)
 
     elif glob:  # --glob

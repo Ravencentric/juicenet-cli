@@ -1,15 +1,17 @@
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Optional
 
 from cyclopts import App, Group, Parameter, validators
 from cyclopts.types import ResolvedExistingFile, ResolvedExistingPath
 
 from .main import juicenet
+from .version import get_version
 
 app = App(
     name="juicenet",
     help="CLI tool designed to simplify the process of uploading files to Usenet",
     usage="Usage: juicenet [PATH] [PARAMETERS]",
+    version=get_version(),
     default_parameter=Parameter(negative="", show_default=False)
 )
 
@@ -23,7 +25,7 @@ app["--help"].help = "display this message and exit"
 app["--version"].group = exclusive
 app["--version"].help = "display application version"
 
-@app.default # type: ignore
+@app.default
 def cli(
     path: Annotated[
         ResolvedExistingPath,
@@ -83,17 +85,17 @@ def cli(
         ),
     ] = False,
     exts: Annotated[
-        list[str],
+        Optional[list[str]],
         Parameter(
             help="file extensions to be matched, overrides config",
         ),
-    ] = None, # type: ignore
+    ] = None,
     glob: Annotated[
-        list[str],
+        Optional[list[str]],
         Parameter(
             help="glob pattern(s) to be matched instead of extensions",
         ),
-    ] = None, # type: ignore
+    ] = None,
     bdmv: Annotated[
         bool,
         Parameter(
@@ -138,7 +140,7 @@ def cli(
     """
     CLI for juicenet. Does a bit of input validation thanks to cyclopts and then passes it over to juicenet.
     """
-    
+
     juicenet(
         path=path,
         conf_path=config,

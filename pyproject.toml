@@ -59,7 +59,7 @@ module = ["colorama", "yaml", "alive_progress"]
 ignore_missing_imports = true
 
 [tool.poetry.scripts]
-juicenet = "juicenet.__main__:cli"
+juicenet = "juicenet.__main__:app"
 
 [build-system]
 requires = ["poetry-core"]
