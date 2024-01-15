@@ -12,7 +12,7 @@ app = App(
     help="CLI tool designed to simplify the process of uploading files to Usenet",
     usage="Usage: juicenet [PATH] [PARAMETERS]",
     version=get_version(),
-    default_parameter=Parameter(negative="", show_default=False)
+    default_parameter=Parameter(negative="", show_default=False),
 )
 
 # Mutually exclusive group to handle mutually exclusive options in cli
@@ -25,6 +25,7 @@ app["--help"].help = "display this message and exit"
 app["--version"].group = exclusive
 app["--version"].help = "display application version"
 
+
 @app.default
 def cli(
     path: Annotated[
@@ -32,7 +33,7 @@ def cli(
         Parameter(
             help="file or directory.",
             show_default=True,
-        )
+        ),
     ] = Path.cwd(),
     /,
     *,
@@ -41,27 +42,27 @@ def cli(
         Parameter(
             help="path to your juicenet config file",
             env_var="JUICENET_CONFIG",
-        )
+        ),
     ] = Path.cwd() / "juicenet.yaml",
     public: Annotated[
         bool,
         Parameter(
             help="use your public/secondary nyuu config",
-        )
+        ),
     ] = False,
     nyuu: Annotated[
         bool,
         Parameter(
             help="only run nyuu",
             group=exclusive,
-        )
+        ),
     ] = False,
     parpar: Annotated[
         bool,
         Parameter(
             help="only run parpar",
             group=exclusive,
-        )
+        ),
     ] = False,
     raw: Annotated[
         bool,
@@ -75,7 +76,7 @@ def cli(
         Parameter(
             help="skip raw article reposting",
             group=exclusive,
-        )
+        ),
     ] = False,
     clear_raw: Annotated[
         bool,
@@ -127,7 +128,7 @@ def cli(
         bool,
         Parameter(
             help="ignore existing resume data",
-        )
+        ),
     ] = False,
     clear_resume: Annotated[
         bool,
