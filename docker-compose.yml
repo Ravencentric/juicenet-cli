@@ -8,6 +8,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
+#     - JUICENET_DEBUG=True # Equivalent to --debug
     volumes:
       - host/path/to/config/nyuu.docker.private.json:/config/nyuu.docker.private.json
       - host/path/to/config/nyuu.docker.public.json:/config/nyuu.docker.public.json
