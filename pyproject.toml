@@ -24,6 +24,7 @@ Contact = "https://discord.gg/snackbox"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+cyclopts = "^2.0.0"
 PyYAML = "^6.0.1"
 alive-progress = "^3.1.5"
 loguru = "^0.7.2"

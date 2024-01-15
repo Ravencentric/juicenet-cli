@@ -8,7 +8,7 @@ from loguru import logger
 from pydantic import ValidationError
 from rich.traceback import install
 
-from .config import get_config, get_dump_failed_posts, read_config
+from .config import get_dump_failed_posts, read_config
 from .nyuu import Nyuu
 from .parpar import ParPar
 from .resume import Resume
@@ -68,8 +68,7 @@ def juicenet(
 
     # Read config file
     try:
-        conf_path = get_config(conf_path)
-        conf_data = read_config(conf_path)
+        config = read_config(conf_path)
     except FileNotFoundError as error:
         logger.error(f"Config file not found: {error.filename}")
         sys.exit()
@@ -80,21 +79,21 @@ def juicenet(
         sys.exit()
 
     # Get the values from config
-    nyuu_bin = conf_data.NYUU.resolve()
-    parpar_bin = conf_data.PARPAR.resolve()
-    priv_conf = conf_data.NYUU_CONFIG_PRIVATE
-    pub_conf = conf_data.NYUU_CONFIG_PUBLIC or priv_conf
-    nzb_out = conf_data.NZB_OUTPUT_PATH.resolve()
-    exts = extensions or conf_data.EXTENSIONS
-    parpar_args = conf_data.PARPAR_ARGS
+    nyuu_bin = config.NYUU.resolve()
+    parpar_bin = config.PARPAR.resolve()
+    priv_conf = config.NYUU_CONFIG_PRIVATE
+    pub_conf = config.NYUU_CONFIG_PUBLIC or priv_conf
+    nzb_out = config.NZB_OUTPUT_PATH.resolve()
+    exts = extensions or config.EXTENSIONS
+    parpar_args = config.PARPAR_ARGS
 
-    appdata_dir = conf_data.APPDATA_DIR_PATH.resolve()
+    appdata_dir = config.APPDATA_DIR_PATH.resolve()
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
     resume_file.touch(exist_ok=True)
 
-    if conf_data.USE_TEMP_DIR:
-        work_dir = conf_data.TEMP_DIR_PATH
+    if config.USE_TEMP_DIR:
+        work_dir = config.TEMP_DIR_PATH
     else:
         work_dir = None
 
