@@ -5,9 +5,9 @@ USER pn
 
 WORKDIR /node
 
-RUN npm install -g yencode
-RUN npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
-RUN npm install -g @animetosho/parpar
+RUN sudo npm install -g yencode
+RUN sudo npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+RUN sudo npm install -g @animetosho/parpar
 
 WORKDIR /app
 
