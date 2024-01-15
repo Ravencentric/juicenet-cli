@@ -1,5 +1,8 @@
 FROM nikolaik/python-nodejs:python3.12-nodejs20
 
+ENV LANG C.UTF-8
+USER pn
+
 WORKDIR /node
 
 RUN npm install -g yencode
