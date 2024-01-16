@@ -218,13 +218,13 @@ files = [
 
 [[package]]
 name = "cyclopts"
-version = "2.0.0"
+version = "2.1.0"
 description = ""
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "cyclopts-2.0.0-py3-none-any.whl", hash = "sha256:c19173515b91873faed79fdd6d503677b82724efbd4d5264894fd5cda361c713"},
-    {file = "cyclopts-2.0.0.tar.gz", hash = "sha256:366b9b9d9bd6f3e7e111583fb6781da1d9e501d87c655bf01c18d78f5aa54d14"},
+    {file = "cyclopts-2.1.0-py3-none-any.whl", hash = "sha256:1fe864a060d5d901a423c903f059df5a488acc81398a169e8c2e86240432fa90"},
+    {file = "cyclopts-2.1.0.tar.gz", hash = "sha256:addae44ace7a72c3c1460c9fce66f01fc808a5c80ad8f560c6f1e66e7cca6393"},
 ]
 
 [package.dependencies]
