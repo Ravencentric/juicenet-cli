@@ -42,7 +42,7 @@ jobs:
           poetry config virtualenvs.create true --local
           poetry config virtualenvs.in-project true --local
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           key: docs-${{ hashFiles('poetry.lock') }}
           path: ./.venv
