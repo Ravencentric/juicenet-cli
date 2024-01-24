@@ -2,17 +2,20 @@ import json
 import signal
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
-from alive_progress import config_handler
-from loguru import logger
+from loguru import logger as _loguru_logger
 from pydantic import ValidationError
+from rich.console import Console
 from rich.traceback import install
 
+from .bar import progress_bar
 from .config import get_dump_failed_posts, read_config
+from .log import get_logger
 from .nyuu import Nyuu
 from .parpar import ParPar
 from .resume import Resume
+from .types import JuicenetOutput, JuicenetOutputDict
 from .utils import (
     delete_files,
     filter_empty_files,
@@ -31,41 +34,35 @@ signal.signal(signal.SIGINT, lambda x, y: sys.exit(1))
 # Install rich traceback
 install()
 
-# Set up logger
-logger = logger.opt(colors=True)
+# Console object, used by both progressbar and loguru
+console = Console()
 
 
 def juicenet(
     path: Path,
     conf_path: Path,
-    public: bool,
-    only_nyuu: bool,
-    only_parpar: bool,
-    only_raw: bool,
-    skip_raw: bool,
-    clear_raw: bool,
-    glob: Optional[list[str]],
-    bdmv: bool,
-    debug: bool,
-    move: bool,
-    only_move: bool,
-    extensions: Optional[list[str]],
-    no_resume: bool,
-    clear_resume: bool,
-) -> None:
+    public: bool = False,
+    only_nyuu: bool = False,
+    only_parpar: bool = False,
+    only_raw: bool = False,
+    skip_raw: bool = False,
+    clear_raw: bool = False,
+    glob: Optional[list[str]] = None,
+    bdmv: bool = False,
+    debug: bool = False,
+    move: bool = False,
+    only_move: bool = False,
+    extensions: Optional[list[str]] = None,
+    no_resume: bool = False,
+    clear_resume: bool = False,
+) -> Union[dict[Path, JuicenetOutput], JuicenetOutputDict]:
     """
     Do stuff here
     """
 
     # Configure logger
-    fmt = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
     level = "DEBUG" if debug else "INFO"
-    logger.remove(0)
-    logger.add(sys.stderr, format=fmt, level=level)
-
-    # Progress bar config
-    # Disable progress bar if --debug is used
-    config_handler.set_global(length=50, theme="classic", dual_line=True, disable=debug)
+    logger = get_logger(logger=_loguru_logger, level=level, sink=console)  # type: ignore
 
     # Read config file
     try:
@@ -74,7 +71,7 @@ def juicenet(
         logger.error(f"Config file not found: {error.filename}")
         sys.exit()
     except ValidationError as errors:
-        logger.error(f"{errors.error_count()} errors in {conf_path.name}")
+        logger.error(f"{errors.error_count()} error(s) in {conf_path.name}")
         for err in errors.errors():
             logger.error(f"{err.get('loc')[0]}: {err.get('msg')}")  # type: ignore
         sys.exit()
@@ -154,15 +151,31 @@ def juicenet(
         sys.exit()
 
     # Check if there are any raw files from previous runs
-    raw_count = len(get_glob_matches(dump, ["*"]))
+    raw_articles = get_glob_matches(dump, ["*"])
+    raw_count = len(raw_articles)
 
     # --only-raw
     if only_raw:
-        if raw_count != 0:
-            nyuu.repost_raw(dump)
-        else:
+        if raw_count == 0:
             logger.info("No raw articles available for reposting")
-        sys.exit()
+        else:
+            output = {}
+
+            with progress_bar(console=console, disable=debug) as progress:
+                task_raw = progress.add_task("Raw...", total=raw_count)
+
+                for article in raw_articles:
+                    raw_out = nyuu.repost_raw(article=article)
+
+                    if raw_out.returncode == 0:
+                        logger.success(article.name)
+                    else:
+                        logger.error(article.name)
+
+                    progress.update(task_raw, advance=1)
+                    output[article] = JuicenetOutput(raw=raw_out)
+
+            return output
 
     if path.is_file():  # juicenet "file.mkv"
         files = [path]
@@ -231,29 +244,122 @@ def juicenet(
 
     if only_parpar:  # --parpar
         logger.debug("Only running ParPar")
+
         # If you're using parpar only then you probably don't want it going in temp
         parpar.workdir = None  # Generate par2 files next to the input files
-        parpar.generate_par2_files(files)
-        sys.exit()
+
+        output = {}
+
+        with progress_bar(console=console, disable=debug) as progress:
+            total = len(files)
+            task_parpar = progress.add_task("ParPar...", total=total)
+
+            for file in files:
+                parpar_out = parpar.generate_par2_files(file)
+
+                if parpar_out.returncode == 0:
+                    logger.success(file.name)
+                else:
+                    logger.error(file.name)
+
+                progress.update(task_parpar, advance=1)
+                output[file] = JuicenetOutput(parpar=parpar_out)
+
+        return output
 
     if only_nyuu:  # --nyuu
         logger.debug("Only running Nyuu")
+
         # Try to find any pre-existing `.par2` files
-        mapping = map_file_to_pars(None, files)
+        par2files = map_file_to_pars(None, files)
         # Same logic as for --parpar
         nyuu.workdir = None
-        nyuu.upload(mapping)
-        sys.exit()
+
+        output = {}
+
+        with progress_bar(console=console, disable=debug) as progress:
+            total = len(files)
+            task_nyuu = progress.add_task("Nyuu...", total=total)
+
+            for file in files:
+                nyuu_out = nyuu.upload(file=file, par2files=par2files[file])
+
+                if nyuu_out.returncode == 0:
+                    logger.success(file.name)
+                else:
+                    logger.error(file.name)
+
+                progress.update(task_nyuu, advance=1)
+                output[file] = JuicenetOutput(nyuu=nyuu_out)
+
+        return output
 
     if skip_raw:  # --skip-raw
         logger.warning("Raw article checking and reposting is being skipped")
-        mapping = parpar.generate_par2_files(files)
-        nyuu.upload(mapping)
-        sys.exit()
+        output = {}
+
+        with progress_bar(console=console, disable=debug) as progress:
+            total = len(files)
+
+            task_parpar = progress.add_task("ParPar...", total=total)
+            task_nyuu = progress.add_task("Nyuu...", total=total)
+
+            for file in files:
+                parpar_out = parpar.generate_par2_files(file)
+                progress.update(task_parpar, advance=1)
+                nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
+
+                if nyuu_out.returncode in [0, 32]:
+                    logger.success(file.name)
+                else:
+                    logger.error(file.name)
+
+                progress.update(task_nyuu, advance=1)
+                output[file] = JuicenetOutput(nyuu=nyuu_out, parpar=parpar_out)
+
+        return output
 
     else:  # default
-        if raw_count != 0:
-            nyuu.repost_raw(dump)
+        output = {}
 
-        mapping = parpar.generate_par2_files(files)
-        nyuu.upload(mapping)
+        if raw_count:
+            logger.info(f"Found {raw_count} raw article(s). Attempting to Repost...")
+
+            rawoutput = {}
+
+            with progress_bar(console=console, transient=True, disable=debug) as progress:
+                task_raw = progress.add_task("Raw...", total=raw_count)
+
+                for article in raw_articles:
+                    raw_out = nyuu.repost_raw(article=article)
+
+                    if raw_out.returncode == 0:
+                        logger.success(article.name)
+                    else:
+                        logger.error(article.name)
+
+                    progress.update(task_raw, advance=1)
+                    rawoutput[article] = JuicenetOutput(raw=raw_out)
+        else:
+            rawoutput = None
+
+        with progress_bar(console=console, disable=debug) as progress:
+            total = len(files)
+
+            task_parpar = progress.add_task("ParPar...", total=total)
+            task_nyuu = progress.add_task("Nyuu...", total=total)
+
+            for file in files:
+                parpar_out = parpar.generate_par2_files(file)
+                progress.update(task_parpar, advance=1)
+                nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
+
+                if nyuu_out.returncode in [0, 32]:
+                    logger.success(file.name)
+                else:
+                    logger.error(file.name)
+
+                progress.update(task_nyuu, advance=1)
+                output[file] = JuicenetOutput(nyuu=nyuu_out, parpar=parpar_out)
+
+        return JuicenetOutputDict(filesdict=output, articlesdict=rawoutput)

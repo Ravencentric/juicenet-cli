@@ -4,12 +4,11 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from alive_progress import alive_it
 from loguru import logger
 
-from .enums import BarTitle, CurrentFile
 from .resume import Resume
-from .utils import delete_files, get_glob_matches
+from .types import ArticleFilePath, NyuuOutput, NZBFilePath, PAR2FilePath, RawOutput
+from .utils import delete_files
 
 
 class Nyuu:
@@ -59,7 +58,7 @@ class Nyuu:
         self.resume = resume
         self.bdmv_naming = bdmv_naming
 
-    def move_nzb(self, file: Path, basedir: Path, nzb: str) -> None:
+    def _move_nzb(self, file: Path, basedir: Path, clean_nzb: str, nzb: str) -> NZBFilePath:
         """
         Move NZB to a specified output path in a somewhat sorted manner
         """
@@ -68,7 +67,7 @@ class Nyuu:
         subdir = file.relative_to(self.path)  # /extras/specials/episode.mkv
         subdir = subdir.parent  # /extras/specials/
 
-        src = self.workdir / nzb if self.workdir else basedir / nzb
+        src = self.workdir / clean_nzb if self.workdir else basedir / clean_nzb
         dst = self.outdir / self.scope / self.path.name / subdir  # ./out/private/show/extras/specials/
         dst.mkdir(parents=True, exist_ok=True)
         dst = dst / nzb  # ./out/private/show/extras/specials/episode.mkv.nzb
@@ -76,73 +75,96 @@ class Nyuu:
 
         logger.debug(f"NZB Move: {src} -> {dst}")
 
-    def upload(self, files: dict[Path, list[Path]]) -> None:
+        return dst.resolve()
+
+    def upload(self, file: Path, par2files: list[PAR2FilePath], *, delete_par2files: bool = True) -> NyuuOutput:
         """
         Upload files to Usenet with Nyuu
         """
-        sink = None if self.debug else subprocess.DEVNULL
 
-        keys = files.keys()
-        bar = alive_it(keys, title=BarTitle.NYUU)
+        capture_output = not self.debug
 
-        for key in bar:
-            nzb = f"{key.name}.nzb".replace("`", "'")  # Nyuu doesn't like backticks
+        nzb = f"{file.name}.nzb"
+        clean_nzb = nzb.replace("`", "'")  # Nyuu doesn't like backticks
 
-            if self.bdmv_naming:
-                parent = key.relative_to(self.path).parent.name.replace("`", "'")
-                if parent:
-                    nzb = f"{parent}_{nzb}"
+        if self.bdmv_naming:
+            parent = file.relative_to(self.path).parent.name
+            clean_parent = parent.replace("`", "'")
+            if parent:
+                nzb = f"{parent}_{nzb}"
+                clean_nzb = f"{clean_parent}_{clean_nzb}"
 
-            nyuu = [self.bin] + ["--config", self.conf] + ["--out", nzb] + [key] + files[key]
+        nyuu = [self.bin] + ["--config", self.conf] + ["--out", clean_nzb] + [file] + par2files
 
-            logger.debug(shlex.join(str(arg) for arg in nyuu))
-            bar.text(f"{CurrentFile.NYUU} {key.name} ({self.scope})")
+        logger.debug(shlex.join(str(arg) for arg in nyuu))
 
-            cwd = self.workdir if self.workdir else key.parent  # this is where nyuu will be executed
-            subprocess.run(nyuu, cwd=cwd, stdout=sink, stderr=sink)  # type: ignore
+        cwd = self.workdir if self.workdir else file.parent  # this is where nyuu will be executed
+        process = subprocess.run(nyuu, cwd=cwd, capture_output=capture_output, encoding="utf-8")  # type: ignore
 
+        if process.returncode in [0, 32]:
             # move completed nzb to output dir
-            self.move_nzb(key, cwd, nzb)
+            outpath = self._move_nzb(file=file, basedir=cwd, clean_nzb=clean_nzb, nzb=nzb)
 
             # save file info to resume data
-            self.resume.log_file_info(key)
+            self.resume.log_file_info(file)
 
             # Cleanup par2 files for the uploaded file
-            delete_files(files[key])
+            if delete_par2files:
+                delete_files(par2files)
 
-    def repost_raw(self, dump: Path) -> None:
+            return NyuuOutput(
+                nzb=outpath,
+                success=True,
+                args=process.args,
+                returncode=process.returncode,
+                stdout=process.stdout,
+                stderr=process.stderr,
+            )
+        else:
+            return NyuuOutput(
+                nzb=None,
+                success=False,
+                args=process.args,
+                returncode=process.returncode,
+                stdout=process.stdout,
+                stderr=process.stderr,
+            )
+
+    def repost_raw(self, article: ArticleFilePath) -> RawOutput:
         """
         Try to repost failed articles from last run
         """
-        sink = None if self.debug else subprocess.DEVNULL
+        capture_output = not self.debug
 
-        articles = get_glob_matches(dump, ["*"])
-        raw_count = len(articles)
-        logger.info(f"Found {raw_count} raw articles. Attempting to repost")
+        nyuu = (
+            [self.bin]
+            + ["--config", self.conf]
+            + [
+                "--delete-raw-posts",
+                "--input-raw-posts",
+                article,
+            ]
+        )
 
-        bar = alive_it(articles, title=BarTitle.RAW)
+        logger.debug(shlex.join(str(arg) for arg in nyuu))
 
-        for article in bar:
-            nyuu = (
-                [self.bin]
-                + ["--config", self.conf]
-                + [
-                    "--skip-errors",
-                    "all",
-                    "--delete-raw-posts",
-                    "--input-raw-posts",
-                    article,
-                ]
+        process = subprocess.run(nyuu, cwd=self.path, capture_output=capture_output, encoding="utf-8")  # type: ignore
+
+        if process.returncode in [0, 32]:
+            return RawOutput(
+                article=article,
+                success=True,
+                args=process.args,
+                returncode=process.returncode,
+                stdout=process.stdout,
+                stderr=process.stderr,
             )
-
-            bar.text(f"{CurrentFile.RAW} {article.name}")
-            logger.debug(shlex.join(str(arg) for arg in nyuu))
-
-            subprocess.run(nyuu, cwd=self.path, stdout=sink, stderr=sink)  # type: ignore
-
-        raw_final_count = len(get_glob_matches(dump, ["*"]))
-        if raw_final_count == 0:
-            logger.success("All raw articles reposted")
         else:
-            logger.info(f"Reposted {raw_count-raw_final_count} articles")
-            logger.warning(f"Failed to repost {raw_final_count} articles. Either retry or use --clear-raw")
+            return RawOutput(
+                article=article,
+                success=False,
+                args=process.args,
+                returncode=process.returncode,
+                stdout=process.stdout,
+                stderr=process.stderr,
+            )

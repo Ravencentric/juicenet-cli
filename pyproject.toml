@@ -26,7 +26,6 @@ Contact = "https://discord.gg/snackbox"
 python = "^3.9"
 cyclopts = "^2.0.0"
 PyYAML = "^6.0.1"
-alive-progress = "^3.1.5"
 loguru = "^0.7.2"
 rich = "^13.7.0"
 rich-argparse = "^1.4.0"
@@ -36,8 +35,9 @@ strenum = { version = "^0.4.15", python = "<3.11" }
 importlib-metadata = { version = "^7.0.1", python = "<3.10" }
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.1.13"
+ruff = "^0.1.14"
 mypy = "^1.8.0"
+loguru-mypy = "^0.0.4"
 pre-commit = "^3.6.0"
 
 [tool.poetry.group.docs.dependencies]
@@ -55,7 +55,7 @@ strict = true
 pretty = true
 
 [[tool.mypy.overrides]]
-module = ["colorama", "yaml", "alive_progress"]
+module = ["colorama", "yaml"]
 ignore_missing_imports = true
 
 [tool.poetry.scripts]

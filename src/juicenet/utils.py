@@ -4,6 +4,8 @@ from typing import Optional
 
 from loguru import logger
 
+from .types import PAR2FilePath
+
 
 def get_files(path: Path, exts: list[str]) -> list[Path]:
     """
@@ -164,7 +166,7 @@ def filter_empty_files(files: list[Path]) -> list[Path]:
     return filtered
 
 
-def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, list[Path]]:
+def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, list[PAR2FilePath]]:
     """
     For each file, get it's corresponding .par2 files as such:
 
