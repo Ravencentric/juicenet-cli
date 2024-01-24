@@ -42,13 +42,13 @@ class ParParOutput:
 
 
 @dataclass(order=True)
-class JuicenetOutput:
+class SubprocessOutput:
     nyuu: Optional[NyuuOutput] = None
     raw: Optional[RawOutput] = None
     parpar: Optional[ParParOutput] = None
 
 
 @dataclass(order=True)
-class JuicenetOutputDict:
-    filesdict: dict[Path, JuicenetOutput]
-    articlesdict: Optional[dict[Path, JuicenetOutput]] = None
+class JuicenetOutput:
+    files: Optional[dict[Path, SubprocessOutput]] = None
+    articles: Optional[dict[Path, SubprocessOutput]] = None

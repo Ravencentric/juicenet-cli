@@ -2,7 +2,7 @@ import json
 import signal
 import sys
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 from loguru import logger as _loguru_logger
 from pydantic import ValidationError
@@ -15,7 +15,7 @@ from .log import get_logger
 from .nyuu import Nyuu
 from .parpar import ParPar
 from .resume import Resume
-from .types import JuicenetOutput, JuicenetOutputDict
+from .types import JuicenetOutput, SubprocessOutput
 from .utils import (
     delete_files,
     filter_empty_files,
@@ -55,7 +55,7 @@ def juicenet(
     extensions: Optional[list[str]] = None,
     no_resume: bool = False,
     clear_resume: bool = False,
-) -> Union[dict[Path, JuicenetOutput], JuicenetOutputDict]:
+) -> JuicenetOutput:
     """
     Do stuff here
     """
@@ -173,9 +173,9 @@ def juicenet(
                         logger.error(article.name)
 
                     progress.update(task_raw, advance=1)
-                    output[article] = JuicenetOutput(raw=raw_out)
+                    output[article] = SubprocessOutput(raw=raw_out)
 
-            return output
+            return JuicenetOutput(articles=output)
 
     if path.is_file():  # juicenet "file.mkv"
         files = [path]
@@ -263,9 +263,9 @@ def juicenet(
                     logger.error(file.name)
 
                 progress.update(task_parpar, advance=1)
-                output[file] = JuicenetOutput(parpar=parpar_out)
+                output[file] = SubprocessOutput(parpar=parpar_out)
 
-        return output
+        return JuicenetOutput(files=output)
 
     if only_nyuu:  # --nyuu
         logger.debug("Only running Nyuu")
@@ -290,9 +290,9 @@ def juicenet(
                     logger.error(file.name)
 
                 progress.update(task_nyuu, advance=1)
-                output[file] = JuicenetOutput(nyuu=nyuu_out)
+                output[file] = SubprocessOutput(nyuu=nyuu_out)
 
-        return output
+        return JuicenetOutput(files=output)
 
     if skip_raw:  # --skip-raw
         logger.warning("Raw article checking and reposting is being skipped")
@@ -315,9 +315,9 @@ def juicenet(
                     logger.error(file.name)
 
                 progress.update(task_nyuu, advance=1)
-                output[file] = JuicenetOutput(nyuu=nyuu_out, parpar=parpar_out)
+                output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
-        return output
+        return JuicenetOutput(files=output)
 
     else:  # default
         output = {}
@@ -339,7 +339,7 @@ def juicenet(
                         logger.error(article.name)
 
                     progress.update(task_raw, advance=1)
-                    rawoutput[article] = JuicenetOutput(raw=raw_out)
+                    rawoutput[article] = SubprocessOutput(raw=raw_out)
         else:
             rawoutput = None
 
@@ -360,6 +360,6 @@ def juicenet(
                     logger.error(file.name)
 
                 progress.update(task_nyuu, advance=1)
-                output[file] = JuicenetOutput(nyuu=nyuu_out, parpar=parpar_out)
+                output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
-        return JuicenetOutputDict(filesdict=output, articlesdict=rawoutput)
+        return JuicenetOutput(files=output, articles=rawoutput)
