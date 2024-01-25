@@ -81,7 +81,24 @@ class Resume:
             info = get_file_info(file)
             info["scope"] = self.scope
             self.write_resume(info)
-            logger.debug(f"Writing file information to resume: {file}")
+            logger.debug(f"Saving to resume: {info}")
+
+    def already_uploaded(self, file: Path) -> bool:
+        """
+        Check if a given file is already uploaded by juicenet
+        """
+        if not self.disable:
+            resume_data = self.read_resume()
+
+            info = get_file_info(file)
+            info["scope"] = self.scope
+
+            if info in resume_data:
+                return True
+
+            return False
+
+        return False
 
     def filter_uploaded_files(self, files: list[Path]) -> list[Path]:
         """

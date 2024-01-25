@@ -255,15 +255,19 @@ def juicenet(
             task_parpar = progress.add_task("ParPar...", total=total)
 
             for file in files:
-                parpar_out = parpar.generate_par2_files(file)
-
-                if parpar_out.returncode == 0:
-                    logger.success(file.name)
+                if resume.already_uploaded(file):
+                    logger.info(f"Skipping: {file.name} - Already uploaded")
+                    progress.update(task_parpar, advance=1)
                 else:
-                    logger.error(file.name)
+                    parpar_out = parpar.generate_par2_files(file)
 
-                progress.update(task_parpar, advance=1)
-                output[file] = SubprocessOutput(parpar=parpar_out)
+                    if parpar_out.returncode == 0:
+                        logger.success(file.name)
+                    else:
+                        logger.error(file.name)
+
+                    progress.update(task_parpar, advance=1)
+                    output[file] = SubprocessOutput(parpar=parpar_out)
 
         return JuicenetOutput(files=output)
 
@@ -282,15 +286,19 @@ def juicenet(
             task_nyuu = progress.add_task("Nyuu...", total=total)
 
             for file in files:
-                nyuu_out = nyuu.upload(file=file, par2files=par2files[file])
-
-                if nyuu_out.returncode == 0:
-                    logger.success(file.name)
+                if resume.already_uploaded(file):
+                    logger.info(f"Skipping: {file.name} - Already uploaded")
+                    progress.update(task_nyuu, advance=1)
                 else:
-                    logger.error(file.name)
+                    nyuu_out = nyuu.upload(file=file, par2files=par2files[file])
 
-                progress.update(task_nyuu, advance=1)
-                output[file] = SubprocessOutput(nyuu=nyuu_out)
+                    if nyuu_out.returncode == 0:
+                        logger.success(file.name)
+                    else:
+                        logger.error(file.name)
+
+                    progress.update(task_nyuu, advance=1)
+                    output[file] = SubprocessOutput(nyuu=nyuu_out)
 
         return JuicenetOutput(files=output)
 
@@ -305,17 +313,22 @@ def juicenet(
             task_nyuu = progress.add_task("Nyuu...", total=total)
 
             for file in files:
-                parpar_out = parpar.generate_par2_files(file)
-                progress.update(task_parpar, advance=1)
-                nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
-
-                if nyuu_out.returncode in [0, 32]:
-                    logger.success(file.name)
+                if resume.already_uploaded(file):
+                    logger.info(f"Skipping: {file.name} - Already uploaded")
+                    progress.update(task_parpar, advance=1)
+                    progress.update(task_nyuu, advance=1)
                 else:
-                    logger.error(file.name)
+                    parpar_out = parpar.generate_par2_files(file)
+                    progress.update(task_parpar, advance=1)
+                    nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
 
-                progress.update(task_nyuu, advance=1)
-                output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
+                    if nyuu_out.returncode in [0, 32]:
+                        logger.success(file.name)
+                    else:
+                        logger.error(file.name)
+
+                    progress.update(task_nyuu, advance=1)
+                    output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
         return JuicenetOutput(files=output)
 
@@ -350,16 +363,21 @@ def juicenet(
             task_nyuu = progress.add_task("Nyuu...", total=total)
 
             for file in files:
-                parpar_out = parpar.generate_par2_files(file)
-                progress.update(task_parpar, advance=1)
-                nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
-
-                if nyuu_out.returncode in [0, 32]:
-                    logger.success(file.name)
+                if resume.already_uploaded(file):
+                    logger.info(f"Skipping: {file.name} - Already uploaded")
+                    progress.update(task_parpar, advance=1)
+                    progress.update(task_nyuu, advance=1)
                 else:
-                    logger.error(file.name)
+                    parpar_out = parpar.generate_par2_files(file)
+                    progress.update(task_parpar, advance=1)
+                    nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
 
-                progress.update(task_nyuu, advance=1)
-                output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
+                    if nyuu_out.returncode in [0, 32]:
+                        logger.success(file.name)
+                    else:
+                        logger.error(file.name)
+
+                    progress.update(task_nyuu, advance=1)
+                    output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
         return JuicenetOutput(files=output, articles=rawoutput)
