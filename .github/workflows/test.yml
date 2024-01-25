@@ -1,4 +1,4 @@
-name: Test
+name: Smoke Test
 
 on: [pull_request, workflow_dispatch]
 
@@ -8,6 +8,7 @@ defaults:
 
 jobs:
   test:
+    name: Smoke Test
     strategy:
       fail-fast: false
       matrix:
