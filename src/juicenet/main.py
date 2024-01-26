@@ -1,11 +1,9 @@
-import json
 import signal
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, Union
 
 from loguru import logger as _loguru_logger
-from pydantic import ValidationError
 from rich.console import Console
 from rich.traceback import install
 
@@ -15,7 +13,7 @@ from .log import get_logger
 from .nyuu import Nyuu
 from .parpar import ParPar
 from .resume import Resume
-from .types import JuicenetOutput, SubprocessOutput
+from .types import JuicenetException, JuicenetOutput, SubprocessOutput
 from .utils import (
     delete_files,
     filter_empty_files,
@@ -25,6 +23,7 @@ from .utils import (
     get_glob_matches,
     map_file_to_pars,
     move_files,
+    mutually_exclusive,
 )
 from .version import get_version
 
@@ -39,8 +38,8 @@ console = Console()
 
 
 def juicenet(
-    path: Path,
-    conf_path: Path,
+    path: Union[Path, str],
+    config: Union[Path, dict[str, Any]],
     public: bool = False,
     only_nyuu: bool = False,
     only_parpar: bool = False,
@@ -59,39 +58,42 @@ def juicenet(
     """
     Do stuff here
     """
+    if isinstance(path, str):
+        path = Path(path).resolve()
+    elif isinstance(path, Path):
+        path = path.resolve()
+    else:
+        raise JuicenetException(f"{path} must be a pathlib.Path or str")
+
+    if not path.exists():
+        raise JuicenetException(f"{path} must be an existing path")
+
+    if not mutually_exclusive(only_nyuu, only_parpar, only_raw, skip_raw, clear_raw, clear_resume, only_move):
+        raise JuicenetException("More than one mutually exclusive argument is True.")
 
     # Configure logger
     level = "DEBUG" if debug else "INFO"
     logger = get_logger(logger=_loguru_logger, level=level, sink=console)  # type: ignore
 
     # Read config file
-    try:
-        config = read_config(conf_path)
-    except FileNotFoundError as error:
-        logger.error(f"Config file not found: {error.filename}")
-        sys.exit()
-    except ValidationError as errors:
-        logger.error(f"{errors.error_count()} error(s) in {conf_path.name}")
-        for err in errors.errors():
-            logger.error(f"{err.get('loc')[0]}: {err.get('msg')}")  # type: ignore
-        sys.exit()
+    configdata = read_config(config)
 
     # Get the values from config
-    nyuu_bin = config.NYUU.resolve()
-    parpar_bin = config.PARPAR.resolve()
-    priv_conf = config.NYUU_CONFIG_PRIVATE
-    pub_conf = config.NYUU_CONFIG_PUBLIC or priv_conf
-    nzb_out = config.NZB_OUTPUT_PATH.resolve()
-    exts = extensions or config.EXTENSIONS
-    parpar_args = config.PARPAR_ARGS
+    nyuu_bin = configdata.NYUU.resolve()
+    parpar_bin = configdata.PARPAR.resolve()
+    priv_conf = configdata.NYUU_CONFIG_PRIVATE
+    pub_conf = configdata.NYUU_CONFIG_PUBLIC or priv_conf
+    nzb_out = configdata.NZB_OUTPUT_PATH.resolve()
+    exts = extensions or configdata.EXTENSIONS
+    parpar_args = configdata.PARPAR_ARGS
 
-    appdata_dir = config.APPDATA_DIR_PATH.resolve()
+    appdata_dir = configdata.APPDATA_DIR_PATH.resolve()
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
     resume_file.touch(exist_ok=True)
 
-    if config.USE_TEMP_DIR:
-        work_dir = config.TEMP_DIR_PATH
+    if configdata.USE_TEMP_DIR:
+        work_dir = configdata.TEMP_DIR_PATH
     else:
         work_dir = None
 
@@ -100,22 +102,12 @@ def juicenet(
     scope = "public" if public else "private"
     conf = configurations[scope]
 
-    # Check and get `dump-failed-posts` as defined in Nyuu config
-    try:
-        dump = get_dump_failed_posts(conf)
-    except json.JSONDecodeError as error:
-        logger.error(error)
-        logger.error("Please check your Nyuu config and ensure it is valid")
-        sys.exit()
-    except KeyError as key:
-        logger.error(f"{key} is not defined in your Nyuu config")
-        sys.exit()
-    except FileNotFoundError as error:
-        logger.error(f"No such file: {error.filename}")
-        sys.exit()
+    # Get `dump-failed-posts` as defined in Nyuu config
+    dump = get_dump_failed_posts(conf)
 
     logger.debug(f"Version: {get_version()}")
-    logger.info(f"Config: {conf_path}")
+    if isinstance(config, Path):
+        logger.info(f"Config: {config}")
     logger.info(f"Nyuu: {nyuu_bin}")
     logger.info(f"ParPar: {parpar_bin}")
     logger.info(f"Nyuu Config: {conf}")
