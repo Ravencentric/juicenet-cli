@@ -48,6 +48,11 @@ theme:
     - mkdocstrings:
         enabled: true
         default_handler: python
+        handlers:
+          python:
+            paths: [src]
+            options:
+              docstring_style: numpy
 
 markdown_extensions:
   - md_in_html
