@@ -45,6 +45,7 @@ theme:
     - content.code.annotate
   plugins:
     - search
+    - mkdocstrings
 
 markdown_extensions:
   - md_in_html
@@ -69,6 +70,7 @@ nav:
       - Docker: installation/docker.md
   - Configuration: configuration.md
   - CLI Reference: cli-reference.md
+  - API Reference: api-reference.md
   - Config Files for Nyuu: nyuu-config-files.md
   - Archive:
       - Uploading to Usenet: archive/uploading-to-usenet.md

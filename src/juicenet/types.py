@@ -4,6 +4,17 @@ from typing import Literal, Optional
 
 from typing_extensions import TypeAlias
 
+__all__ = [
+    "NZBFilePath",
+    "PAR2FilePath",
+    "ArticleFilePath",
+    "NyuuOutput",
+    "RawOutput",
+    "ParParOutput",
+    "SubprocessOutput",
+    "JuicenetOutput",
+]
+
 NZBFilePath: TypeAlias = Path
 PAR2FilePath: TypeAlias = Path
 ArticleFilePath: TypeAlias = Path
@@ -28,6 +39,12 @@ class NyuuOutput:
         Nyuu's stdout.
     stderr : str
         Nyuu's stderr.
+
+    Notes
+    -----
+    Nyuu exits with a code 0 if the process completes successfully or 32 if the
+    process completes successfully *after skipping the skippable errors*
+    https://github.com/animetosho/Nyuu/blob/master/help-full.txt#L204-L228
     """
 
     nzb: Optional[NZBFilePath]
@@ -68,10 +85,16 @@ class RawOutput:
         Nyuu's stdout.
     stderr : str
         Nyuu's stderr.
+
+    Notes
+    -----
+    Nyuu exits with a code 0 if the process completes successfully or 32 if the
+    process completes successfully *after skipping the skippable errors*
+    https://github.com/animetosho/Nyuu/blob/master/help-full.txt#L204-L228
     """
 
     article: ArticleFilePath
-    """Absolute pathlib.Path to the raw article"""
+    """Absolute pathlib.Path to the raw article."""
 
     success: bool
     """`True` if Nyuu exited successfully with code 0 or 32, `False` otherwise."""
@@ -118,10 +141,10 @@ class ParParOutput:
     """List of absolute pathlib.Path objects pointing to the generated `PAR2` files."""
 
     filepathformat: Literal["basename", "path"]
-    """The `--filepath-format` used to generate the `PAR2` files"""
+    """The `--filepath-format` used to generate the `PAR2` files."""
 
     filepathbase: Path
-    """The `--filepath-base` used to generate the `PAR2` files"""
+    """The `--filepath-base` used to generate the `PAR2` files."""
 
     success: bool
     """`True` if ParPar exited successfully with code 0, `False` otherwise."""
@@ -145,7 +168,7 @@ class SubprocessOutput:
     A class used to represent the combined output of the Nyuu, Raw, and ParPar subprocesses for every processed file or article.
     Each attribute in this class is an instance of the corresponding output class (`NyuuOutput`, `RawOutput`, `ParParOutput`) and
     captures the output of the respective subprocess. If the output for a particular subprocess is not available,
-    the corresponding attribute will be None.
+    the corresponding attribute will be `None`.
 
     Attributes
     ----------
@@ -156,16 +179,20 @@ class SubprocessOutput:
     parpar : ParParOutput, optional
         juicenet.types.ParParOutput object for the processed file or `None` if not available.
 
+    Notes
+    -----
+    A file can have either the `nyuu` attribute, the `parpar` attribute, or both, but not `raw`.
+    For any given article, only the `raw` attribute will be populated.
     """
 
     nyuu: Optional[NyuuOutput] = None
-    """juicenet.types.NyuuOutput object for the processed file or `None` if not available"""
+    """juicenet.types.NyuuOutput object for the processed file or `None` if not available."""
 
     raw: Optional[RawOutput] = None
-    """juicenet.types.RawOutput object for the processed file or `None` if not available"""
+    """juicenet.types.RawOutput object for the processed file or `None` if not available."""
 
     parpar: Optional[ParParOutput] = None
-    """juicenet.types.ParParOutput object for the processed file or `None` if not available"""
+    """juicenet.types.ParParOutput object for the processed file or `None` if not available."""
 
 
 @dataclass(order=True)
