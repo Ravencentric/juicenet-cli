@@ -45,6 +45,7 @@ theme:
     - content.code.annotate
   plugins:
     - search
+    - autorefs
     - mkdocstrings:
         enabled: true
         default_handler: python
@@ -53,6 +54,7 @@ theme:
             paths: [src]
             options:
               docstring_style: numpy
+              members: true
 
 markdown_extensions:
   - md_in_html
