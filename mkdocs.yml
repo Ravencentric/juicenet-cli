@@ -43,18 +43,28 @@ theme:
     - content.action.view
     - content.code.copy
     - content.code.annotate
-  plugins:
-    - search
-    - autorefs
-    - mkdocstrings:
-        enabled: true
-        default_handler: python
-        handlers:
-          python:
-            paths: [src]
-            options:
-              docstring_style: numpy
-              members: true
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      enabled: true
+      default_handler: python
+      handlers:
+        python:
+          import:
+            - https://docs.python.org/3/objects.inv
+          paths: [src]
+          options:
+            docstring_style: numpy
+            members: false
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            separate_signature: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
 
 markdown_extensions:
   - md_in_html

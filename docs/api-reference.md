@@ -2,6 +2,10 @@
 
 ::: juicenet.types.JuicenetOutput
 
-::: juicenet.JuicenetOutput
+::: juicenet.types.SubprocessOutput
 
-::: juicenet.juicenet
+::: juicenet.types.NyuuOutput
+
+::: juicenet.types.RawOutput
+
+::: juicenet.types.ParParOutput

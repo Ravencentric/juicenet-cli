@@ -23,7 +23,7 @@ ArticleFilePath: TypeAlias = Path
 @dataclass(order=True)
 class NyuuOutput:
     """
-    A class used to represent the output of the Nyuu subprocess.
+    A class used to represent the output of Nyuu.
 
     Attributes
     ----------
@@ -43,8 +43,10 @@ class NyuuOutput:
     Notes
     -----
     Nyuu exits with a code 0 if the process completes successfully or 32 if the
-    process completes successfully *after skipping the skippable errors*
-    https://github.com/animetosho/Nyuu/blob/master/help-full.txt#L204-L228
+    process completes successfully after skipping the skippable errors.
+
+    Refer to Nyuu's [`help-full.txt`](https://github.com/animetosho/Nyuu/blob/master/help-full.txt#L204-L228)
+    for more details.
     """
 
     nzb: Optional[NZBFilePath]
@@ -69,7 +71,7 @@ class NyuuOutput:
 @dataclass(order=True)
 class RawOutput:
     """
-    A class used to represent the output of the raw article upload process.
+    A class used to represent the output of Nyuu's raw article upload process.
 
     Attributes
     ----------
@@ -89,8 +91,10 @@ class RawOutput:
     Notes
     -----
     Nyuu exits with a code 0 if the process completes successfully or 32 if the
-    process completes successfully *after skipping the skippable errors*
-    https://github.com/animetosho/Nyuu/blob/master/help-full.txt#L204-L228
+    process completes successfully after skipping the skippable errors.
+
+    Refer to Nyuu's [`help-full.txt`](https://github.com/animetosho/Nyuu/blob/master/help-full.txt#L204-L228)
+    for more details.
     """
 
     article: ArticleFilePath
@@ -115,7 +119,7 @@ class RawOutput:
 @dataclass(order=True)
 class ParParOutput:
     """
-    A class used to represent the output of the ParPar subprocess.
+    A class used to represent the output of ParPar.
 
     Attributes
     ----------
@@ -173,11 +177,11 @@ class SubprocessOutput:
     Attributes
     ----------
     nyuu : NyuuOutput, optional
-        juicenet.types.NyuuOutput object for the processed file or `None` if not available.
+        `NyuuOutput` object for the processed file or `None` if not available.
     raw : RawOutput, optional
-        juicenet.types.RawOutput object for the processed file or `None` if not available.
+        `RawOutput` object for the processed file or `None` if not available.
     parpar : ParParOutput, optional
-        juicenet.types.ParParOutput object for the processed file or `None` if not available.
+        `ParParOutput` object for the processed file or `None` if not available.
 
     Notes
     -----
@@ -186,13 +190,13 @@ class SubprocessOutput:
     """
 
     nyuu: Optional[NyuuOutput] = None
-    """juicenet.types.NyuuOutput object for the processed file or `None` if not available."""
+    """`NyuuOutput` object for the processed file or `None` if not available."""
 
     raw: Optional[RawOutput] = None
-    """juicenet.types.RawOutput object for the processed file or `None` if not available."""
+    """`RawOutput` object for the processed file or `None` if not available."""
 
     parpar: Optional[ParParOutput] = None
-    """juicenet.types.ParParOutput object for the processed file or `None` if not available."""
+    """`ParParOutput` object for the processed file or `None` if not available."""
 
 
 @dataclass(order=True)
@@ -203,29 +207,29 @@ class JuicenetOutput:
     Attributes
     ----------
     files : dict[Path, SubprocessOutput], optional
-        A dictionary where each key is a file path (as a pathlib.Path object),
-        and the corresponding value is a juicenet.types.SubprocessOutput object.
-        The SubprocessOutput object contains the outputs of Nyuu, Raw, and ParPar related to that file.
+        A dictionary where each key is a file path (as a `pathlib.Path` object),
+        and the corresponding value is a `SubprocessOutput` object.
+        The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that file.
         If there are no files processed, this attribute is `None`.
     articles : dict[Path, SubprocessOutput], optional
-        A dictionary where each key is an article path (as a Path object),
-        and the corresponding value is a juicenet.types.SubprocessOutput object. object.
-        The SubprocessOutput object contains the outputs of Nyuu, Raw, and ParPar related to that article.
+        A dictionary where each key is an article path (as a `pathlib.Path` object),
+        and the corresponding value is a `SubprocessOutput` object.
+        The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that article.
         If there are no articles processed, this attribute is `None`.
     """
 
     files: Optional[dict[Path, SubprocessOutput]] = None
     """
-    A dictionary where each key is a file path (as a pathlib.Path object), 
-    and the corresponding value is a juicenet.types.SubprocessOutput object. 
-    The SubprocessOutput object contains the outputs of Nyuu, Raw, and ParPar related to that file. 
+    A dictionary where each key is a file path (as a `pathlib.Path` object), 
+    and the corresponding value is a `SubprocessOutput` object. 
+    The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that file. 
     If there are no files processed, this attribute is `None`.
     """
 
     articles: Optional[dict[Path, SubprocessOutput]] = None
     """
-    A dictionary where each key is an article path (as a Path object), 
-    and the corresponding value is a juicenet.types.SubprocessOutput object. object. 
-    The SubprocessOutput object contains the outputs of Nyuu, Raw, and ParPar related to that article. 
+    A dictionary where each key is an article path (as a `pathlib.Path` object), 
+    and the corresponding value is a `SubprocessOutput` object. object. 
+    The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that article. 
     If there are no articles processed, this attribute is `None`.
     """
