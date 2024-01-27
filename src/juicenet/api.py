@@ -56,11 +56,11 @@ def juicenet(
     WindowsPath('D:/data/usenet/nzbs/private/Big Buck Bunny.mkv/Big Buck Bunny.mkv.nzb')
     >>> upload.files[file].nyuu.returncode # check the return code
     0
-    >>> upload.files[file].parpar.par2files # Complete list of PAR2 files generated for our file input
+    >>> upload.files[file].parpar.par2files # Complete list of PAR2 files generated for the input file
     [WindowsPath('C:/Users/raven/AppData/Local/Temp/.JUICENET_i0dk8c_5/87540762A9/Big Buck Bunny.mkv.par2'), ...]
     >>> upload.files[file].parpar.filepathformat # ParPar `--filepath-format` used to generate the PAR2 files
     'basename'
-    >>> upload.files[file].parpar.filepathbase # ParPar `--filepath-format` used to generate the PAR2 files
+    >>> upload.files[file].parpar.filepathbase # ParPar `--filepath-base` used to generate the PAR2 files
     WindowsPath('C:/Users/raven/Videos')
     """
 
