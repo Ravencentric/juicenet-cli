@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 from typing_extensions import TypeAlias
 
@@ -18,6 +18,7 @@ __all__ = [
 NZBFilePath: TypeAlias = Path
 PAR2FilePath: TypeAlias = Path
 ArticleFilePath: TypeAlias = Path
+StrPath: TypeAlias = Union[Path, str]
 
 
 @dataclass(order=True)
@@ -209,12 +210,12 @@ class JuicenetOutput:
     files : dict[Path, SubprocessOutput], optional
         A dictionary where each key is a file path (as a `pathlib.Path` object),
         and the corresponding value is a `SubprocessOutput` object.
-        The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that file.
+        The `SubprocessOutput` object contains the outputs of Nyuu and ParPar related to that file.
         If there are no files processed, this attribute is `None`.
     articles : dict[Path, SubprocessOutput], optional
         A dictionary where each key is an article path (as a `pathlib.Path` object),
         and the corresponding value is a `SubprocessOutput` object.
-        The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that article.
+        The `SubprocessOutput` object contains the output of Nyuu related to that article.
         If there are no articles processed, this attribute is `None`.
     """
 
@@ -222,7 +223,7 @@ class JuicenetOutput:
     """
     A dictionary where each key is a file path (as a `pathlib.Path` object), 
     and the corresponding value is a `SubprocessOutput` object. 
-    The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that file. 
+    The `SubprocessOutput` object contains the outputs of Nyuu and ParPar related to that file. 
     If there are no files processed, this attribute is `None`.
     """
 
@@ -230,6 +231,6 @@ class JuicenetOutput:
     """
     A dictionary where each key is an article path (as a `pathlib.Path` object), 
     and the corresponding value is a `SubprocessOutput` object. object. 
-    The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that article. 
+    The `SubprocessOutput` object contains the output of Nyuu related to that article. 
     If there are no articles processed, this attribute is `None`.
     """

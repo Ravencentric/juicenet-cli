@@ -1,4 +1,4 @@
-from .main import juicenet
+from .api import juicenet
 from .types import (
     ArticleFilePath,
     JuicenetOutput,
