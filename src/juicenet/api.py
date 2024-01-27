@@ -42,7 +42,7 @@ def juicenet(
     Raises
     ------
     ValueError
-        Raised if `path` is not a string or pathlib.Path, or if it does not point to an existing file 
+        Raised if `path` is not a string or pathlib.Path, or if it does not point to an existing file
         or `config` is not a string, a dictionary, or a pathlib.Path, or if it does not point to an existing file.
 
     Examples
