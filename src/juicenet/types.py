@@ -13,7 +13,6 @@ __all__ = [
     "ParParOutput",
     "SubprocessOutput",
     "JuicenetOutput",
-    "JuicenetException",
 ]
 
 NZBFilePath: TypeAlias = Path
@@ -234,8 +233,3 @@ class JuicenetOutput:
     The `SubprocessOutput` object contains the outputs of Nyuu, Raw, and ParPar related to that article. 
     If there are no articles processed, this attribute is `None`.
     """
-
-
-class JuicenetException(Exception):
-    """Generic Exception for juicenet errors"""
-    pass

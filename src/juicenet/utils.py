@@ -210,10 +210,3 @@ def delete_files(files: list[Path]) -> None:
     """
     for file in files:
         file.unlink(missing_ok=True)
-
-
-def mutually_exclusive(*args: bool) -> bool:
-    """
-    Ensure that only 1 out of the given arguments is True
-    """
-    return sum(args) == 1
