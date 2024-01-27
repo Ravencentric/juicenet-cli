@@ -2,7 +2,7 @@ import json
 import signal
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, Union
 
 from loguru import logger as _loguru_logger
 from pydantic import ValidationError
@@ -38,9 +38,9 @@ install()
 console = Console()
 
 
-def juicenet(
+def main(
     path: Path,
-    conf_path: Path,
+    config: Union[Path, dict[str, Any]],
     public: bool = False,
     only_nyuu: bool = False,
     only_parpar: bool = False,
@@ -66,32 +66,32 @@ def juicenet(
 
     # Read config file
     try:
-        config = read_config(conf_path)
+        config_data = read_config(config)
     except FileNotFoundError as error:
         logger.error(f"Config file not found: {error.filename}")
         sys.exit()
     except ValidationError as errors:
-        logger.error(f"{errors.error_count()} error(s) in {conf_path.name}")
+        logger.error(f"{errors.error_count()} error(s) in config")
         for err in errors.errors():
             logger.error(f"{err.get('loc')[0]}: {err.get('msg')}")  # type: ignore
         sys.exit()
 
     # Get the values from config
-    nyuu_bin = config.NYUU
-    parpar_bin = config.PARPAR
-    priv_conf = config.NYUU_CONFIG_PRIVATE
-    pub_conf = config.NYUU_CONFIG_PUBLIC or priv_conf
-    nzb_out = config.NZB_OUTPUT_PATH
-    exts = extensions or config.EXTENSIONS
-    parpar_args = config.PARPAR_ARGS
+    nyuu_bin = config_data.NYUU
+    parpar_bin = config_data.PARPAR
+    priv_conf = config_data.NYUU_CONFIG_PRIVATE
+    pub_conf = config_data.NYUU_CONFIG_PUBLIC or priv_conf
+    nzb_out = config_data.NZB_OUTPUT_PATH
+    exts = extensions or config_data.EXTENSIONS
+    parpar_args = config_data.PARPAR_ARGS
 
-    appdata_dir = config.APPDATA_DIR_PATH
+    appdata_dir = config_data.APPDATA_DIR_PATH
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
     resume_file.touch(exist_ok=True)
 
-    if config.USE_TEMP_DIR:
-        work_dir = config.TEMP_DIR_PATH
+    if config_data.USE_TEMP_DIR:
+        work_dir = config_data.TEMP_DIR_PATH
     else:
         work_dir = None
 
@@ -115,7 +115,7 @@ def juicenet(
         sys.exit()
 
     logger.debug(f"Version: {get_version()}")
-    logger.info(f"Config: {conf_path}")
+    logger.info(f"Config: {config}")
     logger.info(f"Nyuu: {nyuu_bin}")
     logger.info(f"ParPar: {parpar_bin}")
     logger.info(f"Nyuu Config: {conf}")

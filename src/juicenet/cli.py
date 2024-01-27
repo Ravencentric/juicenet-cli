@@ -4,7 +4,7 @@ from typing import Annotated, Optional
 from cyclopts import App, Group, Parameter, validators
 from cyclopts.types import ResolvedExistingFile, ResolvedExistingPath
 
-from .main import juicenet
+from .main import main
 from .version import get_version
 
 app = App(
@@ -142,9 +142,9 @@ def cli(
     CLI for juicenet. Does a bit of input validation thanks to cyclopts and then passes it over to juicenet.
     """
 
-    juicenet(
+    main(
         path=path,
-        conf_path=config,
+        config=config,
         public=public,
         only_nyuu=nyuu,
         only_parpar=parpar,

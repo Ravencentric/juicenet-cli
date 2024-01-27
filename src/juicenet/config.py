@@ -1,18 +1,24 @@
 import json
 from pathlib import Path
+from typing import Any, Union
 
 import yaml
 
 from .model import JuicenetConfig
 
 
-def read_config(path: Path) -> JuicenetConfig:
+def read_config(config: Union[Path, dict[str, Any]]) -> JuicenetConfig:
     """
     Reads the yaml config file
 
     Returns a JuicenetConfig object with the data validated and type casted
     """
-    data = yaml.safe_load(path.read_text()) or {}
+    if isinstance(config, Path):
+        data = yaml.safe_load(config.read_text()) or {}
+    elif isinstance(config, dict):
+        data = config
+    else:
+        raise ValueError("Config must be a pathlib.Path or dict")
 
     return JuicenetConfig.model_validate(data)
 
