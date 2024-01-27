@@ -55,7 +55,7 @@ Uploading stuff to Usenet is tedious so I tried to make it easier.
 
 * [Python >= 3.9](https://www.python.org/downloads/)
 * [ParPar >= 0.4.2](https://github.com/animetosho/ParPar)
-* [Nyuu >= git@a4b1712](https://github.com/animetosho/Nyuu)
+* [Nyuu >= 0.4.2](https://github.com/animetosho/Nyuu)
 
 #### Installation
 

@@ -28,10 +28,8 @@
 4. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
 
     ``` bash
-    npm install -g git+https://github.com/animetosho/Nyuu.git --production
+    npm install -g nyuu --production --unsafe-perm
     ```
-    !!! warning
-        You must not install the release [v0.4.1](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1) because it lacks alot of important features that are currently only available on git.
 
 5. Install [`ParPar`](https://github.com/animetosho/ParPar)
 
@@ -43,12 +41,8 @@
 
 On Windows, you simply need to grab the following two pre-built binaries:
 
-1. [Nyuu](https://github.com/animetosho/Nyuu)
-
-    !!! warning
-        You need version [`a4b1712`](https://github.com/animetosho/Nyuu/commit/a4b1712d77faeacaae114c966c238773acc534fb) or newer. [v0.4.1 is outdated and you shouldn't use it](https://github.com/animetosho/Nyuu/releases/tag/v0.4.1). Until animetosho uploads a new release, you can grab the [Windows binary here](https://github.com/Ravencentric/Nyuu/releases/latest) or build it yourself.
-
-2. [ParPar](https://github.com/animetosho/ParPar)
+1. [Nyuu](https://github.com/animetosho/Nyuu/releases/latest)
+2. [ParPar](https://github.com/animetosho/ParPar/releases/latest)
 
 ## Getting Started
 

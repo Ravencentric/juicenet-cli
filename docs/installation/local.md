@@ -6,12 +6,10 @@ Since `juicenet` uses Nyuu and ParPar, you need to have these installed. Follow 
 
 === "With Executables (Windows)"
 
-    1. [`ParPar >= 0.4.2`](https://github.com/animetosho/ParPar) - Grab the executable from [here](https://github.com/animetosho/ParPar/releases/tag/v0.4.3)
+    1. [`ParPar >= 0.4.2`](https://github.com/animetosho/ParPar) - Grab the executable from [here](https://github.com/animetosho/ParPar/releases/latest)
 
-    2. [`Nyuu >= git@a4b1712`](https://github.com/animetosho/Nyuu) - Grab the executable [here](https://github.com/Ravencentric/Nyuu/releases/latest) (unofficial)
+    2. [`Nyuu >= 0.4.2`](https://github.com/animetosho/Nyuu) - Grab the executable from [here](https://github.com/animetosho/Nyuu/releases/latest)
 
-        !!! note
-            The latest official Nyuu release at the time of writing this is `v0.4.1` which is outdated and missing important changes that are only available on the git repository
 
 === "With NPM (Windows)"
 
@@ -34,7 +32,7 @@ Since `juicenet` uses Nyuu and ParPar, you need to have these installed. Follow 
     5. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
 
         ``` bash
-        npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+        npm install -g nyuu --production --unsafe-perm
         ```
 
     6. Install [`ParPar`](https://github.com/animetosho/ParPar)
@@ -66,7 +64,7 @@ Since `juicenet` uses Nyuu and ParPar, you need to have these installed. Follow 
     4. Install [`Nyuu`](https://github.com/animetosho/Nyuu)
 
         ``` bash
-        npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+        npm install -g nyuu --production --unsafe-perm
         ```
 
     5. Install [`ParPar`](https://github.com/animetosho/ParPar)
