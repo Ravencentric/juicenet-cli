@@ -1,7 +1,7 @@
 annotated-types==0.6.0 ; python_version >= "3.9" and python_version < "4.0"
 attrs==23.2.0 ; python_version >= "3.9" and python_version < "4.0"
 colorama==0.4.6 ; python_version >= "3.9" and python_version < "4.0"
-cyclopts==2.1.2 ; python_version >= "3.9" and python_version < "4.0"
+cyclopts==2.2.0 ; python_version >= "3.9" and python_version < "4.0"
 docstring-parser==0.15 ; python_version >= "3.9" and python_version < "4.0"
 importlib-metadata==7.0.1 ; python_version >= "3.9" and python_version < "3.10"
 loguru==0.7.2 ; python_version >= "3.9" and python_version < "4.0"
