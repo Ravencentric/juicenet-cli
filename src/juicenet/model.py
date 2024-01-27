@@ -3,7 +3,7 @@ from shutil import which
 from tempfile import TemporaryDirectory
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, DirectoryPath, Field, FilePath
+from pydantic import BaseModel, DirectoryPath, Field, FilePath, field_validator
 
 
 # fmt: off
@@ -39,3 +39,9 @@ class JuicenetConfig(BaseModel):
 
     APPDATA_DIR_PATH: Path = Path.home() / ".juicenet"
     """The path to the folder where juicenet will store it's data"""
+
+    @field_validator("PARPAR", "NYUU", "NYUU_CONFIG_PRIVATE", "NZB_OUTPUT_PATH", "NYUU_CONFIG_PUBLIC", "TEMP_DIR_PATH", "APPDATA_DIR_PATH")
+    @classmethod
+    def resolve_path(cls, path: Path) -> Path:
+            """Resolve all given Path fields"""
+            return path.resolve()

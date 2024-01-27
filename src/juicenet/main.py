@@ -77,15 +77,15 @@ def juicenet(
         sys.exit()
 
     # Get the values from config
-    nyuu_bin = config.NYUU.resolve()
-    parpar_bin = config.PARPAR.resolve()
+    nyuu_bin = config.NYUU
+    parpar_bin = config.PARPAR
     priv_conf = config.NYUU_CONFIG_PRIVATE
     pub_conf = config.NYUU_CONFIG_PUBLIC or priv_conf
-    nzb_out = config.NZB_OUTPUT_PATH.resolve()
+    nzb_out = config.NZB_OUTPUT_PATH
     exts = extensions or config.EXTENSIONS
     parpar_args = config.PARPAR_ARGS
 
-    appdata_dir = config.APPDATA_DIR_PATH.resolve()
+    appdata_dir = config.APPDATA_DIR_PATH
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
     resume_file.touch(exist_ok=True)
@@ -96,7 +96,7 @@ def juicenet(
         work_dir = None
 
     # Decide which config file to use
-    configurations = {"public": pub_conf.resolve(), "private": priv_conf.resolve()}
+    configurations = {"public": pub_conf, "private": priv_conf}
     scope = "public" if public else "private"
     conf = configurations[scope]
 
