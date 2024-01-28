@@ -144,7 +144,7 @@ def main(
     parpar = ParPar(parpar_bin, parpar_args, work_dir, debug)
 
     # Initialize Nyuu class for uploading stuff ahead
-    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, resume, bdmv)
+    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, bdmv)
 
     if clear_resume:  # --clear-resume
         resume.clear_resume()  # Delete resume data
@@ -267,6 +267,7 @@ def main(
                         logger.error(file.name)
 
                     progress.update(task_parpar, advance=1)
+                    resume.log_file_info(file)
                     output[file] = SubprocessOutput(parpar=parpar_out)
 
         return JuicenetOutput(files=output)
@@ -298,6 +299,7 @@ def main(
                         logger.error(file.name)
 
                     progress.update(task_nyuu, advance=1)
+                    resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out)
 
         return JuicenetOutput(files=output)
@@ -328,6 +330,7 @@ def main(
                         logger.error(file.name)
 
                     progress.update(task_nyuu, advance=1)
+                    resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
         return JuicenetOutput(files=output)
@@ -378,6 +381,7 @@ def main(
                         logger.error(file.name)
 
                     progress.update(task_nyuu, advance=1)
+                    resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
         return JuicenetOutput(files=output, articles=rawoutput)

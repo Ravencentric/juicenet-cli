@@ -6,7 +6,6 @@ from typing import Optional
 
 from loguru import logger
 
-from .resume import Resume
 from .types import ArticleFilePath, NyuuOutput, NZBFilePath, PAR2FilePath, RawOutput
 from .utils import delete_files
 
@@ -23,7 +22,6 @@ class Nyuu:
         - `outdir (Path)`: The path to the output directory where nzbs will end up after completion.
         - `scope (str)`: The scope of the nzbs made by Nyuu (Private or Public).
         - `debug (bool)`: Debug mode for extra logs.
-        - `resume (Resume)`: Resume class for logging uploaded files.
         - `bdmv_naming (bool)`: Use alternate naming for the output nzbs if they are BDMV discs.
 
     Methods:
@@ -45,7 +43,6 @@ class Nyuu:
         outdir: Path,
         scope: str,
         debug: bool,
-        resume: Resume,
         bdmv_naming: bool,
     ) -> None:
         self.path = path
@@ -55,7 +52,6 @@ class Nyuu:
         self.outdir = outdir
         self.scope = scope
         self.debug = debug
-        self.resume = resume
         self.bdmv_naming = bdmv_naming
 
     def _move_nzb(self, file: Path, basedir: Path, clean_nzb: str, nzb: str) -> NZBFilePath:
@@ -104,9 +100,6 @@ class Nyuu:
         if process.returncode in [0, 32]:
             # move completed nzb to output dir
             outpath = self._move_nzb(file=file, basedir=cwd, clean_nzb=clean_nzb, nzb=nzb)
-
-            # save file info to resume data
-            self.resume.log_file_info(file)
 
             # Cleanup par2 files for the uploaded file
             if delete_par2files:
