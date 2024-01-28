@@ -245,14 +245,14 @@ class JuicenetOutput:
 
     Attributes
     ----------
-    nyuu : NyuuOutput, optional
-        `NyuuOutput` object for the processed file or `None` if not available.
-    parpar : ParParOutput, optional
-        `ParParOutput` object for the processed file or `None` if not available.
+    nyuu : NyuuOutput
+        `NyuuOutput` object for the processed file.
+    parpar : ParParOutput
+        `ParParOutput` object for the processed file.
     """
 
     nyuu: NyuuOutput
-    """`NyuuOutput` object for the processed file or `None` if not available."""
+    """`NyuuOutput` object for the processed file."""
 
     parpar: ParParOutput
-    """`ParParOutput` object for the processed file or `None` if not available."""
+    """`ParParOutput` object for the processed file."""
