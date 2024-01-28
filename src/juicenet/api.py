@@ -52,16 +52,8 @@ def juicenet(
     >>> file = Path("C:/Users/raven/Videos/Big Buck Bunny.mkv").resolve() # Recommended to always use resolved pathlib.Path
     >>> config = "D:/data/usenet/juicenetConfig/ENVjuicenet.yaml" # String also works, but not recommended
     >>> upload = juicenet(file, config=config)
-    >>> upload.files[file].nyuu.nzb # You can access the nzb attribute to get the resolved pathlib.Path to the resulting nzb
+    >>> upload.nyuu.nzb # You can access the `.nyuu.nzb` attribute to get the resolved pathlib.Path to the resulting nzb
     WindowsPath('D:/data/usenet/nzbs/private/Big Buck Bunny.mkv/Big Buck Bunny.mkv.nzb')
-    >>> upload.files[file].nyuu.returncode # check the return code
-    0
-    >>> upload.files[file].parpar.par2files # Complete list of PAR2 files generated for the input file
-    [WindowsPath('C:/Users/raven/AppData/Local/Temp/.JUICENET_i0dk8c_5/87540762A9/Big Buck Bunny.mkv.par2'), ...]
-    >>> upload.files[file].parpar.filepathformat # ParPar `--filepath-format` used to generate the PAR2 files
-    'basename'
-    >>> upload.files[file].parpar.filepathbase # ParPar `--filepath-base` used to generate the PAR2 files
-    WindowsPath('C:/Users/raven/Videos')
     """
 
     if isinstance(path, str):
@@ -83,4 +75,6 @@ def juicenet(
     else:
         raise ValueError("Config must be a path or a dictonary")
 
-    return main(path=_path, config=_config, no_resume=True, public=is_public, debug=debug)
+    _upload = main(path=_path, config=_config, no_resume=True, public=is_public, debug=debug)
+
+    return JuicenetOutput(nyuu=_upload.files[_path].nyuu, parpar=_upload.files[_path].parpar)  # type: ignore

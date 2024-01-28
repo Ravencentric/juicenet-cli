@@ -15,7 +15,7 @@ from .log import get_logger
 from .nyuu import Nyuu
 from .parpar import ParPar
 from .resume import Resume
-from .types import JuicenetOutput, SubprocessOutput
+from .types import InternalJuicenetOutput, SubprocessOutput
 from .utils import (
     delete_files,
     filter_empty_files,
@@ -55,7 +55,7 @@ def main(
     extensions: Optional[list[str]] = None,
     no_resume: bool = False,
     clear_resume: bool = False,
-) -> JuicenetOutput:
+) -> InternalJuicenetOutput:
     """
     Do stuff here
     """
@@ -175,7 +175,7 @@ def main(
                     progress.update(task_raw, advance=1)
                     output[article] = SubprocessOutput(raw=raw_out)
 
-            return JuicenetOutput(articles=output)
+            return InternalJuicenetOutput(articles=output)
 
     if path.is_file():  # juicenet "file.mkv"
         files = [path]
@@ -270,7 +270,7 @@ def main(
                     resume.log_file_info(file)
                     output[file] = SubprocessOutput(parpar=parpar_out)
 
-        return JuicenetOutput(files=output)
+        return InternalJuicenetOutput(files=output)
 
     if only_nyuu:  # --nyuu
         logger.debug("Only running Nyuu")
@@ -302,7 +302,7 @@ def main(
                     resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out)
 
-        return JuicenetOutput(files=output)
+        return InternalJuicenetOutput(files=output)
 
     if skip_raw:  # --skip-raw
         logger.warning("Raw article checking and reposting is being skipped")
@@ -333,7 +333,7 @@ def main(
                     resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
-        return JuicenetOutput(files=output)
+        return InternalJuicenetOutput(files=output)
 
     else:  # default
         output = {}
@@ -384,4 +384,4 @@ def main(
                     resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
-        return JuicenetOutput(files=output, articles=rawoutput)
+        return InternalJuicenetOutput(files=output, articles=rawoutput)

@@ -12,7 +12,7 @@ __all__ = [
     "RawOutput",
     "ParParOutput",
     "SubprocessOutput",
-    "JuicenetOutput",
+    "InternalJuicenetOutput",
 ]
 
 NZBFilePath: TypeAlias = Path
@@ -201,7 +201,7 @@ class SubprocessOutput:
 
 
 @dataclass(order=True)
-class JuicenetOutput:
+class InternalJuicenetOutput:
     """
     A class used to represent the output of Juicenet.
 
@@ -234,3 +234,25 @@ class JuicenetOutput:
     The `SubprocessOutput` object contains the output of Nyuu related to that article. 
     If there are no articles processed, this attribute is `None`.
     """
+
+
+@dataclass(order=True)
+class JuicenetOutput:
+    """
+    A class used to represent the combined output of Nyuu and ParPar for the input file.
+    Each attribute in this class is an instance of the corresponding output class (`NyuuOutput`, `ParParOutput`) and
+    captures the output of the respective subprocess.
+
+    Attributes
+    ----------
+    nyuu : NyuuOutput, optional
+        `NyuuOutput` object for the processed file or `None` if not available.
+    parpar : ParParOutput, optional
+        `ParParOutput` object for the processed file or `None` if not available.
+    """
+
+    nyuu: NyuuOutput
+    """`NyuuOutput` object for the processed file or `None` if not available."""
+
+    parpar: ParParOutput
+    """`ParParOutput` object for the processed file or `None` if not available."""
