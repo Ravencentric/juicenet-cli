@@ -135,13 +135,13 @@ class Nyuu:
             + [
                 "--delete-raw-posts",
                 "--input-raw-posts",
-                article,
+                article.resolve(),
             ]
         )
 
         logger.debug(shlex.join(str(arg) for arg in nyuu))
 
-        process = subprocess.run(nyuu, cwd=self.path, capture_output=capture_output, encoding="utf-8")  # type: ignore
+        process = subprocess.run(nyuu, capture_output=capture_output, encoding="utf-8")  # type: ignore
 
         if process.returncode in [0, 32]:
             return RawOutput(
