@@ -73,8 +73,13 @@ All three of the provided configs below have 3 dummy values that you need to rep
 
 === "Public"
 
-    This config does not obfuscate anything except `from` and public indexers will index it.
+    This config does not obfuscate anything and public indexers will index it.
     This will be the config you pass to `NYUU_CONFIG_PUBLIC`.
+
+    !!! note
+        You must change `"from": "example@example.com",` in this config.
+        This is similar to a "username" field for your uploads and is necessary for public indexers to index your uploads.
+        For example, seadex uploads use `"from": "seadex@releases.moe",`. This does not need to be a real domain, so you can write whatever you want.
 
     ```json
     {
@@ -90,7 +95,7 @@ All three of the provided configs below have 3 dummy values that you need to rep
         " *** Article Options *** ":0,
         "article-size":       "700K",
         "comment":            "",
-        "from":               "${rand(10)}@${rand(5)}.${rand(3)}",
+        "from":               "example@example.com",
         "groups":             "alt.binaries.boneless",
         
         " *** Check Options *** ":0,
