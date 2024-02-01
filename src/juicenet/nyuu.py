@@ -12,26 +12,33 @@ from .utils import delete_files
 
 class Nyuu:
     """
-    A class representing Nyuu.
+    Nyuu class for handling Usenet uploads and reposting raw articles.
 
-    Attributes:
-        - `path (Path)`: The path to the directory containing the files to be uploaded.
-        - `bin (Path)`: The path to Nyuu binary.
-        - `conf (Path)`: The path to the Nyuu's configuration file.
-        - `workdir (Optional[Path])`: Path to the directory for Nyuu execution and nzb file generation.
-        - `outdir (Path)`: The path to the output directory where nzbs will end up after completion.
-        - `scope (str)`: The scope of the nzbs made by Nyuu (Private or Public).
-        - `debug (bool)`: Debug mode for extra logs.
-        - `bdmv_naming (bool)`: Use alternate naming for the output nzbs if they are BDMV discs.
+    Attributes
+    ----------
+    path : Path
+        The base path for organizing files.
+    bin : Path
+        Path to the Nyuu binary executable.
+    conf : Path
+        Path to the Nyuu configuration file.
+    workdir : Path, optional
+        Working directory for Nyuu execution.
+    outdir : Path
+        Output directory for storing NZB files.
+    scope : str
+        Scope identifier for organizing output files.
+    debug : bool
+        Flag indicating whether to enable debug mode.
+    bdmv_naming : bool
+        Flag indicating whether to use different naming for BDMVs.
 
-    Methods:
-        - `move_nzb(file: Path, basedir: Path, nzb: str) -> None`: Move NZB to a specified output
-           path in a somewhat sorted manner.
-        - `cleanup(par2_files: list[Path]) -> None`: Cleans up par2 files after they are uploaded.
-        - `upload(files: dict[Path, list[Path]]) -> None`: Uploads files to Usenet with Nyuu.
-        - `repost_raw(dump: Path) -> None`: Tries to repost failed articles from the last run.
-
-    This class is used to manage the uploading and reposting of files to Usenet using Nyuu.
+    Methods
+    -------
+    upload(file: Path, par2files: list[PAR2FilePath], delete_par2files: bool = True) -> NyuuOutput
+        Upload files to Usenet with Nyuu.
+    repost_raw(article: ArticleFilePath) -> RawOutput
+        Repost failed articles from the last run.
     """
 
     def __init__(
