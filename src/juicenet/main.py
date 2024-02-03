@@ -233,7 +233,7 @@ def main(
         )
         sys.exit()
 
-    files = resume.filter_uploaded_files(files)
+    files = sorted(resume.filter_uploaded_files(files))
 
     if not files:
         logger.info(
