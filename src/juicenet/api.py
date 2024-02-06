@@ -15,6 +15,7 @@ def juicenet(
     *,
     config: Union[StrPath, dict[str, Any]],
     is_public: bool = False,
+    resume: bool = False,
     debug: bool = False,
 ) -> JuicenetOutput:
     """
@@ -29,8 +30,10 @@ def juicenet(
         This can either be a dictionary, a string representing the path to a configuration file,
         or a pathlib.Path object pointing to a configuration file.
     is_public : bool, optional
-        Whether the upload is meant to be public or not. This does not affect any real functionality
-        and is soley used to sort the resulting NZB file. Default is False.
+        Whether the upload is meant to be public or not. Uses the public config if specified, 
+        falls back to using the private one if not. Default is False.
+    resume: bool, optional
+        Whether to enable resumability. Previously uploaded files will be skipped if True. Default is False.
     debug : bool, optional
         Whether to enable debug logs. Default is False.
 
@@ -74,7 +77,9 @@ def juicenet(
         _config = config  # type: ignore
     else:
         raise ValueError("Config must be a path or a dictonary")
+    
+    _resume = not resume
 
-    _upload = main(path=_path, config=_config, no_resume=True, public=is_public, debug=debug)
+    _upload = main(path=_path, config=_config, no_resume=_resume, public=is_public, debug=debug)
 
     return JuicenetOutput(nyuu=_upload.files[_path].nyuu, parpar=_upload.files[_path].parpar)  # type: ignore
