@@ -1,13 +1,15 @@
 import json
+from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Union
+from typing import Union
 
 import yaml
 
 from .model import JuicenetConfig
+from .types import Config
 
 
-def read_config(config: Union[Path, dict[str, Any]]) -> JuicenetConfig:
+def read_config(config: Union[Path, Config]) -> JuicenetConfig:
     """
     Reads the yaml config file
 
@@ -15,10 +17,10 @@ def read_config(config: Union[Path, dict[str, Any]]) -> JuicenetConfig:
     """
     if isinstance(config, Path):
         data = yaml.safe_load(config.read_text()) or {}
-    elif isinstance(config, dict):
-        data = config
+    elif isinstance(config, Config):
+        data = {key.upper(): value for key, value in asdict(config).items() if value is not None}
     else:
-        raise ValueError("Config must be a pathlib.Path or dict")
+        raise ValueError("Config must be a pathlib.Path or juicenet.Config")
 
     return JuicenetConfig.model_validate(data)
 

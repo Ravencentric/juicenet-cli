@@ -1,7 +1,8 @@
 from .api import juicenet
 from .types import (
     ArticleFilePath,
-    JuicenetOutput,
+    Config,
+    JuiceBox,
     NyuuOutput,
     NZBFilePath,
     PAR2FilePath,
@@ -13,14 +14,15 @@ from .version import get_version
 
 __all__ = [
     "juicenet",
+    "ArticleFilePath",
+    "Config",
+    "JuiceBox",
+    "NyuuOutput",
     "NZBFilePath",
     "PAR2FilePath",
-    "ArticleFilePath",
-    "NyuuOutput",
-    "RawOutput",
     "ParParOutput",
+    "RawOutput",
     "SubprocessOutput",
-    "JuicenetOutput",
 ]
 
 __version__ = get_version()

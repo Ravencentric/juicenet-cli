@@ -13,6 +13,8 @@ __all__ = [
     "ParParOutput",
     "SubprocessOutput",
     "InternalJuicenetOutput",
+    "JuiceBox",
+    "Config",
 ]
 
 NZBFilePath: TypeAlias = Path
@@ -237,7 +239,7 @@ class InternalJuicenetOutput:
 
 
 @dataclass(order=True)
-class JuicenetOutput:
+class JuiceBox:
     """
     A class used to represent the combined output of Nyuu and ParPar for the input file.
     Each attribute in this class is an instance of the corresponding output class (`NyuuOutput`, `ParParOutput`) and
@@ -256,3 +258,40 @@ class JuicenetOutput:
 
     parpar: ParParOutput
     """`ParParOutput` object for the processed file."""
+
+
+@dataclass(order=True)
+class Config:
+    """
+    Configuration class for Juicenet API
+    """
+
+    nyuu_config_private: Union[str, Path]
+    """The path to the private Nyuu configuration file"""
+
+    nzb_output_path: Union[str, Path]
+    """The path where output NZBs will be saved"""
+
+    parpar: Optional[StrPath] = None
+    """The path to the ParPar binary"""
+
+    nyuu: Optional[StrPath] = None
+    """The path to the Nyuu binary"""
+
+    nyuu_config_public: Optional[StrPath] = None
+    """The path to the public Nyuu configuration file"""
+
+    extensions: Optional[list[str]] = None
+    """The list of file extensions to be processed"""
+
+    parpar_args: Optional[list[str]] = None
+    """The arguments to be passed to the ParPar binary"""
+
+    use_temp_dir: Optional[bool] = None
+    """Whether or not to use a temporary directory for processing"""
+
+    temp_dir_path: Optional[StrPath] = None
+    """Path to a specific temporary directory if USE_TEMP_DIR is True. If unspecified, it uses %Temp% or /tmp"""
+
+    appdata_dir_path: Optional[StrPath] = None
+    """The path to the folder where juicenet will store it's data"""

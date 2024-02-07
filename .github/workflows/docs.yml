@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - config/juicenet.yaml
-      - docs/**/*
+      - docs/**/*.*
       - .github/workflows/docs.yml
       - mkdocs.yml
   workflow_dispatch:

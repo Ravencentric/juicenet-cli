@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import json
 import signal
 import sys
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from loguru import logger as _loguru_logger
 from pydantic import ValidationError
@@ -28,6 +30,9 @@ from .utils import (
 )
 from .version import get_version
 
+if TYPE_CHECKING:
+    from .types import Config
+
 # Supress keyboardinterrupt traceback because I hate it
 signal.signal(signal.SIGINT, lambda x, y: sys.exit(1))
 
@@ -40,7 +45,7 @@ console = Console()
 
 def main(
     path: Path,
-    config: Union[Path, dict[str, Any]],
+    config: Union[Path, Config],
     public: bool = False,
     only_nyuu: bool = False,
     only_parpar: bool = False,
@@ -115,7 +120,10 @@ def main(
         sys.exit()
 
     logger.debug(f"Version: {get_version()}")
-    logger.info(f"Config: {config}")
+
+    if isinstance(config, Path):
+        logger.info(f"Config: {config}")
+
     logger.info(f"Nyuu: {nyuu_bin}")
     logger.info(f"ParPar: {parpar_bin}")
     logger.info(f"Nyuu Config: {conf}")

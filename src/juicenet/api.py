@@ -1,8 +1,8 @@
 from pathlib import Path
-from typing import Any, Union
+from typing import Union
 
 from .main import main
-from .types import JuicenetOutput, StrPath
+from .types import Config, JuiceBox, StrPath
 
 __all__ = [
     "juicenet",
@@ -13,11 +13,11 @@ def juicenet(
     path: StrPath,
     /,
     *,
-    config: Union[StrPath, dict[str, Any]],
+    config: Union[StrPath, Config],
     is_public: bool = False,
     resume: bool = False,
     debug: bool = False,
-) -> JuicenetOutput:
+) -> JuiceBox:
     """
     Upload a file to usenet
 
@@ -39,7 +39,7 @@ def juicenet(
 
     Returns
     -------
-    JuicenetOutput
+    JuiceBox
         Dataclass used to represent the output of Juicenet.
 
     Raises
@@ -50,13 +50,26 @@ def juicenet(
 
     Examples
     --------
-    >>> from pathlib import Path
-    >>> from juicenet import juicenet
-    >>> file = Path("C:/Users/raven/Videos/Big Buck Bunny.mkv").resolve() # Recommended to always use resolved pathlib.Path
-    >>> config = "D:/data/usenet/juicenetConfig/ENVjuicenet.yaml" # String also works, but not recommended
-    >>> upload = juicenet(file, config=config)
-    >>> upload.nyuu.nzb # You can access the `.nyuu.nzb` attribute to get the resolved pathlib.Path to the resulting nzb
-    WindowsPath('D:/data/usenet/nzbs/private/Big Buck Bunny.mkv/Big Buck Bunny.mkv.nzb')
+    ```python
+    from pathlib import Path
+
+    from juicenet import Config, juicenet
+
+    file = Path("C:/Users/raven/Videos/Big Buck Bunny.mkv") # Path works
+
+    config = "D:/data/usenet/config/juicenet.yaml" # string also works
+
+    # Convenient config class instead of a config file
+    config = Config(
+        nyuu_config_private="D:/data/usenet/juicenetConfig/nyuu-config.json",
+        nzb_output_path=Path("D:/data/usenet/nzbs"),
+    )
+
+    upload = juicenet(file, config=config)
+
+    print(upload.nyuu.nzb)
+    # D:/data/usenet/nzbs/private/Big Buck Bunny.mkv/Big Buck Bunny.mkv.nzb
+    ```
     """
 
     if isinstance(path, str):
@@ -73,13 +86,13 @@ def juicenet(
         _config = Path(config).resolve()
     elif isinstance(config, Path):
         _config = config.resolve()
-    elif isinstance(config, dict):
+    elif isinstance(config, Config):
         _config = config  # type: ignore
     else:
-        raise ValueError("Config must be a path or a dictonary")
+        raise ValueError("Config must be a path or a juicenet.Config")
 
     _resume = not resume
 
     _upload = main(path=_path, config=_config, no_resume=_resume, public=is_public, debug=debug)
 
-    return JuicenetOutput(nyuu=_upload.files[_path].nyuu, parpar=_upload.files[_path].parpar)  # type: ignore
+    return JuiceBox(nyuu=_upload.files[_path].nyuu, parpar=_upload.files[_path].parpar)  # type: ignore

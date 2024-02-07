@@ -5,7 +5,7 @@
 
 ::: juicenet.juicenet
 
-::: juicenet.types.JuicenetOutput
+::: juicenet.types.JuiceBox
 
 ::: juicenet.types.NyuuOutput
 
