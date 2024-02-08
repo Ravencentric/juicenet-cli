@@ -73,12 +73,12 @@ def main(
         config_data = read_config(config)
     except FileNotFoundError as error:
         logger.error(f"Config file not found: {error.filename}")
-        sys.exit()
+        sys.exit(1)
     except ValidationError as errors:
         logger.error(f"{errors.error_count()} error(s) in config")
         for err in errors.errors():
             logger.error(f"{err.get('loc')[0]}: {err.get('msg')}")  # type: ignore
-        sys.exit()
+        sys.exit(1)
 
     # Get the values from config
     nyuu_bin = config_data.NYUU
@@ -110,13 +110,13 @@ def main(
     except json.JSONDecodeError as error:
         logger.error(error)
         logger.error("Please check your Nyuu config and ensure it is valid")
-        sys.exit()
+        sys.exit(1)
     except KeyError as key:
         logger.error(f"{key} is not defined in your Nyuu config")
-        sys.exit()
+        sys.exit(1)
     except FileNotFoundError as error:
         logger.error(f"No such file: {error.filename}")
-        sys.exit()
+        sys.exit(1)
 
     logger.debug(f"Version: {get_version()}")
 
@@ -142,7 +142,7 @@ def main(
         count = len(raw)
         delete_files(raw)
         logger.info(f"Deleted {count} raw articles(s)")
-        sys.exit()
+        sys.exit(0)
 
     # Initialize Resume class
     resume = Resume(resume_file, scope, no_resume)
@@ -155,7 +155,7 @@ def main(
 
     if clear_resume:  # --clear-resume
         resume.clear_resume()  # Delete resume data
-        sys.exit()
+        sys.exit(0)
 
     # Check if there are any raw files from previous runs
     raw_articles = get_glob_matches(dump, ["*"])
@@ -196,7 +196,7 @@ def main(
             files = get_glob_matches(path, glob)
         except NotImplementedError as error:
             logger.error(error)
-            sys.exit()
+            sys.exit(1)
     else:
         files = get_files(path, exts)
 
@@ -207,13 +207,13 @@ def main(
     if not files:
         logger.error("No matching files/folders found in:")
         logger.error(path)
-        sys.exit()
+        sys.exit(1)
 
     if move:  # --move
         logger.info("Moving file(s)")
         move_files(files)
         logger.success("File(s) moved successfully")
-        sys.exit()
+        sys.exit(0)
 
     total = len(files)
     logger.debug(f"Total files: {total}")
@@ -230,7 +230,7 @@ def main(
             "Matching files/folders found, but they are either empty or "
             "contain only 0-byte files, making them effectively empty"
         )
-        sys.exit()
+        sys.exit(1)
 
     files = sorted(resume.filter_uploaded_files(files))
 
@@ -239,7 +239,7 @@ def main(
             "Matching files/folders found, but they were already uploaded before. "
             "You can force upload these with --no-resume"
         )
-        sys.exit()
+        sys.exit(1)
 
     if only_parpar:  # --parpar
         logger.debug("Only running ParPar")
