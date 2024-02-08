@@ -56,7 +56,6 @@ def main(
     bdmv: bool = False,
     debug: bool = False,
     move: bool = False,
-    only_move: bool = False,
     extensions: Optional[list[str]] = None,
     no_resume: bool = False,
     clear_resume: bool = False,
@@ -210,19 +209,11 @@ def main(
         logger.error(path)
         sys.exit()
 
-    if only_move:  # --only-move
-        logger.info("Moving file(s)")
-        move_files(files)
-        logger.success("File(s) moved successfully")
-        sys.exit()
-
     if move:  # --move
         logger.info("Moving file(s)")
         move_files(files)
         logger.success("File(s) moved successfully")
-
-        # Get the new path of files
-        files = get_files(path, exts)
+        sys.exit()
 
     total = len(files)
     logger.debug(f"Total files: {total}")

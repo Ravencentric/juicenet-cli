@@ -113,13 +113,6 @@ def cli(
     move: Annotated[
         bool,
         Parameter(
-            help="move foobar.ext to foobar/foobar.ext",
-            group=exclusive,
-        ),
-    ] = False,
-    only_move: Annotated[
-        bool,
-        Parameter(
             help="move foobar.ext to foobar/foobar.ext and exit",
             group=exclusive,
         ),
@@ -155,7 +148,6 @@ def cli(
         bdmv=bdmv,
         debug=debug,
         move=move,
-        only_move=only_move,
         extensions=exts,
         no_resume=no_resume,
         clear_resume=clear_resume,

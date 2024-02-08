@@ -31,8 +31,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `--glob    [*/ ...]`    | Specify the glob pattern(s) to be matched instead of extensions                               |
 | `--bdmv`                | Find and upload BDMV discs in cwd, can be used with `--glob`                                  |
 | `--debug`               | Show logs for debugging                                                                       |
-| `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)` before processing   |
-| `--only-move`           | Same as `--move` except it immediately exists after it's done moving                          |
+| `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)` and exit            |
 | `--exts [mkv mp4 ...]`  | Look for these extensions in `<path>`                                                         |
 | `--no-resume`           | ignore resume data                                                                            |
 | `--clear-resume`        | delete resume data                                                                            |
