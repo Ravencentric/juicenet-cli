@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.34.0"
+version = "0.35.0"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
 authors = ["Raventric <raven@juicenet.in>"]
 license = "Unlicense"
@@ -41,7 +41,7 @@ loguru-mypy = "^0.0.4"
 pre-commit = "^3.6.0"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs-material = "^9.5.7"
+mkdocs-material = "^9.5.8"
 mkdocstrings = {extras = ["python"], version = "^0.24.0"}
 mkdocs-autorefs = "^0.5.0"
 
