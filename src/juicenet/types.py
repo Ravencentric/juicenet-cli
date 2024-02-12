@@ -4,19 +4,6 @@ from typing import Literal, Optional, Union
 
 from typing_extensions import TypeAlias
 
-__all__ = [
-    "NZBFilePath",
-    "PAR2FilePath",
-    "ArticleFilePath",
-    "NyuuOutput",
-    "RawOutput",
-    "ParParOutput",
-    "SubprocessOutput",
-    "InternalJuicenetOutput",
-    "JuiceBox",
-    "Config",
-]
-
 NZBFilePath: TypeAlias = Path
 PAR2FilePath: TypeAlias = Path
 ArticleFilePath: TypeAlias = Path
@@ -182,7 +169,7 @@ class SubprocessOutput:
     nyuu : NyuuOutput, optional
         `NyuuOutput` object for the processed file or `None` if not available.
     raw : RawOutput, optional
-        `RawOutput` object for the processed file or `None` if not available.
+        `RawOutput` object for the processed artcile or `None` if not available.
     parpar : ParParOutput, optional
         `ParParOutput` object for the processed file or `None` if not available.
 
@@ -199,7 +186,7 @@ class SubprocessOutput:
     """`RawOutput` object for the processed file or `None` if not available."""
 
     parpar: Optional[ParParOutput] = None
-    """`ParParOutput` object for the processed file or `None` if not available."""
+    """`ParParOutput` object for the processed article or `None` if not available."""
 
 
 @dataclass(order=True)
@@ -241,8 +228,8 @@ class InternalJuicenetOutput:
 @dataclass(order=True)
 class JuiceBox:
     """
-    A class used to represent the combined output of Nyuu and ParPar for the input file.
-    Each attribute in this class is an instance of the corresponding output class (`NyuuOutput`, `ParParOutput`) and
+    A class used to represent the output of juicenet.
+    Each attribute in this class is an instance of the corresponding output class (`NyuuOutput`, `ParParOutput`, `RawOutput`) and
     captures the output of the respective subprocess.
 
     Attributes
@@ -251,6 +238,9 @@ class JuiceBox:
         `NyuuOutput` object for the processed file.
     parpar : ParParOutput
         `ParParOutput` object for the processed file.
+    raw: dict[ArticleFilePath, RawOutput]
+        Dictionary where each key is an article and the value is `RawOutput` object.
+        Empty if no articles were processed.
     """
 
     nyuu: NyuuOutput
@@ -259,9 +249,12 @@ class JuiceBox:
     parpar: ParParOutput
     """`ParParOutput` object for the processed file."""
 
+    raw: dict[ArticleFilePath, RawOutput]
+    """`RawOutput` object for any processed articles or `None` if not available."""
+
 
 @dataclass(order=True)
-class Config:
+class APIConfig:
     """
     Configuration class for Juicenet API
     """

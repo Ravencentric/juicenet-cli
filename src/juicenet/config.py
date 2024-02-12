@@ -5,11 +5,12 @@ from typing import Union
 
 import yaml
 
+from .exceptions import JuicenetInputError
 from .model import JuicenetConfig
-from .types import Config
+from .types import APIConfig
 
 
-def read_config(config: Union[Path, Config]) -> JuicenetConfig:
+def read_config(config: Union[Path, APIConfig]) -> JuicenetConfig:
     """
     Reads the yaml config file
 
@@ -17,10 +18,10 @@ def read_config(config: Union[Path, Config]) -> JuicenetConfig:
     """
     if isinstance(config, Path):
         data = yaml.safe_load(config.read_text()) or {}
-    elif isinstance(config, Config):
+    elif isinstance(config, APIConfig):
         data = {key.upper(): value for key, value in asdict(config).items() if value is not None}
     else:
-        raise ValueError("Config must be a pathlib.Path or juicenet.Config")
+        raise JuicenetInputError("Config must be a pathlib.Path or juicenet.Config")
 
     return JuicenetConfig.model_validate(data)
 

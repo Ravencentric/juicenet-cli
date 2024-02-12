@@ -113,7 +113,7 @@ class Nyuu:
                 delete_files(par2files)
 
             return NyuuOutput(
-                nzb=outpath,
+                nzb=outpath.resolve(),
                 success=True,
                 args=process.args,
                 returncode=process.returncode,
@@ -152,7 +152,7 @@ class Nyuu:
 
         if process.returncode in [0, 32]:
             return RawOutput(
-                article=article,
+                article=article.resolve(),
                 success=True,
                 args=process.args,
                 returncode=process.returncode,
@@ -161,7 +161,7 @@ class Nyuu:
             )
         else:
             return RawOutput(
-                article=article,
+                article=article.resolve(),
                 success=False,
                 args=process.args,
                 returncode=process.returncode,
