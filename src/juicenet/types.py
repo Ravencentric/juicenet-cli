@@ -257,19 +257,52 @@ class JuiceBox:
 class APIConfig:
     """
     Configuration class for Juicenet API
+
+    Attributes
+    ----------
+    nyuu_config_private : str or Path
+        The path to the private Nyuu configuration file.
+
+    nzb_output_path : str or Path
+        The path where output NZBs will be saved.
+
+    parpar : str or Path, optional
+        The path to the ParPar executable.
+
+    nyuu : str or Path, optional
+        The path to the Nyuu executable.
+
+    nyuu_config_public : str or Path, optional
+        The path to the public Nyuu configuration file.
+
+    extensions : list[str], optional
+        The list of file extensions to be processed.
+
+    parpar_args : list[str], optional
+        The arguments to be passed to the ParPar executable.
+
+    use_temp_dir : bool, optional
+        Whether or not to use a temporary directory for processing.
+
+    temp_dir_path : str or Path, optional
+        Path to a specific temporary directory if USE_TEMP_DIR is True.
+        If unspecified, `%Temp%` on Windows and `/tmp` on Linux will be used.
+
+    appdata_dir_path : str or Path, optional
+        The path to the folder where juicenet will store its data.
     """
 
-    nyuu_config_private: Union[str, Path]
+    nyuu_config_private: StrPath
     """The path to the private Nyuu configuration file"""
 
-    nzb_output_path: Union[str, Path]
+    nzb_output_path: StrPath
     """The path where output NZBs will be saved"""
 
     parpar: Optional[StrPath] = None
-    """The path to the ParPar binary"""
+    """The path to the ParPar executable"""
 
     nyuu: Optional[StrPath] = None
-    """The path to the Nyuu binary"""
+    """The path to the Nyuu executable"""
 
     nyuu_config_public: Optional[StrPath] = None
     """The path to the public Nyuu configuration file"""
@@ -278,7 +311,7 @@ class APIConfig:
     """The list of file extensions to be processed"""
 
     parpar_args: Optional[list[str]] = None
-    """The arguments to be passed to the ParPar binary"""
+    """The arguments to be passed to the ParPar executable"""
 
     use_temp_dir: Optional[bool] = None
     """Whether or not to use a temporary directory for processing"""

@@ -5,8 +5,19 @@
 
 ::: juicenet.juicenet
 
-::: juicenet.types.JuiceBox
+::: juicenet.get_files
 
-::: juicenet.types.NyuuOutput
+::: juicenet.get_glob_matches
 
-::: juicenet.types.ParParOutput
+::: juicenet.get_bdmv_discs
+
+::: juicenet.APIConfig
+
+::: juicenet.JuiceBox
+
+::: juicenet.NyuuOutput
+
+::: juicenet.ParParOutput
+
+::: juicenet.RawOutput
+

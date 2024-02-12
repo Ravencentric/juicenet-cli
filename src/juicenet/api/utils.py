@@ -23,6 +23,7 @@ def get_files(path: StrPath, /, *, exts: list[str] = ["mkv"]) -> list[Path]:
     Raises
     ------
     JuicenetInputError
+        Invalid input.
 
     Examples
     --------
@@ -60,17 +61,18 @@ def get_glob_matches(path: Path, /, *, globs: list[str] = ["*.mkv"]) -> list[Pat
     ----------
     path : Path or str
         The path to an existing directory. This can either be a string representing the path or a pathlib.Path object.
-    globs : list of str, optional
+    globs : list[str], optional
         List of glob patterns to match. Default will match all `mkv` files in the base path.
 
     Returns
     -------
-    list of Path
+    list[Path]
         A list of Path objects representing the files matching the given glob patterns.
 
     Raises
     ------
     JuicenetInputError
+        Invalid input.
 
     Examples
     --------
@@ -102,8 +104,7 @@ def get_glob_matches(path: Path, /, *, globs: list[str] = ["*.mkv"]) -> list[Pat
 
 def get_bdmv_discs(path: StrPath, globs: list[str] = ["*/"]) -> list[Path]:
     """
-    Finds individual discs in BDMVs by looking for `BDMV/index.bdmv`,
-    which you can then pass to juicenet.
+    Finds individual discs in BDMVs by looking for `BDMV/index.bdmv`.
 
     Parameters
     ----------
@@ -120,6 +121,7 @@ def get_bdmv_discs(path: StrPath, globs: list[str] = ["*/"]) -> list[Path]:
     Raises
     ------
     JuicenetInputError
+        Invalid input.
 
     Notes
     -----

@@ -43,11 +43,11 @@ def juicenet(
     ----------
     path : str or pathlib.Path
         The path to an existing file. This can either be a string representing the path or a pathlib.Path object.
-    config : str, pathlib.Path, or juicenet.APIConfig
+    config : str or pathlib.Path or APIConfig
         The configuration to use when processing the file or directory.
         This can either be a string representing the path to a YAML configuration file,
-        a pathlib.Path object pointing to a YAML configuration file,
-        or a juicenet.APIConfig dataclass.
+        a `pathlib.Path` object pointing to a YAML configuration file,
+        or a `juicenet.APIConfig` dataclass.
     public : bool, optional
         Whether the upload is meant to be public or not. Uses the public config if specified,
         falls back to using the private one if not. Default is False.
@@ -71,15 +71,16 @@ def juicenet(
     Raises
     ------
     JuicenetInputError
+        Invalid input.
 
     Notes
     -----
     - You should never upload an entire directory consisting of several files as a single NZB.
-      Use juicenet.get_files or juicenet.get_glob_matches to first get the relevant files and
+      Use `juicenet.get_files` or `juicenet.get_glob_matches` to first get the relevant files and
       then pass each one to juicenet.
 
     - You should never upload an entire BDMV consisting of several discs as a single NZB.
-      Use juicenet.get_bdmv_discs to first get each individual disc and then pass each one to juicenet.
+      Use `juicenet.get_bdmv_discs` to first get each individual disc and then pass each one to juicenet.
 
     Examples
     --------
