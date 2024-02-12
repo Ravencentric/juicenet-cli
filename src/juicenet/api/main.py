@@ -10,6 +10,7 @@ from rich.traceback import install
 
 from ..bar import progress_bar
 from ..config import get_dump_failed_posts, read_config
+from ..exceptions import JuicenetInputError
 from ..log import get_logger
 from ..nyuu import Nyuu
 from ..parpar import ParPar
@@ -17,7 +18,6 @@ from ..resume import Resume
 from ..types import APIConfig, JuiceBox, StrPath
 from ..utils import filter_empty_files, get_glob_matches
 from ..version import get_version
-from .exceptions import JuicenetInputError
 
 # Install rich traceback
 install()
@@ -75,7 +75,7 @@ def juicenet(
     Notes
     -----
     - You should never upload an entire directory consisting of several files as a single NZB.
-      Use juicenet.get_files or juicenet.get_glob_matches to first get the relevant files and 
+      Use juicenet.get_files or juicenet.get_glob_matches to first get the relevant files and
       then pass each one to juicenet.
 
     - You should never upload an entire BDMV consisting of several discs as a single NZB.

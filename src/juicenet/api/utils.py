@@ -1,7 +1,7 @@
 from pathlib import Path
 
+from ..exceptions import JuicenetInputError
 from ..types import StrPath
-from .exceptions import JuicenetInputError
 
 
 def get_files(path: StrPath, /, *, exts: list[str] = ["mkv"]) -> list[Path]:
