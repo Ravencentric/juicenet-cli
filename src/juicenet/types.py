@@ -4,19 +4,6 @@ from typing import Literal, Optional, Union
 
 from typing_extensions import TypeAlias
 
-__all__ = [
-    "NZBFilePath",
-    "PAR2FilePath",
-    "ArticleFilePath",
-    "NyuuOutput",
-    "RawOutput",
-    "ParParOutput",
-    "SubprocessOutput",
-    "InternalJuicenetOutput",
-    "JuiceBox",
-    "Config",
-]
-
 NZBFilePath: TypeAlias = Path
 PAR2FilePath: TypeAlias = Path
 ArticleFilePath: TypeAlias = Path
@@ -182,7 +169,7 @@ class SubprocessOutput:
     nyuu : NyuuOutput, optional
         `NyuuOutput` object for the processed file or `None` if not available.
     raw : RawOutput, optional
-        `RawOutput` object for the processed file or `None` if not available.
+        `RawOutput` object for the processed artcile or `None` if not available.
     parpar : ParParOutput, optional
         `ParParOutput` object for the processed file or `None` if not available.
 
@@ -199,7 +186,7 @@ class SubprocessOutput:
     """`RawOutput` object for the processed file or `None` if not available."""
 
     parpar: Optional[ParParOutput] = None
-    """`ParParOutput` object for the processed file or `None` if not available."""
+    """`ParParOutput` object for the processed article or `None` if not available."""
 
 
 @dataclass(order=True)
@@ -241,8 +228,8 @@ class InternalJuicenetOutput:
 @dataclass(order=True)
 class JuiceBox:
     """
-    A class used to represent the combined output of Nyuu and ParPar for the input file.
-    Each attribute in this class is an instance of the corresponding output class (`NyuuOutput`, `ParParOutput`) and
+    A class used to represent the output of juicenet.
+    Each attribute in this class is an instance of the corresponding output class (`NyuuOutput`, `ParParOutput`, `RawOutput`) and
     captures the output of the respective subprocess.
 
     Attributes
@@ -251,6 +238,9 @@ class JuiceBox:
         `NyuuOutput` object for the processed file.
     parpar : ParParOutput
         `ParParOutput` object for the processed file.
+    raw: dict[ArticleFilePath, RawOutput]
+        Dictionary where each key is an article and the value is `RawOutput` object.
+        Empty if no articles were processed.
     """
 
     nyuu: NyuuOutput
@@ -259,24 +249,60 @@ class JuiceBox:
     parpar: ParParOutput
     """`ParParOutput` object for the processed file."""
 
+    raw: dict[ArticleFilePath, RawOutput]
+    """`RawOutput` object for any processed articles or `None` if not available."""
+
 
 @dataclass(order=True)
-class Config:
+class APIConfig:
     """
     Configuration class for Juicenet API
+
+    Attributes
+    ----------
+    nyuu_config_private : str or Path
+        The path to the private Nyuu configuration file.
+
+    nzb_output_path : str or Path
+        The path where output NZBs will be saved.
+
+    parpar : str or Path, optional
+        The path to the ParPar executable.
+
+    nyuu : str or Path, optional
+        The path to the Nyuu executable.
+
+    nyuu_config_public : str or Path, optional
+        The path to the public Nyuu configuration file.
+
+    extensions : list[str], optional
+        The list of file extensions to be processed.
+
+    parpar_args : list[str], optional
+        The arguments to be passed to the ParPar executable.
+
+    use_temp_dir : bool, optional
+        Whether or not to use a temporary directory for processing.
+
+    temp_dir_path : str or Path, optional
+        Path to a specific temporary directory if USE_TEMP_DIR is True.
+        If unspecified, `%Temp%` on Windows and `/tmp` on Linux will be used.
+
+    appdata_dir_path : str or Path, optional
+        The path to the folder where juicenet will store its data.
     """
 
-    nyuu_config_private: Union[str, Path]
+    nyuu_config_private: StrPath
     """The path to the private Nyuu configuration file"""
 
-    nzb_output_path: Union[str, Path]
+    nzb_output_path: StrPath
     """The path where output NZBs will be saved"""
 
     parpar: Optional[StrPath] = None
-    """The path to the ParPar binary"""
+    """The path to the ParPar executable"""
 
     nyuu: Optional[StrPath] = None
-    """The path to the Nyuu binary"""
+    """The path to the Nyuu executable"""
 
     nyuu_config_public: Optional[StrPath] = None
     """The path to the public Nyuu configuration file"""
@@ -285,7 +311,7 @@ class Config:
     """The list of file extensions to be processed"""
 
     parpar_args: Optional[list[str]] = None
-    """The arguments to be passed to the ParPar binary"""
+    """The arguments to be passed to the ParPar executable"""
 
     use_temp_dir: Optional[bool] = None
     """Whether or not to use a temporary directory for processing"""
