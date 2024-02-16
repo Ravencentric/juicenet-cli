@@ -6,7 +6,6 @@ from typing import Union
 from rich.console import Console
 from rich.traceback import install
 
-from ..bar import progress_bar
 from ..config import get_dump_failed_posts, read_config
 from ..exceptions import JuicenetInputError
 from ..nyuu import Nyuu
@@ -175,45 +174,31 @@ def juicenet(
 
     if raw_count:
         rawoutput = {}
+        for article in raw_articles:
+            raw_out = nyuu.repost_raw(article=article)
+            rawoutput[article] = raw_out
 
-        with progress_bar(console=console, transient=True, disable=debug) as progress:
-            task_raw = progress.add_task("Raw...", total=raw_count)
-
-            for article in raw_articles:
-                raw_out = nyuu.repost_raw(article=article)
-                progress.update(task_raw, advance=1)
-                rawoutput[article] = raw_out
     else:
         rawoutput = {}
 
-    with progress_bar(console=console, disable=debug) as progress:
-        total = 1
-
-        task_parpar = progress.add_task("ParPar...", total=total)
-        task_nyuu = progress.add_task("Nyuu...", total=total)
-
-        if _resume.already_uploaded(file):
-            progress.update(task_parpar, advance=1)
-            progress.update(task_nyuu, advance=1)
-            return JuiceBox(
-                nyuu=NyuuOutput(nzb=None, success=False, args=[], returncode=1, stdout="", stderr=""),
-                parpar=ParParOutput(
-                    par2files=[],
-                    success=False,
-                    filepathbase=file.parent,
-                    filepathformat="basename" if file.is_file() else "path",
-                    args=[],
-                    returncode=1,
-                    stdout="",
-                    stderr="",
-                ),
-                raw={},
-            )
-        else:
-            parpar_out = parpar.generate_par2_files(file)
-            progress.update(task_parpar, advance=1)
-            nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
-            progress.update(task_nyuu, advance=1)
-            _resume.log_file_info(file)
+    if _resume.already_uploaded(file):
+        return JuiceBox(
+            nyuu=NyuuOutput(nzb=None, success=False, args=[], returncode=1, stdout="", stderr=""),
+            parpar=ParParOutput(
+                par2files=[],
+                success=False,
+                filepathbase=file.parent,
+                filepathformat="basename" if file.is_file() else "path",
+                args=[],
+                returncode=1,
+                stdout="",
+                stderr="",
+            ),
+            raw={},
+        )
+    else:
+        parpar_out = parpar.generate_par2_files(file)
+        nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
+        _resume.log_file_info(file)
 
     return JuiceBox(nyuu=nyuu_out, parpar=parpar_out, raw=rawoutput)
