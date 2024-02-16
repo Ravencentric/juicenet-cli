@@ -1,23 +1,19 @@
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 from typing import Union
 
-from loguru import logger as _loguru_logger
 from rich.console import Console
 from rich.traceback import install
 
 from ..bar import progress_bar
 from ..config import get_dump_failed_posts, read_config
 from ..exceptions import JuicenetInputError
-from ..log import get_logger
 from ..nyuu import Nyuu
 from ..parpar import ParPar
 from ..resume import Resume
-from ..types import APIConfig, JuiceBox, StrPath
+from ..types import APIConfig, JuiceBox, NyuuOutput, ParParOutput, StrPath
 from ..utils import filter_empty_files, get_glob_matches
-from ..version import get_version
 
 # Install rich traceback
 install()
@@ -132,10 +128,6 @@ def juicenet(
     else:
         raise JuicenetInputError("Config must be a path or a juicenet.Config")
 
-    # Configure logger
-    level = "DEBUG" if debug else "INFO"
-    logger = get_logger(logger=_loguru_logger, level=level, sink=console)  # type: ignore
-
     # Read config file
     config_data = read_config(_config)
 
@@ -167,19 +159,6 @@ def juicenet(
     raw_articles = get_glob_matches(dump, ["*"])
     raw_count = len(raw_articles)
 
-    logger.info(f"Version: {get_version()}")
-
-    if isinstance(config, Path):
-        logger.info(f"Config: {config}")
-
-    logger.info(f"Nyuu: {nyuu_bin}")
-    logger.info(f"ParPar: {parpar_bin}")
-    logger.info(f"Nyuu Config: {conf}")
-    logger.info(f"NZB Output: {nzb_out}")
-    logger.info(f"Raw Articles: {dump}")
-    logger.info(f"Appdata Directory: {appdata_dir}")
-    logger.info(f"Working Directory: {work_dir or _path.parent}")
-
     # Initialize Resume class
     no_resume = not resume
     _resume = Resume(resume_file, scope, no_resume)
@@ -195,8 +174,6 @@ def juicenet(
     nyuu = Nyuu(file.parent.parent, nyuu_bin, conf, work_dir, nzb_out, scope, debug, bdmv_naming)
 
     if raw_count:
-        logger.info(f"Found {raw_count} raw article(s). Attempting to Repost...")
-
         rawoutput = {}
 
         with progress_bar(console=console, transient=True, disable=debug) as progress:
@@ -204,12 +181,6 @@ def juicenet(
 
             for article in raw_articles:
                 raw_out = nyuu.repost_raw(article=article)
-
-                if raw_out.returncode == 0:
-                    logger.success(article.name)
-                else:
-                    logger.error(article.name)
-
                 progress.update(task_raw, advance=1)
                 rawoutput[article] = raw_out
     else:
@@ -222,34 +193,26 @@ def juicenet(
         task_nyuu = progress.add_task("Nyuu...", total=total)
 
         if _resume.already_uploaded(file):
-            logger.info(f"Skipping: {file.name} - Already uploaded")
             progress.update(task_parpar, advance=1)
             progress.update(task_nyuu, advance=1)
-            # return JuiceBox(
-            #     nyuu=NyuuOutput(nzb=None, success=False, args=[], returncode=1, stdout="", stderr=""),
-            #     parpar=ParParOutput(
-            #         par2files=[],
-            #         success=False,
-            #         filepathbase=file.parent,
-            #         filepathformat="basename" if file.is_file() else "path",
-            #         args=[],
-            #         returncode=1,
-            #         stdout="",
-            #         stderr="",
-            #     ),
-            #     raw={},
-            # )
-            sys.exit(0)
+            return JuiceBox(
+                nyuu=NyuuOutput(nzb=None, success=False, args=[], returncode=1, stdout="", stderr=""),
+                parpar=ParParOutput(
+                    par2files=[],
+                    success=False,
+                    filepathbase=file.parent,
+                    filepathformat="basename" if file.is_file() else "path",
+                    args=[],
+                    returncode=1,
+                    stdout="",
+                    stderr="",
+                ),
+                raw={},
+            )
         else:
             parpar_out = parpar.generate_par2_files(file)
             progress.update(task_parpar, advance=1)
             nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
-
-            if nyuu_out.success:
-                logger.success(file.name)
-            else:
-                logger.error(file.name)
-
             progress.update(task_nyuu, advance=1)
             _resume.log_file_info(file)
 
