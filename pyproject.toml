@@ -28,7 +28,6 @@ cyclopts = "^2.2.0"
 PyYAML = "^6.0.1"
 loguru = "^0.7.2"
 rich = "^13.7.0"
-rich-argparse = "^1.4.0"
 colorama = "^0.4.6"
 pydantic = "^2.6.1"
 strenum = { version = "^0.4.15", python = "<3.11" }
