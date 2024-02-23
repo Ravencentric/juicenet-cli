@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.39.0"
+version = "0.39.1"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
 authors = ["Raventric <raven@juicenet.in>"]
 license = "Unlicense"
@@ -24,7 +24,7 @@ Contact = "https://discord.gg/snackbox"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-cyclopts = "^2.2.0"
+cyclopts = "^2.3.2"
 PyYAML = "^6.0.1"
 loguru = "^0.7.2"
 rich = "^13.7.0"
@@ -37,10 +37,10 @@ importlib-metadata = { version = "^7.0.1", python = "<3.10" }
 ruff = "^0.2.1"
 mypy = "^1.8.0"
 loguru-mypy = "^0.0.4"
-pre-commit = "^3.6.1"
+pre-commit = "^3.6.2"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs-material = "^9.5.9"
+mkdocs-material = "^9.5.10"
 mkdocstrings = {extras = ["python"], version = "^0.24.0"}
 mkdocs-autorefs = "^0.5.0"
 

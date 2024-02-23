@@ -17,7 +17,7 @@ def read_config(config: Union[Path, APIConfig]) -> JuicenetConfig:
     Returns a JuicenetConfig object with the data validated and type casted
     """
     if isinstance(config, Path):
-        data = yaml.safe_load(config.read_text()) or {}
+        data = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
     elif isinstance(config, APIConfig):
         data = {key.upper(): value for key, value in asdict(config).items() if value is not None}
     else:
@@ -30,5 +30,5 @@ def get_dump_failed_posts(conf: Path) -> Path:
     """
     Get the value of `dump-failed-posts` from Nyuu config
     """
-    data = json.loads(conf.read_text())
+    data = json.loads(conf.read_text(encoding="utf-8"))
     return Path(data["dump-failed-posts"]).resolve()
