@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 from loguru import logger
+from natsort import natsorted
 
 from .types import PAR2FilePath
 
@@ -17,7 +18,7 @@ def get_files(path: Path, exts: list[str]) -> list[Path]:
         matches = list(path.rglob(f"*.{ext.strip('.')}"))
         files.extend(matches)
 
-    return files
+    return natsorted(files)
 
 
 def get_glob_matches(path: Path, patterns: list[str]) -> list[Path]:
@@ -30,7 +31,7 @@ def get_glob_matches(path: Path, patterns: list[str]) -> list[Path]:
         matches = list(path.glob(pattern))
         files.extend(matches)
 
-    return files
+    return natsorted(files)
 
 
 def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
@@ -99,7 +100,7 @@ def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
                     bdmvs.append(file.parents[1])
                     logger.info(f"BDMV: {file.parents[1].relative_to(path)}")
 
-    return bdmvs
+    return natsorted(bdmvs)
 
 
 def get_file_info(file: Path) -> dict[str, str]:
@@ -136,7 +137,7 @@ def filter_par2_files(files: list[Path]) -> list[Path]:
         if not file.suffix.lower() == ".par2":
             filtered.append(file)
 
-    return filtered
+    return natsorted(filtered)
 
 
 def filter_empty_files(files: list[Path]) -> list[Path]:
@@ -163,7 +164,7 @@ def filter_empty_files(files: list[Path]) -> list[Path]:
                     filtered.append(file)
                     break
 
-    return filtered
+    return natsorted(filtered)
 
 
 def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, list[PAR2FilePath]]:
@@ -184,7 +185,7 @@ def map_file_to_pars(basedir: Optional[Path], files: list[Path]) -> dict[Path, l
 
         # Rest of the par2 files strictly follow the `foobar.mkv.vol01+02.par2` naming scheme
         par2_files.extend(list(parent.glob(f"{glob.escape(file.name)}.vol*.par2")))
-        mapping[file] = par2_files
+        mapping[file] = natsorted(par2_files)
 
     return mapping
 
