@@ -199,6 +199,9 @@ def juicenet(
     else:
         parpar_out = parpar.generate_par2_files(file)
         nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
-        _resume.log_file_info(file)
+
+        if nyuu_out.success:
+            # Only save it to resume if it was successful
+            _resume.log_file_info(file)
 
     return JuiceBox(nyuu=nyuu_out, parpar=parpar_out, raw=rawoutput)

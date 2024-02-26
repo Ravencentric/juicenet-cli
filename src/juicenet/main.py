@@ -257,13 +257,14 @@ def main(
                 else:
                     parpar_out = parpar.generate_par2_files(file)
 
-                    if parpar_out.returncode == 0:
+                    if parpar_out.success:
                         logger.success(file.name)
+                        # Only log to resume if process was successful
+                        resume.log_file_info(file)
                     else:
                         logger.error(file.name)
 
                     progress.update(task_parpar, advance=1)
-                    resume.log_file_info(file)
                     output[file] = SubprocessOutput(parpar=parpar_out)
 
         return InternalJuicenetOutput(files=output)
@@ -289,13 +290,14 @@ def main(
                 else:
                     nyuu_out = nyuu.upload(file=file, par2files=par2files[file])
 
-                    if nyuu_out.returncode == 0:
+                    if nyuu_out.success:
                         logger.success(file.name)
+                        # Only log to resume if process was successful
+                        resume.log_file_info(file)
                     else:
                         logger.error(file.name)
 
                     progress.update(task_nyuu, advance=1)
-                    resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out)
 
         return InternalJuicenetOutput(files=output)
@@ -320,13 +322,14 @@ def main(
                     progress.update(task_parpar, advance=1)
                     nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
 
-                    if nyuu_out.returncode in [0, 32]:
+                    if nyuu_out.success:
                         logger.success(file.name)
+                        # Only log to resume if process was successful
+                        resume.log_file_info(file)
                     else:
                         logger.error(file.name)
 
                     progress.update(task_nyuu, advance=1)
-                    resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
         return InternalJuicenetOutput(files=output)
@@ -371,13 +374,14 @@ def main(
                     progress.update(task_parpar, advance=1)
                     nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
 
-                    if nyuu_out.returncode in [0, 32]:
+                    if nyuu_out.success:
                         logger.success(file.name)
+                        # Only log to resume if process was successful
+                        resume.log_file_info(file)
                     else:
                         logger.error(file.name)
 
                     progress.update(task_nyuu, advance=1)
-                    resume.log_file_info(file)
                     output[file] = SubprocessOutput(nyuu=nyuu_out, parpar=parpar_out)
 
         return InternalJuicenetOutput(files=output, articles=rawoutput)
