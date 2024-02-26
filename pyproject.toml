@@ -32,6 +32,7 @@ colorama = "^0.4.6"
 pydantic = "^2.6.2"
 strenum = { version = "^0.4.15", python = "<3.11" }
 importlib-metadata = { version = "^7.0.1", python = "<3.10" }
+natsort = "^8.4.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.2.1"
