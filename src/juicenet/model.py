@@ -28,6 +28,19 @@ class JuicenetConfig(BaseModel):
     EXTENSIONS: list[str] = ["mkv"]
     """The list of file extensions to be processed"""
 
+    RELATED_EXTENSIONS: list[str] = ["*"]
+    """
+    For each input path, files that are named exactly
+    the same as the input but with a different suffix
+    are considered as related files. These files are
+    usually unmuxed subtitles.
+
+    Examples:
+        Input: `Big Buck Bunny The Movie (2023).mkv`
+        Related: `Big Buck Bunny The Movie (2023).srt`
+
+    """
+
     PARPAR_ARGS: list[str] = ["--overwrite", "-s700k", "--slice-size-multiple=700K", "--max-input-slices=4000", "-r1n*1.2", "-R"]
     """The arguments to be passed to the ParPar binary"""
 
