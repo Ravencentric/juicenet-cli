@@ -15,16 +15,18 @@ Before you can use `juicenet`, you'll have to configure it. This is a one time t
 
 ### Optional keys
 
-| Key                | Description                                                    | Default                                                                             |
-|--------------------|----------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| PARPAR             | The path to the ParPar binary                                  | `PATH`                                                                              |
-| NYUU               | The path to the Nyuu binary                                    | `PATH`                                                                              |
-| NYUU_CONFIG_PUBLIC | The path to the public Nyuu configuration file                 | `NYUU_CONFIG_PRIVATE`                                                               |
-| EXTENSIONS         | The list of file extensions to be processed                    | `["mkv"]`                                                                           |
-| PARPAR_ARGS        | The arguments to be passed to the ParPar binary                | `--overwrite -s700k --slice-size-multiple=700K --max-input-slices=4000 -r1n*1.2 -R` |
-| USE_TEMP_DIR       | Whether or not to use a temporary directory for processing     | `True`                                                                              |
-| TEMP_DIR_PATH      | Path to a specific temporary directory if USE_TEMP_DIR is True | `%Temp%` or `/tmp/`                                                                 |
-| APPDATA_DIR_PATH   | The path to the folder where juicenet will store its data      | `~/.juicenet`                                                                       |
+| Key                | Description                                                                                                                                                                                                            | Default                                                                             |
+|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| PARPAR             | The path to the ParPar binary                                                                                                                                                                                          | `PATH`                                                                              |
+| NYUU               | The path to the Nyuu binary                                                                                                                                                                                            | `PATH`                                                                              |
+| NYUU_CONFIG_PUBLIC | The path to the public Nyuu configuration file                                                                                                                                                                         | `NYUU_CONFIG_PRIVATE`                                                               |
+| EXTENSIONS         | The list of file extensions to be processed                                                                                                                                                                            | `["mkv"]`                                                                           |
+| RELATED_EXTENSIONS | The list of file extensions associated with an input file. For example, if you have a file named `Big Buck Bunny The Movie (2023).mkv`, another file named `Big Buck Bunny The Movie (2023).srt` is considered related | ["*"]                                                                               |
+| PARPAR_ARGS        | The arguments to be passed to the ParPar binary                                                                                                                                                                        | `--overwrite -s700k --slice-size-multiple=700K --max-input-slices=4000 -r1n*1.2 -R` |
+| USE_TEMP_DIR       | Whether or not to use a temporary directory for processing                                                                                                                                                             | `True`                                                                              |
+| TEMP_DIR_PATH      | Path to a specific temporary directory if USE_TEMP_DIR is True                                                                                                                                                         | `%Temp%` or `/tmp/`                                                                 |
+| APPDATA_DIR_PATH   | The path to the folder where juicenet will store its data                                                                                                                                                              | `~/.juicenet`                                                                       |
+
 
 ### Example configuration file
 

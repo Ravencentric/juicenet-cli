@@ -12,7 +12,7 @@ from ..nyuu import Nyuu
 from ..parpar import ParPar
 from ..resume import Resume
 from ..types import APIConfig, JuiceBox, NyuuOutput, ParParOutput, StrPath
-from ..utils import filter_empty_files, get_glob_matches
+from ..utils import filter_empty_files, get_glob_matches, get_related_files
 
 # Install rich traceback
 install()
@@ -137,6 +137,7 @@ def juicenet(
     pub_conf = config_data.NYUU_CONFIG_PUBLIC or priv_conf
     nzb_out = config_data.NZB_OUTPUT_PATH
     parpar_args = config_data.PARPAR_ARGS
+    related_exts = config_data.RELATED_EXTENSIONS
 
     appdata_dir = config_data.APPDATA_DIR_PATH
     appdata_dir.mkdir(parents=True, exist_ok=True)
@@ -195,13 +196,19 @@ def juicenet(
                 stderr="",
             ),
             raw={},
+            skipped=True,
         )
     else:
-        parpar_out = parpar.generate_par2_files(file)
-        nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
+        related_files = None
+
+        if file.is_file():
+            related_files = get_related_files(file, exts=related_exts)
+
+        parpar_out = parpar.generate_par2_files(file, related_files=related_files)
+        nyuu_out = nyuu.upload(file=file, related_files=related_files, par2files=parpar_out.par2files)
 
         if nyuu_out.success:
             # Only save it to resume if it was successful
             _resume.log_file_info(file)
 
-    return JuiceBox(nyuu=nyuu_out, parpar=parpar_out, raw=rawoutput)
+    return JuiceBox(nyuu=nyuu_out, parpar=parpar_out, raw=rawoutput, skipped=False)

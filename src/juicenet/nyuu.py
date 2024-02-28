@@ -80,7 +80,14 @@ class Nyuu:
 
         return dst.resolve()
 
-    def upload(self, file: Path, par2files: list[PAR2FilePath], *, delete_par2files: bool = True) -> NyuuOutput:
+    def upload(
+        self,
+        file: Path,
+        par2files: list[PAR2FilePath],
+        related_files: Optional[list[Path]] = None,
+        *,
+        delete_par2files: bool = True,
+    ) -> NyuuOutput:
         """
         Upload files to Usenet with Nyuu
         """
@@ -97,7 +104,12 @@ class Nyuu:
                 nzb = f"{parent}_{nzb}"
                 clean_nzb = f"{clean_parent}_{clean_nzb}"
 
-        nyuu = [self.bin] + ["--config", self.conf] + ["--out", clean_nzb] + [file] + par2files
+        if related_files:
+            files = [file] + related_files
+        else:
+            files = [file]
+
+        nyuu = [self.bin] + ["--config", self.conf] + ["--out", clean_nzb] + files + par2files
 
         logger.debug(shlex.join(str(arg) for arg in nyuu))
 

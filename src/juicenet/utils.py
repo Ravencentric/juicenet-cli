@@ -34,6 +34,49 @@ def get_glob_matches(path: Path, patterns: list[str]) -> list[Path]:
     return natsorted(files)
 
 
+def get_related_files(file: Path, exts: list[str]) -> Optional[list[Path]]:
+    """
+    Sometimes releasers include unmuxed files
+    with their releases that are important
+    such as unmuxed subtitles. These files usually
+    share the same name as the original filename but with a
+    different extension.
+
+    We will simply glob all files that match the original
+    filename, as these are usually intended to be watched
+    together.
+    """
+
+    matching_files: set[Path] = set()
+
+    # Grab all the files which share the exact name
+    # BUT different suffix
+    for ext in exts:
+        matches = set(file.parent.rglob(f"{glob.escape(file.stem)}*.{ext.strip('.')}"))
+        matching_files.update(matches)
+
+    # These often satisfy the above conditions
+    # but we don't want them
+    junk = [".nzb", ".par2", ".torrent"]
+
+    # Remove any items that aren't files or junk
+    filtered = {
+        match
+        for match in matching_files
+        if match.is_file() # MUST be an existing file
+        and match.suffix.lower() not in junk  # Extension MUST NOT be in junk extensions
+        and match.name != file.name # Filename MUST NOT be identical to input
+    }
+
+    # Remove the input file itself
+    files = filtered - {file}
+
+    if files:
+        return natsorted(files)
+
+    return None
+
+
 def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
     """
     Finds individual discs in BDMVs by looking for `BDMV/index.bdmv`
