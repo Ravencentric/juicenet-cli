@@ -4,6 +4,7 @@ import json
 import signal
 import sys
 from pathlib import Path
+from pprint import pformat
 from typing import Optional
 
 from loguru import logger as _loguru_logger
@@ -25,6 +26,7 @@ from .utils import (
     get_bdmv_discs,
     get_files,
     get_glob_matches,
+    get_related_files,
     map_file_to_pars,
     move_files,
 )
@@ -84,6 +86,7 @@ def main(
     pub_conf = config_data.NYUU_CONFIG_PUBLIC or priv_conf
     nzb_out = config_data.NZB_OUTPUT_PATH
     exts = extensions or config_data.EXTENSIONS
+    related_exts = config_data.RELATED_EXTENSIONS
     parpar_args = config_data.PARPAR_ARGS
 
     appdata_dir = config_data.APPDATA_DIR_PATH
@@ -132,6 +135,8 @@ def main(
         logger.info(f"Glob Pattern: {glob or ['*/']}")
     else:
         logger.info(f"Extensions: {exts}")
+
+    logger.info(f"Related Extensions: {related_exts}")
 
     # --clear-raw
     if clear_raw:
@@ -251,11 +256,19 @@ def main(
             task_parpar = progress.add_task("ParPar...", total=total)
 
             for file in files:
+                related_files = get_related_files(file, exts=related_exts)
+
+                if related_files:
+                    logger.info(f"Found {len(related_files)} related files")
+                    logger.debug(pformat(related_files))
+                else:
+                    logger.info(f"No related files found for {file.name}")
+
                 if resume.already_uploaded(file):
                     logger.info(f"Skipping: {file.name} - Already uploaded")
                     progress.update(task_parpar, advance=1)
                 else:
-                    parpar_out = parpar.generate_par2_files(file)
+                    parpar_out = parpar.generate_par2_files(file, related_files=related_files)
 
                     if parpar_out.success:
                         logger.success(file.name)
@@ -284,11 +297,19 @@ def main(
             task_nyuu = progress.add_task("Nyuu...", total=total)
 
             for file in files:
+                related_files = get_related_files(file, exts=related_exts)
+
+                if related_files:
+                    logger.info(f"Found {len(related_files)} related files")
+                    logger.debug(pformat(related_files))
+                else:
+                    logger.info(f"No related files found for {file.name}")
+
                 if resume.already_uploaded(file):
                     logger.info(f"Skipping: {file.name} - Already uploaded")
                     progress.update(task_nyuu, advance=1)
                 else:
-                    nyuu_out = nyuu.upload(file=file, par2files=par2files[file])
+                    nyuu_out = nyuu.upload(file=file, related_files=related_files, par2files=par2files[file])
 
                     if nyuu_out.success:
                         logger.success(file.name)
@@ -313,14 +334,22 @@ def main(
             task_nyuu = progress.add_task("Nyuu...", total=total)
 
             for file in files:
+                related_files = get_related_files(file, exts=related_exts)
+
+                if related_files:
+                    logger.info(f"Found {len(related_files)} related files")
+                    logger.debug(pformat(related_files))
+                else:
+                    logger.info(f"No related files found for {file.name}")
+
                 if resume.already_uploaded(file):
                     logger.info(f"Skipping: {file.name} - Already uploaded")
                     progress.update(task_parpar, advance=1)
                     progress.update(task_nyuu, advance=1)
                 else:
-                    parpar_out = parpar.generate_par2_files(file)
+                    parpar_out = parpar.generate_par2_files(file, related_files=related_files)
                     progress.update(task_parpar, advance=1)
-                    nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
+                    nyuu_out = nyuu.upload(file=file, related_files=related_files, par2files=parpar_out.par2files)
 
                     if nyuu_out.success:
                         logger.success(file.name)
@@ -365,14 +394,22 @@ def main(
             task_nyuu = progress.add_task("Nyuu...", total=total)
 
             for file in files:
+                related_files = get_related_files(file, exts=related_exts)
+
+                if related_files:
+                    logger.info(f"Found {len(related_files)} related files")
+                    logger.debug(pformat(related_files))
+                else:
+                    logger.info(f"No related files found for {file.name}")
+
                 if resume.already_uploaded(file):
                     logger.info(f"Skipping: {file.name} - Already uploaded")
                     progress.update(task_parpar, advance=1)
                     progress.update(task_nyuu, advance=1)
                 else:
-                    parpar_out = parpar.generate_par2_files(file)
+                    parpar_out = parpar.generate_par2_files(file, related_files=related_files)
                     progress.update(task_parpar, advance=1)
-                    nyuu_out = nyuu.upload(file=file, par2files=parpar_out.par2files)
+                    nyuu_out = nyuu.upload(file=file, related_files=related_files, par2files=parpar_out.par2files)
 
                     if nyuu_out.success:
                         logger.success(file.name)
