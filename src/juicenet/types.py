@@ -252,6 +252,9 @@ class JuiceBox:
     raw: dict[ArticleFilePath, RawOutput]
     """`RawOutput` object for any processed articles or `None` if not available."""
 
+    skipped: bool
+    """True if the upload process was skipped because the file was already uploaded"""
+
 
 @dataclass(order=True)
 class APIConfig:

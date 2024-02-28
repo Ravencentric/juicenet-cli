@@ -70,7 +70,7 @@ class ParPar:
         else:
             return file.parent
 
-    def generate_par2_files(self, file: Path) -> ParParOutput:
+    def generate_par2_files(self, file: Path, related_files: Optional[list[Path]] = None) -> ParParOutput:
         """
         Generate `.par2` files with ParPar and return a dictionary of the
         resulting `.par2` files where the key is the input file and value is
@@ -81,11 +81,17 @@ class ParPar:
         filepathformat = self._get_filepath_format(file)
         filepathbase = file.parent
 
+        if related_files:
+            files = [file] + related_files
+        else:
+            files = [file]
+
         parpar = (
             [self.bin]
             + self.args
             + ["--filepath-base", filepathbase, "--filepath-format", filepathformat]
-            + ["--out", file.name, file]
+            + ["--out", file.name]
+            + files
         )
 
         logger.debug(shlex.join(str(arg) for arg in parpar))
