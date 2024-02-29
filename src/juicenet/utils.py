@@ -63,9 +63,9 @@ def get_related_files(file: Path, exts: list[str]) -> Optional[list[Path]]:
     filtered = {
         match
         for match in matching_files
-        if match.is_file() # MUST be an existing file
+        if match.is_file()  # MUST be an existing file
         and match.suffix.lower() not in junk  # Extension MUST NOT be in junk extensions
-        and match.name != file.name # Filename MUST NOT be identical to input
+        and match.name != file.name  # Filename MUST NOT be identical to input
     }
 
     # Remove the input file itself
