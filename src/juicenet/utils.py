@@ -259,6 +259,6 @@ def delete_files(files: list[Path]) -> None:
             # if and only if it's empty
             file.parent.rmdir()
         except FileNotFoundError:  # Doesn't Exist
-            pass 
-        except OSError: # Not empty
+            pass
+        except OSError:  # Not empty
             pass
