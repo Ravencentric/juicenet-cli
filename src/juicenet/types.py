@@ -241,6 +241,8 @@ class JuiceBox:
     raw: dict[ArticleFilePath, RawOutput]
         Dictionary where each key is an article and the value is `RawOutput` object.
         Empty if no articles were processed.
+    skipped: bool
+        True if the upload process was skipped because the file was already uploaded
     """
 
     nyuu: NyuuOutput

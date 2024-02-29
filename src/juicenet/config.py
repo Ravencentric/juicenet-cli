@@ -16,13 +16,14 @@ def read_config(config: Union[Path, JuicenetConfig]) -> JuicenetConfig:
     """
     if isinstance(config, Path):
         data = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
-        return JuicenetConfig.model_validate(data)
+        lower = {key.lower(): value for key, value in data.items() if value is not None}
+        return JuicenetConfig.model_validate(lower)
 
     elif isinstance(config, JuicenetConfig):
         return config
 
     else:
-        raise JuicenetInputError("Config must be a pathlib.Path or juicenet.Config")
+        raise JuicenetInputError("Config must be a pathlib.Path or juicenet.JuicenetConfig")
 
 
 def get_dump_failed_posts(conf: Path) -> Path:

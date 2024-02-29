@@ -91,8 +91,8 @@ def juicenet(
 
     # Convenient config class instead of a config file
     config = JuicenetConfig(
-        NYUU_CONFIG_PRIVATE="D:/data/usenet/juicenetConfig/nyuu-config.json",
-        NZB_OUTPUT_PATH=Path("D:/data/usenet/nzbs"),
+        nyuu_config_private="D:/data/usenet/juicenetConfig/nyuu-config.json",
+        nzb_output_path=Path("D:/data/usenet/nzbs"),
     )
 
     upload = juicenet(file, config=config)
@@ -132,21 +132,21 @@ def juicenet(
     config_data = read_config(_config)
 
     # Get the values from config
-    nyuu_bin = config_data.NYUU
-    parpar_bin = config_data.PARPAR
-    priv_conf = config_data.NYUU_CONFIG_PRIVATE
-    pub_conf = config_data.NYUU_CONFIG_PUBLIC or priv_conf
-    nzb_out = config_data.NZB_OUTPUT_PATH
-    parpar_args = config_data.PARPAR_ARGS
-    related_exts = config_data.RELATED_EXTENSIONS
+    nyuu_bin = config_data.nyuu
+    parpar_bin = config_data.parpar
+    priv_conf = config_data.nyuu_config_private
+    pub_conf = config_data.nyuu_config_public or priv_conf
+    nzb_out = config_data.nzb_output_path
+    parpar_args = config_data.parpar_args
+    related_exts = config_data.related_extensions
 
-    appdata_dir = config_data.APPDATA_DIR_PATH
+    appdata_dir = config_data.appdata_dir_path
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
     resume_file.touch(exist_ok=True)
 
-    if config_data.USE_TEMP_DIR:
-        work_dir = config_data.TEMP_DIR_PATH
+    if config_data.use_temp_dir:
+        work_dir = config_data.temp_dir_path
     else:
         work_dir = None
 
