@@ -80,22 +80,22 @@ def main(
         sys.exit(1)
 
     # Get the values from config
-    nyuu_bin = config_data.NYUU
-    parpar_bin = config_data.PARPAR
-    priv_conf = config_data.NYUU_CONFIG_PRIVATE
-    pub_conf = config_data.NYUU_CONFIG_PUBLIC or priv_conf
-    nzb_out = config_data.NZB_OUTPUT_PATH
-    exts = extensions or config_data.EXTENSIONS
-    related_exts = config_data.RELATED_EXTENSIONS
-    parpar_args = config_data.PARPAR_ARGS
+    nyuu_bin = config_data.nyuu
+    parpar_bin = config_data.parpar
+    priv_conf = config_data.nyuu_config_private
+    pub_conf = config_data.nyuu_config_public or priv_conf
+    nzb_out = config_data.nzb_output_path
+    exts = extensions or config_data.extensions
+    related_exts = config_data.related_extensions
+    parpar_args = config_data.parpar_args
 
-    appdata_dir = config_data.APPDATA_DIR_PATH
+    appdata_dir = config_data.appdata_dir_path
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
     resume_file.touch(exist_ok=True)
 
-    if config_data.USE_TEMP_DIR:
-        work_dir = config_data.TEMP_DIR_PATH
+    if config_data.use_temp_dir:
+        work_dir = config_data.temp_dir_path
     else:
         work_dir = None
 

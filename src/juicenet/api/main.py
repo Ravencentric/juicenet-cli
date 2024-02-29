@@ -8,10 +8,11 @@ from rich.traceback import install
 
 from ..config import get_dump_failed_posts, read_config
 from ..exceptions import JuicenetInputError
+from ..model import JuicenetConfig
 from ..nyuu import Nyuu
 from ..parpar import ParPar
 from ..resume import Resume
-from ..types import APIConfig, JuiceBox, NyuuOutput, ParParOutput, StrPath
+from ..types import JuiceBox, NyuuOutput, ParParOutput, StrPath
 from ..utils import filter_empty_files, get_glob_matches, get_related_files
 
 # Install rich traceback
@@ -25,7 +26,7 @@ def juicenet(
     path: StrPath,
     /,
     *,
-    config: Union[StrPath, APIConfig],
+    config: Union[StrPath, JuicenetConfig],
     public: bool = False,
     bdmv_naming: bool = False,
     resume: bool = True,
@@ -38,11 +39,11 @@ def juicenet(
     ----------
     path : str or pathlib.Path
         The path to an existing file. This can either be a string representing the path or a pathlib.Path object.
-    config : str or pathlib.Path or APIConfig
+    config : str or pathlib.Path or JuicenetConfig
         The configuration to use when processing the file or directory.
         This can either be a string representing the path to a YAML configuration file,
         a `pathlib.Path` object pointing to a YAML configuration file,
-        or a `juicenet.APIConfig` dataclass.
+        or a `juicenet.JuicenetConfig` dataclass.
     public : bool, optional
         Whether the upload is meant to be public or not. Uses the public config if specified,
         falls back to using the private one if not. Default is False.
@@ -82,14 +83,14 @@ def juicenet(
     ```python
     from pathlib import Path
 
-    from juicenet import APIConfig, juicenet
+    from juicenet import JuicenetConfig, juicenet
 
     file = Path("C:/Users/raven/Videos/Big Buck Bunny.mkv") # Path works
 
     config = "D:/data/usenet/config/juicenet.yaml" # string also works
 
     # Convenient config class instead of a config file
-    config = APIConfig(
+    config = JuicenetConfig(
         nyuu_config_private="D:/data/usenet/juicenetConfig/nyuu-config.json",
         nzb_output_path=Path("D:/data/usenet/nzbs"),
     )
@@ -122,30 +123,30 @@ def juicenet(
         _config = Path(config).resolve()
     elif isinstance(config, Path):
         _config = config.resolve()
-    elif isinstance(config, APIConfig):
+    elif isinstance(config, JuicenetConfig):
         _config = config  # type: ignore
     else:
-        raise JuicenetInputError("Config must be a path or a juicenet.Config")
+        raise JuicenetInputError("Config must be a path or a juicenet.JuicenetConfig")
 
     # Read config file
     config_data = read_config(_config)
 
     # Get the values from config
-    nyuu_bin = config_data.NYUU
-    parpar_bin = config_data.PARPAR
-    priv_conf = config_data.NYUU_CONFIG_PRIVATE
-    pub_conf = config_data.NYUU_CONFIG_PUBLIC or priv_conf
-    nzb_out = config_data.NZB_OUTPUT_PATH
-    parpar_args = config_data.PARPAR_ARGS
-    related_exts = config_data.RELATED_EXTENSIONS
+    nyuu_bin = config_data.nyuu
+    parpar_bin = config_data.parpar
+    priv_conf = config_data.nyuu_config_private
+    pub_conf = config_data.nyuu_config_public or priv_conf
+    nzb_out = config_data.nzb_output_path
+    parpar_args = config_data.parpar_args
+    related_exts = config_data.related_extensions
 
-    appdata_dir = config_data.APPDATA_DIR_PATH
+    appdata_dir = config_data.appdata_dir_path
     appdata_dir.mkdir(parents=True, exist_ok=True)
     resume_file = appdata_dir / "juicenet.resume"
     resume_file.touch(exist_ok=True)
 
-    if config_data.USE_TEMP_DIR:
-        work_dir = config_data.TEMP_DIR_PATH
+    if config_data.use_temp_dir:
+        work_dir = config_data.temp_dir_path
     else:
         work_dir = None
 

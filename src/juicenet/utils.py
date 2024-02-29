@@ -254,3 +254,11 @@ def delete_files(files: list[Path]) -> None:
     """
     for file in files:
         file.unlink(missing_ok=True)
+        try:
+            # Attempt to remove the parent dir
+            # if and only if it's empty
+            file.parent.rmdir()
+        except FileNotFoundError:  # Doesn't Exist
+            pass 
+        except OSError: # Not empty
+            pass
