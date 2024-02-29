@@ -1,5 +1,4 @@
 import json
-from dataclasses import asdict
 from pathlib import Path
 from typing import Union
 
@@ -7,10 +6,9 @@ import yaml
 
 from .exceptions import JuicenetInputError
 from .model import JuicenetConfig
-from .types import APIConfig
 
 
-def read_config(config: Union[Path, APIConfig]) -> JuicenetConfig:
+def read_config(config: Union[Path, JuicenetConfig]) -> JuicenetConfig:
     """
     Reads the yaml config file
 
@@ -18,12 +16,13 @@ def read_config(config: Union[Path, APIConfig]) -> JuicenetConfig:
     """
     if isinstance(config, Path):
         data = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
-    elif isinstance(config, APIConfig):
-        data = {key.upper(): value for key, value in asdict(config).items() if value is not None}
+        return JuicenetConfig.model_validate(data)
+
+    elif isinstance(config, JuicenetConfig):
+        return config
+
     else:
         raise JuicenetInputError("Config must be a pathlib.Path or juicenet.Config")
-
-    return JuicenetConfig.model_validate(data)
 
 
 def get_dump_failed_posts(conf: Path) -> Path:

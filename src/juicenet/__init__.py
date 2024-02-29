@@ -13,7 +13,7 @@ Helper Functions
 
 Types
 -----
-- APIConfig
+- JuicenetConfig
 - ArticleFilePath
 - JuiceBox
 - NyuuOutput
@@ -26,8 +26,8 @@ Types
 
 from .api.main import juicenet
 from .api.utils import get_bdmv_discs, get_files, get_glob_matches
+from .model import JuicenetConfig
 from .types import (
-    APIConfig,
     ArticleFilePath,
     JuiceBox,
     NyuuOutput,
@@ -46,7 +46,7 @@ __all__ = [
     "get_bdmv_discs",
     "get_glob_matches",
     # types
-    "APIConfig",
+    "JuicenetConfig",
     "ArticleFilePath",
     "JuiceBox",
     "NyuuOutput",

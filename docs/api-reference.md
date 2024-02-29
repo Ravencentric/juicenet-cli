@@ -11,7 +11,7 @@
 
 ::: juicenet.get_bdmv_discs
 
-::: juicenet.APIConfig
+::: juicenet.JuicenetConfig
 
 ::: juicenet.JuiceBox
 
