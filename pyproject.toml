@@ -35,7 +35,7 @@ importlib-metadata = { version = "^7.0.1", python = "<3.10" }
 natsort = "^8.4.0"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.2.1"
+ruff = "^0.3.0"
 mypy = "^1.8.0"
 loguru-mypy = "^0.0.4"
 pre-commit = "^3.6.2"
