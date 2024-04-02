@@ -23,7 +23,6 @@ Types
 - RawOutput
 """
 
-
 from .api.main import juicenet
 from .api.utils import get_bdmv_discs, get_files, get_glob_matches
 from .model import JuicenetConfig
