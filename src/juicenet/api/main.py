@@ -30,6 +30,7 @@ def juicenet(
     public: bool = False,
     bdmv_naming: bool = False,
     resume: bool = True,
+    skip_raw: bool = False,
     debug: bool = False,
 ) -> JuiceBox:
     """
@@ -56,6 +57,8 @@ def juicenet(
         does nothing (i.e, `False`) if your input is a file.
     resume: bool, optional
         Whether to enable resumability. Files uploaded by previous runs will be skipped if True. Default is True.
+    skip_raw: bool, optional
+        Skip checking and reposting failed raw articles. Default is False.
     debug : bool, optional
         Whether to enable debug logs. Default is False.
 
@@ -174,7 +177,7 @@ def juicenet(
     # Initialize Nyuu class for uploading stuff ahead
     nyuu = Nyuu(file.parent.parent, nyuu_bin, conf, work_dir, nzb_out, scope, debug, bdmv_naming)
 
-    if raw_count:
+    if raw_count and (not skip_raw):
         rawoutput = {}
         for article in raw_articles:
             raw_out = nyuu.repost_raw(article=article)
