@@ -59,7 +59,7 @@ class JuicenetConfig(BaseModel):
     extensions: list[str] = ["mkv"]
     """The list of file extensions to be processed"""
 
-    related_extensions: list[str] = ["*"]
+    related_extensions: list[str] = ["ass", "srt"]
     """
     The list of file extensions associated with an input file. 
     For example, if you have a file named `Big Buck Bunny The Movie (2023).mkv`, 
