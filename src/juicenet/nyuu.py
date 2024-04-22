@@ -102,7 +102,8 @@ class Nyuu:
             clean_parent = parent.replace("`", "'")
             if parent:
                 nzb = f"{parent}_{nzb}"
-                clean_nzb = f"{clean_parent}_{clean_nzb}"
+                sep = "﹨"  # Use a unique seperator that'll allow user scripts to undo this for cross-seeding without false-positives
+                clean_nzb = f"{clean_parent}{sep}{clean_nzb}"
 
         if related_files:
             files = [file] + related_files
