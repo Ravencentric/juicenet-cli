@@ -165,11 +165,10 @@ def main(
 
     # --only-raw
     if only_raw:
+        output = {}
         if raw_count == 0:
             logger.info("No raw articles available for reposting")
         else:
-            output = {}
-
             with progress_bar(console=console, disable=debug) as progress:
                 task_raw = progress.add_task("Raw...", total=raw_count)
 
