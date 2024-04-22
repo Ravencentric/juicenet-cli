@@ -184,7 +184,7 @@ def main(
                     progress.update(task_raw, advance=1)
                     output[article] = SubprocessOutput(raw=raw_out)
 
-            return InternalJuicenetOutput(articles=output)
+        return InternalJuicenetOutput(articles=output)
 
     if path.is_file():  # juicenet "file.mkv"
         files = [path]
