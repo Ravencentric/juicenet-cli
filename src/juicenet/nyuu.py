@@ -98,11 +98,11 @@ class Nyuu:
         clean_nzb = nzb.replace("`", "'")  # Nyuu doesn't like backticks
 
         if self.bdmv_naming:
-            parent = file.relative_to(self.path).parent.name
+            sep = "﹨"  # Use a unique seperator that'll allow user scripts to undo this for cross-seeding without false-positives
+            parent = sep.join(file.relative_to(self.path).parent.parts)
             clean_parent = parent.replace("`", "'")
             if parent:
-                nzb = f"{parent}_{nzb}"
-                sep = "﹨"  # Use a unique seperator that'll allow user scripts to undo this for cross-seeding without false-positives
+                nzb = f"{parent}{sep}{nzb}"
                 clean_nzb = f"{clean_parent}{sep}{clean_nzb}"
 
         if related_files:
