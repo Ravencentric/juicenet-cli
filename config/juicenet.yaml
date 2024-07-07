@@ -2,7 +2,7 @@
 PARPAR: C:\Users\user\bin\parpar.exe
 NYUU: C:\Users\user\bin\nyuu.exe
 
-# https://juicenet.in/nyuu-config-files/
+# https://juicenet.ravencentric.cc/nyuu-config-files/
 NYUU_CONFIG_PRIVATE: C:\Users\user\nyuu\config-private.json
 
 NZB_OUTPUT_PATH: D:\output\nzbs

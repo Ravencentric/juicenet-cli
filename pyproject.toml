@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.45.4"
+version = "0.45.6"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
-authors = ["Raventric <raven@juicenet.in>"]
+authors = ["Ravencentric <me@ravencentric.cc>"]
 license = "Unlicense"
 readme = "README.md"
 packages = [{ include = "juicenet", from = "src" }]
-homepage = "https://juicenet.in"
+homepage = "https://juicenet.ravencentric.cc"
 repository = "https://github.com/Ravencentric/juicenet-cli"
-documentation = "https://juicenet.in"
+documentation = "https://juicenet.ravencentric.cc"
 classifiers = [
     "License :: OSI Approved :: The Unlicense (Unlicense)",
     "Operating System :: OS Independent",
@@ -20,29 +20,29 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-Contact = "https://discord.gg/snackbox"
+Discord = "https://discord.gg/snackbox"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-cyclopts = "^2.6.1"
+cyclopts = "^2.9.3"
 PyYAML = "^6.0.1"
 loguru = "^0.7.2"
 rich = "^13.7.1"
 colorama = "^0.4.6"
-pydantic = "^2.7.1"
+pydantic = "^2.8.2"
 strenum = { version = "^0.4.15", python = "<3.11" }
-importlib-metadata = { version = "^7.1.0", python = "<3.10" }
+importlib-metadata = { version = "^8.0.0", python = "<3.10" }
 natsort = "^8.4.0"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.3.6"
-mypy = "^1.10.0"
+ruff = "^0.5.1"
+mypy = "^1.10.1"
 loguru-mypy = "^0.0.4"
-pre-commit = "^3.7.0"
+pre-commit = "^3.7.1"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs-material = "^9.5.20"
-mkdocstrings = {extras = ["python"], version = "^0.24.0"}
+mkdocs-material = "^9.5.28"
+mkdocstrings = { extras = ["python"], version = "^0.25.1" }
 mkdocs-autorefs = "^1.0.1"
 
 [tool.ruff]

@@ -71,7 +71,7 @@ Uploading stuff to Usenet is tedious so I tried to make it easier.
     pip install juicenet-cli
     ```
 
-For more details, checkout the local installation guide [here](https://juicenet.in/installation/local/)
+For more details, checkout the local installation guide [here](https://juicenet.ravencentric.cc/installation/local/)
 
 ### Docker
 
@@ -99,11 +99,11 @@ services:
 docker compose -f "path/to/docker-compose.yml" run juicenet --help
 ```
 
-For more details, checkout the docker installation guide [here](https://juicenet.in/installation/docker/)
+For more details, checkout the docker installation guide [here](https://juicenet.ravencentric.cc/installation/docker/)
 
 ## Docs
 
-Checkout the complete documentation [here](https://juicenet.in/)
+Checkout the complete documentation [here](https://juicenet.ravencentric.cc/)
 
 ## License
 
