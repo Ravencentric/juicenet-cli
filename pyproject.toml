@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.45.6"
+version = "0.46.0"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
 authors = ["Ravencentric <me@ravencentric.cc>"]
 license = "Unlicense"
@@ -19,20 +19,17 @@ classifiers = [
     "Typing :: Typed",
 ]
 
-[tool.poetry.urls]
-Discord = "https://discord.gg/snackbox"
-
 [tool.poetry.dependencies]
-python = "^3.9"
-cyclopts = "^2.9.3"
-PyYAML = "^6.0.1"
-loguru = "^0.7.2"
-rich = "^13.7.1"
-colorama = "^0.4.6"
-pydantic = "^2.8.2"
-strenum = { version = "^0.4.15", python = "<3.11" }
-importlib-metadata = { version = "^8.0.0", python = "<3.10" }
-natsort = "^8.4.0"
+python = ">=3.9"
+cyclopts = ">=2.9.3"
+PyYAML = ">=6.0.1"
+loguru = ">=0.7.2"
+rich = ">=13.7.1"
+colorama = ">=0.4.6"
+pydantic = ">=2.8.2"
+strenum = { version = ">=0.4.15", python = "<3.11" }
+importlib-metadata = { version = ">=8.0.0", python = "<3.10" }
+natsort = ">=8.4.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.5.1"

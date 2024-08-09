@@ -84,11 +84,6 @@ def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
     The choice to use `BDMV/index.bdmv` is arbitrary,
     I just needed something unique enough.
 
-    There's two aspects to it, if the BDMV has multiple `BDMV/index.bdmv` files
-    it means it's got multiple discs and each disc will be returned seperately
-    and if there's only one `BDMV/index.bdmv` then return the folder as is
-    because it's likely a movie BDMV
-
     A typical BDMV might look like this:
 
     ```
@@ -135,13 +130,9 @@ def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
     for folder in folders:
         if folder.is_dir():
             index = list(folder.rglob("BDMV/index.bdmv"))
-            if len(index) == 1:
-                bdmvs.append(folder)
-                logger.info(f"BDMV: {folder.relative_to(path)}")
-            else:
-                for file in index:
-                    bdmvs.append(file.parents[1])
-                    logger.info(f"BDMV: {file.parents[1].relative_to(path)}")
+            for file in index:
+                bdmvs.append(file.parents[1])
+                logger.info(f"BDMV: {file.parents[1].relative_to(path)}")
 
     return natsorted(bdmvs)
 
