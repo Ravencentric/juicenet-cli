@@ -1,6 +1,8 @@
 FROM nikolaik/python-nodejs:python3.12-nodejs20
 
-ENV LANG=C.UTF-8
+ENV LANG=C.UTF-8 \
+    # See: https://github.com/Ravencentric/juicenet-cli/issues/75
+    GYP_DEFINES="enable_native_tuning=0"
 
 WORKDIR /node
 
