@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "juicenet-cli"
-version = "0.46.0"
+version = "0.46.1"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
 authors = ["Ravencentric <me@ravencentric.cc>"]
 license = "Unlicense"
