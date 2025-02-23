@@ -1,4 +1,5 @@
 FROM nikolaik/python-nodejs:python3.12-nodejs20
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 ENV LANG=C.UTF-8 \
     # See: https://github.com/Ravencentric/juicenet-cli/issues/75
@@ -15,8 +16,8 @@ WORKDIR /app
 COPY . .
 COPY ./config/juicenet.docker.yaml /config/juicenet.docker.yaml
 
-RUN pip install .
+RUN uv sync --locked
 
 WORKDIR /media
 
-ENTRYPOINT ["python", "-m", "juicenet", "--config", "/config/juicenet.docker.yaml"]
+ENTRYPOINT ["uv", "run", "juicenet", "--config", "/config/juicenet.docker.yaml"]
