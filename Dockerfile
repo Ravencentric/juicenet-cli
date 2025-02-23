@@ -1,4 +1,4 @@
-FROM nikolaik/python-nodejs:python3.12-nodejs20
+FROM nikolaik/python-nodejs:python3.13-nodejs23
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 ENV LANG=C.UTF-8 \
@@ -19,5 +19,8 @@ COPY ./config/juicenet.docker.yaml /config/juicenet.docker.yaml
 RUN uv sync --locked --compile-bytecode
 
 WORKDIR /media
+
+HEALTHCHECK CMD uv run juicenet --help
+HEALTHCHECK CMD uv run juicenet --version
 
 ENTRYPOINT ["uv", "run", "juicenet", "--config", "/config/juicenet.docker.yaml"]
