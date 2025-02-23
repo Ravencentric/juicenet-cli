@@ -2,6 +2,8 @@ from pathlib import Path
 
 from ..exceptions import JuicenetInputError
 from ..types import StrPath
+from ..utils import get_bdmv_discs as _get_bdmv_discs
+from ..utils import get_dvd_discs as _get_dvd_discs
 
 
 def get_files(path: StrPath, /, *, exts: list[str] = ["mkv"]) -> list[Path]:
@@ -203,17 +205,75 @@ def get_bdmv_discs(path: StrPath, globs: list[str] = ["*/"]) -> list[Path]:
     if not basepath.exists():
         raise JuicenetInputError(f"{basepath} must be an existing file or directory")
 
-    bdmvs = []
+    return _get_bdmv_discs(basepath, globs)
 
-    folders = get_glob_matches(basepath, globs=globs)
 
-    for folder in folders:
-        if folder.is_dir():
-            index = list(folder.rglob("BDMV/index.bdmv"))
-            if len(index) == 1:
-                bdmvs.append(folder.resolve())
-            else:
-                for file in index:
-                    bdmvs.append(file.parents[1].resolve())
+def get_dvd_discs(path: StrPath, globs: list[str] = ["*/"]) -> list[Path]:
+    """
+    Finds individual discs in DVDs by looking for `VIDEO_TS/VIDEO_TS.VOB`.
 
-    return bdmvs
+    Parameters
+    ----------
+    path : str or pathlib.Path
+        The path to an existing file. This can either be a string representing the path or a pathlib.Path object.
+    globs : list[str], optional
+        List of glob patterns to match. Default will match all sub folders in base path.
+
+    Returns
+    -------
+    list[Path]
+        List of paths where each path is a BDMV disc.
+
+    Raises
+    ------
+    JuicenetInputError
+        Invalid input.
+
+    Notes
+    -----
+    Finds individual discs in DVDs by looking for `VIDEO_TS/VIDEO_TS.VOB`
+
+    The choice to use `VIDEO_TS/VIDEO_TS.VOB` is arbitrary,
+    I just needed something unique enough.
+
+    A typical DVD might look like this:
+
+    ```
+    Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO
+    ├── COWBOY_BEBOP_1
+    │   └── VIDEO_TS
+    │       ├── VIDEO_TS.BUP
+    │       ├── VIDEO_TS.IFO
+    │       └── VIDEO_TS.VOB
+    └── COWBOY_BEBOP_2
+        └── VIDEO_TS
+            ├── VIDEO_TS.BUP
+            ├── VIDEO_TS.IFO
+            └── VIDEO_TS.VOB
+    ```
+    From the above example, this function finds the
+    `VIDEO_TS/VIDEO_TS.VOB` file and then goes 1 directory up
+    relative to `VIDEO_TS/VIDEO_TS.VOB` which ends up being `COWBOY_BEBOP_1`
+
+    Practical Examples:
+
+    - Found:
+        - `Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO/COWBOY_BEBOP_1/VIDEO_TS/VIDEO_TS.VOB`
+        - `Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO/COWBOY_BEBOP_2/VIDEO_TS/VIDEO_TS.VOB`
+
+    - Return:
+        - `Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO/COWBOY_BEBOP_1`
+        - `Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO/COWBOY_BEBOP_2`
+    """
+
+    if isinstance(path, str):
+        basepath = Path(path).resolve()
+    elif isinstance(path, Path):
+        basepath = path.resolve()
+    else:
+        raise JuicenetInputError(f"{path} must be a string or pathlib.Path")
+
+    if not basepath.exists():
+        raise JuicenetInputError(f"{basepath} must be an existing file or directory")
+
+    return _get_dvd_discs(basepath, globs)

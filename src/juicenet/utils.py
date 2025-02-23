@@ -137,6 +137,62 @@ def get_bdmv_discs(path: Path, patterns: list[str]) -> list[Path]:
     return natsorted(bdmvs)
 
 
+def get_dvd_discs(path: Path, patterns: list[str]) -> list[Path]:
+    """
+    Finds individual discs in DVDs by looking for `VIDEO_TS/VIDEO_TS.VOB`
+
+    The choice to use `VIDEO_TS/VIDEO_TS.VOB` is arbitrary,
+    I just needed something unique enough.
+
+    A typical DVD might look like this:
+
+    ```
+    Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO
+    ├── COWBOY_BEBOP_1
+    │   └── VIDEO_TS
+    │       ├── VIDEO_TS.BUP
+    │       ├── VIDEO_TS.IFO
+    │       └── VIDEO_TS.VOB
+    └── COWBOY_BEBOP_2
+        └── VIDEO_TS
+            ├── VIDEO_TS.BUP
+            ├── VIDEO_TS.IFO
+            └── VIDEO_TS.VOB
+    ```
+    From the above example, this function finds the
+    `VIDEO_TS/VIDEO_TS.VOB` file and then goes 1 directory up
+    relative to `VIDEO_TS/VIDEO_TS.VOB` which ends up being `COWBOY_BEBOP_1`
+
+    Practical Examples:
+
+    - Found:
+        - `Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO/COWBOY_BEBOP_1/VIDEO_TS/VIDEO_TS.VOB`
+        - `Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO/COWBOY_BEBOP_2/VIDEO_TS/VIDEO_TS.VOB`
+
+    - Return:
+        - `Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO/COWBOY_BEBOP_1`
+        - `Cowboy.Bebop.1998.DVDR.NTSC.R4.LATiNO/COWBOY_BEBOP_2`
+
+    """
+
+    dvds = []
+
+    folders = get_glob_matches(path, patterns)
+
+    for folder in folders:
+        if folder.is_dir():
+            for file in folder.rglob("*"):
+                if (
+                    file.name.casefold().strip() == "video_ts.vob"
+                    and file.parent.name.casefold().strip() == "video_ts"
+                    and file.stat().st_size > 0
+                ):
+                    dvds.append(file.parents[1])
+                    logger.info(f"DVD: {file.parents[1].relative_to(path)}")
+
+    return natsorted(dvds)
+
+
 def get_file_info(file: Path) -> dict[str, str]:
     """
     Get the name, total size, and number of file(s) given a Path

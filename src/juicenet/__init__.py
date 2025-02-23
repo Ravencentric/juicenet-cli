@@ -9,6 +9,7 @@ Helper Functions
 ----------------
 - get_files
 - get_bdmv_discs
+- get_dvd_discs
 - get_glob_matches
 
 Types
@@ -24,7 +25,7 @@ Types
 """
 
 from .api.main import juicenet
-from .api.utils import get_bdmv_discs, get_files, get_glob_matches
+from .api.utils import get_bdmv_discs, get_dvd_discs, get_files, get_glob_matches
 from .model import JuicenetConfig
 from .types import (
     ArticleFilePath,
@@ -43,6 +44,7 @@ __all__ = [
     # helpers
     "get_files",
     "get_bdmv_discs",
+    "get_dvd_discs",
     "get_glob_matches",
     # types
     "JuicenetConfig",
