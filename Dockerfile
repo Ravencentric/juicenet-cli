@@ -1,4 +1,5 @@
-FROM nikolaik/python-nodejs:python3.12-nodejs20
+FROM nikolaik/python-nodejs:python3.13-nodejs23
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 ENV LANG=C.UTF-8 \
     # See: https://github.com/Ravencentric/juicenet-cli/issues/75
@@ -7,7 +8,7 @@ ENV LANG=C.UTF-8 \
 WORKDIR /node
 
 RUN npm install -g yencode
-RUN npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+RUN npm install -g nyuu --production
 RUN npm install -g @animetosho/parpar
 
 WORKDIR /app
@@ -15,8 +16,10 @@ WORKDIR /app
 COPY . .
 COPY ./config/juicenet.docker.yaml /config/juicenet.docker.yaml
 
-RUN pip install .
+RUN uv sync --locked --compile-bytecode
 
 WORKDIR /media
 
-ENTRYPOINT ["python", "-m", "juicenet", "--config", "/config/juicenet.docker.yaml"]
+HEALTHCHECK CMD uv run juicenet --help
+
+ENTRYPOINT ["uv", "run", "juicenet", "--config", "/config/juicenet.docker.yaml"]

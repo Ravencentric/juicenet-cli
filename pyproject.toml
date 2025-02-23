@@ -1,14 +1,11 @@
-[tool.poetry]
+[project]
 name = "juicenet-cli"
 version = "0.46.1"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
-authors = ["Ravencentric <me@ravencentric.cc>"]
-license = "Unlicense"
+authors = [{ name = "Ravencentric", email = "me@ravencentric.cc" }]
+requires-python = ">=3.9"
 readme = "README.md"
-packages = [{ include = "juicenet", from = "src" }]
-homepage = "https://juicenet.ravencentric.cc"
-repository = "https://github.com/Ravencentric/juicenet-cli"
-documentation = "https://juicenet.ravencentric.cc"
+license = "Unlicense"
 classifiers = [
     "License :: OSI Approved :: The Unlicense (Unlicense)",
     "Operating System :: OS Independent",
@@ -16,31 +13,50 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Typing :: Typed",
 ]
+dependencies = [
+    "cyclopts>=2.9.3",
+    "PyYAML>=6.0.1",
+    "loguru>=0.7.2",
+    "rich>=13.7.1",
+    "colorama>=0.4.6",
+    "pydantic>=2.8.2",
+    "strenum>=0.4.15 ; python_version < '3.11'",
+    "importlib-metadata>=8.0.0 ; python_version < '3.10'",
+    "natsort>=8.4.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.9"
-cyclopts = ">=2.9.3"
-PyYAML = ">=6.0.1"
-loguru = ">=0.7.2"
-rich = ">=13.7.1"
-colorama = ">=0.4.6"
-pydantic = ">=2.8.2"
-strenum = { version = ">=0.4.15", python = "<3.11" }
-importlib-metadata = { version = ">=8.0.0", python = "<3.10" }
-natsort = ">=8.4.0"
+[project.urls]
+Homepage = "https://juicenet.ravencentric.cc"
+Repository = "https://github.com/Ravencentric/juicenet-cli"
+Documentation = "https://juicenet.ravencentric.cc"
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.5.1"
-mypy = "^1.10.1"
-loguru-mypy = "^0.0.4"
-pre-commit = "^3.7.1"
+[project.scripts]
+juicenet = "juicenet.__main__:app"
 
-[tool.poetry.group.docs.dependencies]
-mkdocs-material = "^9.5.28"
-mkdocstrings = { extras = ["python"], version = "^0.25.1" }
-mkdocs-autorefs = "^1.0.1"
+[dependency-groups]
+docs = [
+    "mkdocs-autorefs>=1.3.1",
+    "mkdocs-material>=9.6.5",
+    "mkdocstrings[python]>=0.28.1",
+]
+dev = [
+    "ruff>=0.9.7",
+    "mypy>=1.15.0",
+    "loguru-mypy>=0.0.4",
+    { include-group = "docs" },
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/juicenet"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/juicenet"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/juicenet" = "juicenet"
 
 [tool.ruff]
 line-length = 120
@@ -57,9 +73,6 @@ pretty = true
 module = ["colorama", "yaml"]
 ignore_missing_imports = true
 
-[tool.poetry.scripts]
-juicenet = "juicenet.__main__:app"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
