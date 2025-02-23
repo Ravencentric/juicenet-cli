@@ -62,7 +62,7 @@ include = ["src/juicenet"]
 line-length = 120
 
 [tool.ruff.lint]
-extend-select = ["I"]
+extend-select = ["I", "UP"]
 fixable = ["ALL"]
 
 [tool.mypy]

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
 
 from rich.console import Console
 from rich.traceback import install
@@ -26,7 +25,7 @@ def juicenet(
     path: StrPath,
     /,
     *,
-    config: Union[StrPath, JuicenetConfig],
+    config: StrPath | JuicenetConfig,
     public: bool = False,
     bdmv_naming: bool = False,
     resume: bool = True,

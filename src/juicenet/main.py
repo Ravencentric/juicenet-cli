@@ -5,7 +5,6 @@ import signal
 import sys
 from pathlib import Path
 from pprint import pformat
-from typing import Optional
 
 from loguru import logger as _loguru_logger
 from pydantic import ValidationError
@@ -51,11 +50,11 @@ def main(
     only_raw: bool = False,
     skip_raw: bool = False,
     clear_raw: bool = False,
-    glob: Optional[list[str]] = None,
+    glob: list[str] | None = None,
     bdmv: bool = False,
     debug: bool = False,
     move: bool = False,
-    extensions: Optional[list[str]] = None,
+    extensions: list[str] | None = None,
     no_resume: bool = False,
     clear_resume: bool = False,
 ) -> InternalJuicenetOutput:
@@ -223,7 +222,7 @@ def main(
     files = filter_empty_files(files)
 
     non_empty_count = len(files)
-    logger.debug(f"Empty files: {total-non_empty_count}")
+    logger.debug(f"Empty files: {total - non_empty_count}")
     logger.debug(f"Total files left: {non_empty_count}")
 
     if not files:
