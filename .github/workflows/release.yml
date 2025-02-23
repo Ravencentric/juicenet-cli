@@ -9,25 +9,24 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/juicenet-cli
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Important for changelog
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: '3.12'
-
-      - name: Install pipx
-        run: python -m pip install pipx
-
-      - name: Install Poetry
-        run: pipx install poetry
+          python-version: '3.13'
 
       - name: Build project for distribution
-        run: poetry build
+        run: uv build
 
       - name: Generate changelog with git-cliff
         uses: tj-actions/git-cliff@v1
@@ -36,16 +35,5 @@ jobs:
           template-config: .github/cliff-template.toml
           output: "CHANGELOG.md"
 
-      - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "dist/*"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          bodyFile: "CHANGELOG.md"
-          draft: false
-          prerelease: false
-
-      - name: Publish to PyPI
-        env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-        run: poetry publish
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

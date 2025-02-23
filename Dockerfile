@@ -8,7 +8,7 @@ ENV LANG=C.UTF-8 \
 WORKDIR /node
 
 RUN npm install -g yencode
-RUN npm install -g git+https://github.com/animetosho/Nyuu.git --production --unsafe-perm
+RUN npm install -g nyuu --production
 RUN npm install -g @animetosho/parpar
 
 WORKDIR /app
