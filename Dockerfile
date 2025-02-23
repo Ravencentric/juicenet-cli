@@ -21,6 +21,5 @@ RUN uv sync --locked --compile-bytecode
 WORKDIR /media
 
 HEALTHCHECK CMD uv run juicenet --help
-HEALTHCHECK CMD uv run juicenet --version
 
 ENTRYPOINT ["uv", "run", "juicenet", "--config", "/config/juicenet.docker.yaml"]
