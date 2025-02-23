@@ -16,7 +16,7 @@ WORKDIR /app
 COPY . .
 COPY ./config/juicenet.docker.yaml /config/juicenet.docker.yaml
 
-RUN uv sync --locked
+RUN uv sync --locked --compile-bytecode
 
 WORKDIR /media
 
