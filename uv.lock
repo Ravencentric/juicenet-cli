@@ -231,7 +231,7 @@ wheels = [
 
 [[package]]
 name = "juicenet-cli"
-version = "0.46.2.dev0"
+version = "0.46.2"
 source = { editable = "." }
 dependencies = [
     { name = "colorama" },

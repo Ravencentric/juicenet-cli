@@ -1,6 +1,6 @@
 [project]
 name = "juicenet-cli"
-version = "0.46.2.dev0"
+version = "0.46.2"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
 authors = [{ name = "Ravencentric", email = "me@ravencentric.cc" }]
 requires-python = ">=3.9"
@@ -29,7 +29,6 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://juicenet.ravencentric.cc"
 Repository = "https://github.com/Ravencentric/juicenet-cli"
 Documentation = "https://juicenet.ravencentric.cc"
 
