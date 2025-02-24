@@ -19,10 +19,10 @@ app = App(
 exclusive = (app.group_parameters, Group(validator=validators.LimitedChoice()))
 
 # Change the default command group
-app["--help"].group = exclusive
+app["--help"].group = exclusive  # type: ignore
 app["--help"].help = "display this message and exit"
 
-app["--version"].group = exclusive
+app["--version"].group = exclusive  # type: ignore
 app["--version"].help = "display application version"
 
 
@@ -103,6 +103,12 @@ def cli(
             help="search for BDMVs in path, can be used with --glob",
         ),
     ] = False,
+    dvd: Annotated[
+        bool,
+        Parameter(
+            help="search for DVDs in path, can be used with --glob",
+        ),
+    ] = False,
     debug: Annotated[
         bool,
         Parameter(
@@ -146,6 +152,7 @@ def cli(
         clear_raw=clear_raw,
         glob=glob,
         bdmv=bdmv,
+        dvd=dvd,
         debug=debug,
         move=move,
         extensions=exts,

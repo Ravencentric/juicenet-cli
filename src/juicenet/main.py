@@ -23,6 +23,7 @@ from .utils import (
     filter_empty_files,
     filter_par2_files,
     get_bdmv_discs,
+    get_dvd_discs,
     get_files,
     get_glob_matches,
     get_related_files,
@@ -52,6 +53,7 @@ def main(
     clear_raw: bool = False,
     glob: list[str] | None = None,
     bdmv: bool = False,
+    dvd: bool = False,
     debug: bool = False,
     move: bool = False,
     extensions: list[str] | None = None,
@@ -130,7 +132,7 @@ def main(
     logger.info(f"Appdata Directory: {appdata_dir}")
     logger.info(f"Working Directory: {work_dir or path}")
 
-    if glob or bdmv:
+    if glob or bdmv or dvd:
         logger.info(f"Glob Pattern: {glob or ['*/']}")
     else:
         logger.info(f"Extensions: {exts}")
@@ -152,7 +154,7 @@ def main(
     parpar = ParPar(parpar_bin, parpar_args, work_dir, debug)
 
     # Initialize Nyuu class for uploading stuff ahead
-    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, bdmv)
+    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, bdmv or dvd)
 
     if clear_resume:  # --clear-resume
         resume.clear_resume()  # Delete resume data
@@ -190,6 +192,10 @@ def main(
     elif bdmv:  # --bdmv
         pattern = glob or ["*/"]
         files = get_bdmv_discs(path, pattern)
+
+    elif dvd:  # --dvd
+        pattern = glob or ["*/"]
+        files = get_dvd_discs(path, pattern)
 
     elif glob:  # --glob
         try:

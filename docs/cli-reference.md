@@ -30,6 +30,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `--skip-raw`            | Skip reposting raw articles                                                                   |
 | `--glob    [*/ ...]`    | Specify the glob pattern(s) to be matched instead of extensions                               |
 | `--bdmv`                | Find and upload BDMV discs in cwd, can be used with `--glob`                                  |
+| `--dvd`                 | Find and upload DVD discs in cwd, can be used with `--glob`                                   |
 | `--debug`               | Show logs for debugging                                                                       |
 | `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)` and exit            |
 | `--exts [mkv mp4 ...]`  | Look for these extensions in `<path>`                                                         |
