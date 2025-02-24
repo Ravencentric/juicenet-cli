@@ -35,5 +35,13 @@ jobs:
           template-config: .github/cliff-template.toml
           output: "CHANGELOG.md"
 
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bodyFile: "CHANGELOG.md"
+          draft: false
+          prerelease: false
+
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
