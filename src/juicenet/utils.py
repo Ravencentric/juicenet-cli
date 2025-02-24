@@ -184,7 +184,7 @@ def get_dvd_discs(path: Path, patterns: list[str]) -> list[Path]:
             for file in folder.rglob("*"):
                 if (
                     file.is_file()
-                    and file.name.casefold().strip() == "video_ts.vob"
+                    and file.name.casefold().strip() in ("video_ts.vob", "video_ts.ifo", "video_ts.bup")
                     and file.parent.name.casefold().strip() == "video_ts"
                 ):
                     dvds.append(file.parents[1])
