@@ -1,6 +1,6 @@
 [project]
 name = "juicenet-cli"
-version = "0.46.2"
+version = "0.46.3"
 description = "CLI tool designed to simplify the process of uploading files to Usenet"
 authors = [{ name = "Ravencentric", email = "me@ravencentric.cc" }]
 requires-python = ">=3.9"

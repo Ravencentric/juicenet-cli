@@ -28,12 +28,16 @@ jobs:
       - name: Build project for distribution
         run: uv build
 
-      - name: Generate changelog with git-cliff
-        uses: tj-actions/git-cliff@v1
-        with:
-          args: --latest --strip all
-          template-config: .github/cliff-template.toml
-          output: "CHANGELOG.md"
+      - name: Generate a changelog
+        run: >-
+          uvx git-cliff --config .github/cliff-template.toml
+          --github-repo "${GH_REPO}"
+          --github-token "${GH_TOKEN}"
+          --latest --strip header
+          --output "CHANGELOG.md"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
 
       - name: Create Release
         uses: ncipollo/release-action@v1
