@@ -3,30 +3,47 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  FORCE_COLOR: 1
+  UV_LOCKED: 1
 
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/project/juicenet-cli
     permissions:
-      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+      contents: write
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
+          persist-credentials: false
           fetch-depth: 0 # Important for changelog
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@4959332f0f014c5280e7eac8b70c90cb574c9f9b # v6.6.0
         with:
-          python-version: '3.13'
+          enable-cache: false
+          python-version: "3.13"
 
-      - name: Build project for distribution
+      - name: Build
         run: uv build
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # v1.12.4
 
       - name: Generate a changelog
         run: >-
@@ -40,12 +57,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
 
       - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          bodyFile: "CHANGELOG.md"
-          draft: false
-          prerelease: false
-
-      - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        run: gh release create "${GH_REF_NAME}" -F "CHANGELOG.md" --fail-on-no-commits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REF_NAME: ${{ github.ref_name }}
