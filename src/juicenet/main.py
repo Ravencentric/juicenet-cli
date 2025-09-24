@@ -54,6 +54,7 @@ def main(
     glob: list[str] | None = None,
     bdmv: bool = False,
     dvd: bool = False,
+    meta: list[str] | None = None,
     debug: bool = False,
     move: bool = False,
     extensions: list[str] | None = None,
@@ -147,6 +148,10 @@ def main(
         logger.info(f"Deleted {count} raw articles(s)")
         sys.exit(0)
 
+    # nyuu meta tags
+    if meta:
+        logger.info(f"NZB meta tags: {meta}")
+
     # Initialize Resume class
     resume = Resume(resume_file, scope, no_resume)
 
@@ -154,7 +159,7 @@ def main(
     parpar = ParPar(parpar_bin, parpar_args, work_dir, debug)
 
     # Initialize Nyuu class for uploading stuff ahead
-    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, bdmv or dvd)
+    nyuu = Nyuu(path, nyuu_bin, conf, work_dir, nzb_out, scope, debug, bdmv or dvd, meta)
 
     if clear_resume:  # --clear-resume
         resume.clear_resume()  # Delete resume data

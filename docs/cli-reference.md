@@ -31,6 +31,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 | `--glob    [*/ ...]`    | Specify the glob pattern(s) to be matched instead of extensions                               |
 | `--bdmv`                | Find and upload BDMV discs in cwd, can be used with `--glob`                                  |
 | `--dvd`                 | Find and upload DVD discs in cwd, can be used with `--glob`                                   |
+| `--meta`                | Add a <meta> tag to the NZB file. Can be used multiple times.                                 |
 | `--debug`               | Show logs for debugging                                                                       |
 | `--move`                | Move files into their own directories `(foobar.ext -> foobar/foobar.ext)` and exit            |
 | `--exts [mkv mp4 ...]`  | Look for these extensions in `<path>`                                                         |
@@ -74,7 +75,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
     ``` bash
     juicenet --exts mp4 epub # CWD
     ```
-    
+
     ``` bash
     juicenet "path/to/files" --exts mp4 epub
     ```
@@ -88,7 +89,7 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
     ``` bash
     juicenet "path/to/files" --glob "*/"
     ```
-    
+
     !!! info
         Linux shells automatically expand the glob pattern before passing it to the command, quote the glob pattern to stop the expansion since we want `juicenet` to read those glob patterns.
 
@@ -124,4 +125,10 @@ $ juicenet [OPTIONS] <path> [OPTIONS]
 
     ``` bash
     juicenet "path/to/files" --glob "S01E1[0-5]"
+    ```
+
+9. Add meta tags to the generated NZB file. This option is passed to Nyuu
+
+    ``` bash
+    juicenet "path/to/files" --meta 'category=TV Show' --meta tag=HD
     ```
