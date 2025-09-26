@@ -54,12 +54,12 @@ def main(
     glob: list[str] | None = None,
     bdmv: bool = False,
     dvd: bool = False,
-    meta: list[str] | None = None,
     debug: bool = False,
     move: bool = False,
     extensions: list[str] | None = None,
     no_resume: bool = False,
     clear_resume: bool = False,
+    meta: list[str] | None = None,
 ) -> InternalJuicenetOutput:
     """
     Do stuff here
