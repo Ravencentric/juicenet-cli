@@ -53,7 +53,7 @@ class Nyuu:
         scope: str,
         debug: bool,
         bdmv_naming: bool,
-        meta: Optional[list[str]],
+        meta: Optional[list[str]] = None,
     ) -> None:
         self.path = path
         self.bin = bin
