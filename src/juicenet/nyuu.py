@@ -32,6 +32,8 @@ class Nyuu:
         Flag indicating whether to enable debug mode.
     bdmv_naming : bool
         Flag indicating whether to use different naming for BDMVs.
+    meta : list[str], optional
+        List of <meta> tags to add to NZB head.
 
     Methods
     -------
@@ -51,6 +53,7 @@ class Nyuu:
         scope: str,
         debug: bool,
         bdmv_naming: bool,
+        meta: Optional[list[str]] = None,
     ) -> None:
         self.path = path
         self.bin = bin
@@ -60,6 +63,7 @@ class Nyuu:
         self.scope = scope
         self.debug = debug
         self.bdmv_naming = bdmv_naming
+        self.meta = meta
 
     def _move_nzb(self, file: Path, basedir: Path, clean_nzb: str, nzb: str) -> NZBFilePath:
         """
@@ -110,7 +114,12 @@ class Nyuu:
         else:
             files = [file]
 
-        nyuu = [self.bin] + ["--config", self.conf] + ["--out", clean_nzb] + files + par2files
+        meta = []
+        if self.meta:
+            for m in self.meta:
+                meta += ["--meta", m]
+
+        nyuu = [self.bin] + ["--config", self.conf] + ["--out", clean_nzb] + meta + files + par2files
 
         logger.debug(shlex.join(str(arg) for arg in nyuu))
 

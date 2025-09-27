@@ -109,6 +109,12 @@ def cli(
             help="search for DVDs in path, can be used with --glob",
         ),
     ] = False,
+    meta: Annotated[
+        Optional[list[str]],
+        Parameter(
+            help="add a <meta> tag to the NZB head, can be used multiple times",
+        ),
+    ] = None,
     debug: Annotated[
         bool,
         Parameter(
@@ -153,6 +159,7 @@ def cli(
         glob=glob,
         bdmv=bdmv,
         dvd=dvd,
+        meta=meta,
         debug=debug,
         move=move,
         extensions=exts,
